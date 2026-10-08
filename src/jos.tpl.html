@@ -149,6 +149,7 @@ ul.clean{list-style:none;margin:0;padding:0}ul.clean li{padding:6px 0;border-bot
 .adv .hd h4{font-size:15px;margin:0}
 .adv .hd .ru{font-size:11.5px;color:var(--muted)}
 .adv .bd{padding:12px 16px;flex:1}
+.adv .pane.rep{max-height:560px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:6px 12px;background:#fff}
 .adv .foot{padding:10px 16px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted)}
 .adv-tabs{display:flex;gap:4px;margin:0 0 10px;flex-wrap:wrap}
 .adv-tabs button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:4px 10px;font-size:11.5px;font-weight:600;color:var(--body);cursor:pointer}
@@ -317,6 +318,21 @@ const fmt = (n, d=1) => (n==null||isNaN(n)) ? '—' : Number(n).toLocaleString('
 const daysTo = iso => { const m = /(\d{4})-(\d{2})-(\d{2})/.exec(iso||''); if(!m) return null; const d = new Date(+m[1], +m[2]-1, +m[3]); return Math.round((d - TODAY)/86400000); };
 const dateRu = iso => { const m = /(\d{4})-(\d{2})-(\d{2})/.exec(iso||''); if(!m) return esc(iso); return `${m[3]}.${m[2]}`; };
 const E_ = (key, html) => `<span data-e="${key}">${E.text[key] != null ? E.text[key] : html}</span>`;
+function md(src){ const lines=String(src||'').split(/\r?\n/); let out='', inList=false, inTbl=false, inCode=false;
+  const inl = s => esc(s).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/\[\[([^\]]+)\]\]/g,'<span class="muted">$1</span>');
+  const close = () => { if(inList){out+='</ul>';inList=false;} if(inTbl){out+='</tbody></table></div>';inTbl=false;} };
+  for(let ln of lines){
+    if(ln.startsWith('```')){ if(inCode){out+='</pre>';inCode=false;} else {close();out+='<pre class="small" style="white-space:pre-wrap;background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px">';inCode=true;} continue; }
+    if(inCode){ out+=esc(ln)+'\n'; continue; }
+    const tb = /^\|(.*)\|\s*$/.exec(ln);
+    if(tb){ const cells=tb[1].split('|').map(s=>s.trim()); if(cells.every(c=>/^:?-{2,}:?$/.test(c))) continue;
+      if(!inTbl){ if(inList){out+='</ul>';inList=false;} out+='<div class="tbl" style="margin:6px 0"><table style="min-width:0"><tbody>'; inTbl=true; out+='<tr>'+cells.map(c=>`<th>${inl(c)}</th>`).join('')+'</tr>'; } else out+='<tr>'+cells.map(c=>`<td>${inl(c)}</td>`).join('')+'</tr>'; continue; }
+    if(inTbl){out+='</tbody></table></div>';inTbl=false;}
+    const h = /^(#{1,4})\s+(.*)/.exec(ln); if(h){ close(); const n=Math.min(h[1].length+2,5); out+=`<h${n} style="margin:12px 0 4px;font-size:${n<=3?14:12.5}px">${inl(h[2])}</h${n}>`; continue; }
+    const li = /^\s*[-*]\s+(.*)/.exec(ln); if(li){ if(!inList){out+='<ul class="small" style="margin:4px 0;padding-left:18px">';inList=true;} let s=li[1]; s=s.replace(/^\[( |x|X)\]\s*/, (m,c)=>c===' '?'☐ ':'☑ '); out+=`<li>${inl(s)}</li>`; continue; }
+    if(!ln.trim()){ close(); continue; }
+    close(); out+=`<p class="small" style="margin:4px 0">${inl(ln)}</p>`; }
+  close(); if(inCode) out+='</pre>'; return out; }
 const dl = n => n==null ? '' : n<0 ? `${-n} дн назад` : n===0 ? 'сегодня' : n===1 ? 'завтра' : `через ${n} дн`;
 
 /* ---------- TODAY ---------- */
@@ -498,11 +514,12 @@ function renderAdvisors(){
 function advCard(a){
   const open = a.tasks.filter(t=>!E.done[t.id]).length;
   return `<div class="adv">
-    <div class="hd"><div class="av" style="background:${a.color}22;border:1px solid ${a.color}66">${a.emoji}</div><div><h4>${esc(a.title)} <span class="pill ${a.status==='live'?'mint':'grey'}">${a.status==='live'?'работает':'готов · ждёт доступов'}</span></h4><div class="ru">${esc(a.ru)} · ${esc(a.rhythm)}</div></div></div>
+    <div class="hd"><div class="av" style="background:${a.color}22;border:1px solid ${a.color}66">${a.emoji}</div><div><h4>${esc(a.title)} <span class="pill ${a.status==='live'?'mint':'grey'}">${a.status==='live'?'запущен · '+esc(a.last_run||''):'готов · ждёт доступов'}</span></h4><div class="ru">${esc(a.ru)} · ${esc(a.rhythm)}</div></div></div>
     <div class="bd">
       <p class="small" style="margin:0 0 10px">${E_('adv.'+a.id+'.mandate', esc(a.mandate))}</p>
-      <div class="adv-tabs"><button class="on" data-p="tasks">Задачи <span class="muted">${open}</span></button><button data-p="kpi">KPI</button><button data-p="pain">Боли</button><button data-p="src">Что смотрит</button></div>
+      <div class="adv-tabs"><button class="on" data-p="tasks">Задачи <span class="muted">${open}</span></button>${a.report?`<button data-p="rep">Отчёт ${esc(a.last_run||'')}</button>`:''}<button data-p="kpi">KPI</button><button data-p="pain">Боли</button><button data-p="src">Что смотрит</button></div>
       <div class="pane" data-p="tasks">${a.tasks.map(t=>taskRow({...t, who:'', emoji:''})).join('')}</div>
+      ${a.report?`<div class="pane rep" data-p="rep" style="display:none">${md(a.report)}</div>`:''}
       <div class="pane" data-p="kpi" style="display:none">${a.kpis.map(k=>`<div class="kpi-line"><div class="m">${esc(k.metric)}</div><div class="r"><b>${esc(k.target)}</b><br><span class="muted">сейчас: ${esc(k.now)}</span></div></div>`).join('')}</div>
       <div class="pane" data-p="pain" style="display:none"><ul class="small" style="margin:0;padding-left:18px">${a.pains.map(p=>`<li>${esc(p)}</li>`).join('')}</ul></div>
       <div class="pane" data-p="src" style="display:none"><ul class="small" style="margin:0;padding-left:18px">${a.watches.map(p=>`<li>${esc(p)}</li>`).join('')}</ul></div>
