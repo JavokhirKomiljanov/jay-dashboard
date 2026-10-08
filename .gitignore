@@ -18,3 +18,5 @@ encrypted/
 # build-side only — never publish (data/ held Jay's plaintext EOD reports; scripts are local build tools)
 data/
 scripts/
+# advisors' run output (pages + logs) — local only
+agents/advisors/out/

@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="googlebot" content="noindex,nofollow">
+<title>Jay OS — W2W</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --ink:#131313;--body:#5c5d5f;--muted:#8a8a8a;--faint:#b5b7ba;
+  --mint:#07e7b7;--mint-dark:#05a884;--mint-light:#74dfc8;--mint-tint:#eefcf8;--mint-tint-2:#e3faf4;
+  --blue:#007aff;--blue-light:#5fa8ff;--coral:#ff9a7a;--coral-dark:#e8623c;--lavender:#c3aaff;--gold:#f5a623;
+  --bg:#ffffff;--card:#f6f7f8;--card-2:#f2f3f4;--line:#e6e8ea;--line-2:#d9dcdf;
+  --r:16px;--r-sm:10px;
+  --head:'Manrope','Inter',system-ui,sans-serif;--text:'Inter',system-ui,-apple-system,"Segoe UI",sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--body);font-family:var(--text);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+b,strong{color:var(--ink);font-weight:600}
+h1,h2,h3,h4{font-family:var(--head);color:var(--ink);margin:0;letter-spacing:-.02em}
+button{font:inherit}
+::selection{background:var(--mint-light);color:var(--ink)}
+
+/* ===== layout ===== */
+.app{display:grid;grid-template-columns:236px minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;height:100vh;border-right:1px solid var(--line);background:#fbfbfc;display:flex;flex-direction:column;padding:18px 14px;gap:4px}
+.brand{display:flex;align-items:center;gap:10px;padding:4px 8px 16px}
+.brand svg{width:34px;height:34px;flex:none}
+.brand .wm b{display:block;font-family:var(--head);font-weight:800;font-size:17px;color:var(--ink);line-height:1}
+.brand .wm span{display:block;font-size:9px;letter-spacing:3px;color:var(--muted);margin-top:4px}
+.nav{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:12px;color:var(--body);font-weight:500;cursor:pointer;border:1px solid transparent;user-select:none}
+.nav:hover{background:var(--card)}
+.nav.on{background:var(--ink);color:#fff}
+.nav .ic{width:22px;text-align:center;font-size:16px}
+.nav .cnt{margin-left:auto;font:500 10.5px var(--mono);color:var(--muted);background:#fff;border:1px solid var(--line);padding:1px 7px;border-radius:999px}
+.nav.on .cnt{background:rgba(255,255,255,.14);color:#fff;border-color:transparent}
+.nav.ext{color:var(--muted)}
+.side .sec{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);padding:14px 12px 4px;font-weight:600}
+.side-foot{margin-top:auto;padding:10px 8px 0;font-size:11px;color:var(--muted);border-top:1px solid var(--line);line-height:1.6}
+.side-foot i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--mint);margin-right:6px}
+
+.main{min-width:0;padding:0 0 60px}
+.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:12px 28px;flex-wrap:wrap}
+.top h1{font-size:20px;font-weight:800}
+.top .sub{color:var(--muted);font-size:12.5px}
+.top .sp{flex:1}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-2);background:#fff;color:var(--ink);border-radius:10px;padding:7px 12px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--ink);text-decoration:none}
+.btn.pri{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn.mint{background:var(--mint);color:var(--ink);border-color:var(--mint)}
+.btn.on{background:var(--mint-tint);border-color:var(--mint-dark);color:var(--mint-dark)}
+.btn.sm{padding:4px 9px;font-size:11.5px;border-radius:8px}
+.wrap{padding:22px 28px;max-width:1400px}
+.editbar{display:none;margin:0 28px;padding:10px 14px;border:1px dashed var(--mint-dark);background:var(--mint-tint);border-radius:12px;font-size:12.5px;color:var(--mint-dark)}
+body.editing .editbar{display:block}
+body.editing [data-e]{outline:1px dashed var(--mint-dark);outline-offset:2px;border-radius:4px;cursor:text;min-width:1em}
+body.editing [data-e]:focus{outline:2px solid var(--mint-dark);background:#fff}
+
+/* ===== primitives ===== */
+.eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--mint-dark);margin:0 0 6px}
+.h2{font-size:22px;font-weight:800;margin:0 0 4px}
+.h2 .hl{color:var(--mint-dark)}
+.lead{font-size:14.5px;color:var(--body);max-width:900px;margin:0 0 18px}
+.sect{margin:0 0 28px}
+.sect-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 12px}
+.sect-h h3{font-size:16px;font-weight:800}
+.sect-h .tag{font-size:11px;color:var(--muted);font-family:var(--mono)}
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}.g5{grid-template-columns:repeat(5,minmax(0,1fr))}
+@media(max-width:1100px){.g4,.g5{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.g2,.g3,.g4,.g5{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;min-width:0}
+.card.white{background:#fff}
+.card.mint{background:var(--mint-tint);border-color:var(--mint-light)}
+.card.soft{border-style:dashed}
+.card h4{font-size:14px;font-weight:700;margin:0 0 6px}
+.card p{margin:0 0 6px}.card p:last-child{margin:0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;min-width:0}
+.stat .v{font-family:var(--head);font-weight:800;font-size:26px;color:var(--ink);letter-spacing:-.03em;line-height:1.05;word-break:break-word}
+.stat .v small{font-size:13px;color:var(--muted);font-weight:600;margin-left:4px;letter-spacing:0}
+.stat .l{font-size:12px;color:var(--body);margin-top:6px}
+.stat .n{font-size:11px;color:var(--muted);margin-top:4px}
+.stat.neg .v{color:var(--coral-dark)}.stat.pos .v{color:var(--mint-dark)}.stat.hl .v{color:var(--mint-dark)}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;padding:2px 9px;border-radius:999px;background:#fff;border:1px solid var(--line-2);color:var(--body);white-space:nowrap;vertical-align:middle}
+.pill.mint{background:var(--mint-tint);border-color:var(--mint-light);color:var(--mint-dark)}
+.pill.warn{background:#fff6e6;border-color:#ffd58a;color:#b36b00}
+.pill.bad{background:#fff0eb;border-color:#ffc4b0;color:var(--coral-dark)}
+.pill.blue{background:#eaf4ff;border-color:#b9dbff;color:#0a5fc0}
+.pill.grey{background:var(--card-2);color:var(--muted)}
+.pill.lav{background:#f3eeff;border-color:#dccfff;color:#6b45d6}
+.mono{font-family:var(--mono);font-size:11.5px}
+.muted{color:var(--muted)}.small{font-size:12px}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:#fff}
+.tbl table{min-width:640px}
+details{border:1px solid var(--line);border-radius:var(--r-sm);background:#fff;padding:0 14px;margin:8px 0}
+details summary{cursor:pointer;padding:10px 0;font-weight:600;color:var(--ink);list-style:none;display:flex;align-items:center;gap:8px}
+details summary::before{content:'›';display:inline-block;transition:.15s;color:var(--muted);font-size:16px}
+details[open] summary::before{transform:rotate(90deg)}
+details .in{padding:0 0 12px}
+ul.clean{list-style:none;margin:0;padding:0}ul.clean li{padding:6px 0;border-bottom:1px solid var(--line)}ul.clean li:last-child{border-bottom:0}
+.chip-row{display:flex;gap:6px;flex-wrap:wrap}
+
+/* tasks */
+.task{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line)}
+.task:last-child{border-bottom:0}
+.task input{margin-top:3px;accent-color:var(--mint-dark);width:16px;height:16px;flex:none}
+.task .t{flex:1;min-width:0}
+.task .d{font:500 11px var(--mono);color:var(--muted);white-space:nowrap}
+.task .d.soon{color:var(--coral-dark);font-weight:600}
+.task .d.today{color:#fff;background:var(--coral-dark);padding:1px 6px;border-radius:6px}
+.task.done .t{text-decoration:line-through;color:var(--muted)}
+.task .src{font-size:10.5px;color:var(--faint);font-family:var(--mono)}
+.task .who{font-size:11px;color:var(--mint-dark);font-weight:600}
+
+/* deadlines strip */
+.dl{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
+.dl .d{flex:0 0 190px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.dl .d .when{font:600 11px var(--mono);color:var(--muted)}
+.dl .d .days{font-family:var(--head);font-weight:800;font-size:22px;color:var(--ink);line-height:1.1;margin:4px 0}
+.dl .d.hot{border-color:var(--coral);background:#fff7f4}.dl .d.hot .days{color:var(--coral-dark)}
+.dl .d.past{opacity:.55}
+.dl .d .what{font-size:12px;color:var(--body);line-height:1.35}
+
+/* week rhythm */
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.week .day{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;min-height:110px}
+.week .day h5{margin:0 0 6px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.week .day.today{border-color:var(--mint-dark);background:var(--mint-tint)}
+.week .ev{font-size:11.5px;color:var(--ink);background:var(--card);border-radius:7px;padding:4px 7px;margin:4px 0;line-height:1.3}
+.week .ev.mint{background:var(--mint-tint-2)}
+@media(max-width:900px){.week{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* advisors */
+.adv{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:0;overflow:hidden;display:flex;flex-direction:column}
+.adv .hd{display:flex;gap:12px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line)}
+.adv .av{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:22px;flex:none}
+.adv .hd h4{font-size:15px;margin:0}
+.adv .hd .ru{font-size:11.5px;color:var(--muted)}
+.adv .bd{padding:12px 16px;flex:1}
+.adv .foot{padding:10px 16px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted)}
+.adv-tabs{display:flex;gap:4px;margin:0 0 10px;flex-wrap:wrap}
+.adv-tabs button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:4px 10px;font-size:11.5px;font-weight:600;color:var(--body);cursor:pointer}
+.adv-tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.kpi-line{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-size:12.5px}
+.kpi-line:last-child{border-bottom:0}
+.kpi-line .m{color:var(--ink);font-weight:500}.kpi-line .r{text-align:right;white-space:nowrap}
+.kpi-line .r b{color:var(--mint-dark)}
+
+/* brain */
+.brain-hero{background:linear-gradient(135deg,#eefcf8 0%,#eaf4ff 100%);border:1px solid #d9eef2;border-radius:20px;padding:22px 24px;display:grid;grid-template-columns:1.3fr 1fr;gap:20px}
+@media(max-width:900px){.brain-hero{grid-template-columns:1fr}}
+.brain-hero h2{font-size:24px;font-weight:800;margin:0 0 8px}
+.srcs{display:flex;gap:8px;flex-wrap:wrap}
+.srcs .s{background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:12px;font-weight:500;color:var(--ink)}
+.ask{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}
+.ask .q{display:flex;gap:8px}
+.ask input{flex:1;border:1px solid var(--line-2);border-radius:10px;padding:9px 12px;font:inherit;outline:none}
+.ask input:focus{border-color:var(--mint-dark)}
+.ask .a{margin-top:10px;font-size:12.5px;color:var(--body);background:var(--card);border-radius:10px;padding:10px 12px;display:none}
+.ask .a.on{display:block}
+.ask .a .tool{font-family:var(--mono);font-size:10.5px;color:var(--mint-dark);margin-top:6px}
+.cl{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer;transition:.15s}
+.cl:hover{border-color:var(--mint-dark);transform:translateY(-1px)}
+.cl .nm{font-weight:700;color:var(--ink);font-size:13.5px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.cl .docs{font:500 11px var(--mono);color:var(--muted)}
+.cl .sm{font-size:12px;color:var(--body);margin-top:4px;line-height:1.4}
+.cl .pr{margin-top:6px;display:flex;gap:4px;flex-wrap:wrap}
+.cl .pr span{font-size:10.5px;background:var(--card);border-radius:6px;padding:2px 6px;color:var(--body)}
+.graph{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:8px;overflow:hidden}
+.graph svg{width:100%;height:auto;display:block}
+.graph text{font-family:var(--text)}
+
+/* agents house */
+.house{position:relative;width:100%;aspect-ratio:16/9;background:#f3f4f6;border:1px solid var(--line);border-radius:20px;overflow:hidden;
+  background-image:linear-gradient(rgba(0,0,0,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.035) 1px,transparent 1px);background-size:4% 7.1%}
+.room{position:absolute;border:1.5px solid var(--line-2);border-radius:14px;background:rgba(255,255,255,.72)}
+.room .rn{position:absolute;left:10px;top:8px;font-family:var(--head);font-weight:800;font-size:12px;color:var(--ink)}
+.room .rs{position:absolute;left:10px;top:24px;font-size:10px;color:var(--muted)}
+.room.board{background:rgba(238,252,248,.85);border-color:var(--mint-light)}
+.room.lab{background:rgba(243,238,255,.7);border-color:#dccfff}
+.desk{position:absolute;width:5.5%;height:7%;border-radius:4px;background:#e2e5e8;border:1px solid #d0d4d8}
+.bot{position:absolute;width:38px;height:38px;margin:-19px 0 0 -19px;transition:left 2.4s cubic-bezier(.4,.1,.3,1),top 2.4s cubic-bezier(.4,.1,.3,1);cursor:pointer;z-index:3}
+.bot .body{width:38px;height:38px;border-radius:50%;background:#fff;border:2px solid var(--line-2);display:grid;place-items:center;font-size:18px;box-shadow:0 2px 6px rgba(0,0,0,.08);animation:bob 1.2s ease-in-out infinite}
+.bot.moving .body{animation:walk .5s ease-in-out infinite}
+.bot .nm{position:absolute;top:40px;left:50%;transform:translateX(-50%);font-size:9.5px;font-weight:600;color:var(--ink);white-space:nowrap;background:rgba(255,255,255,.85);padding:1px 5px;border-radius:5px}
+.bot .st{position:absolute;right:-2px;top:-2px;width:11px;height:11px;border-radius:50%;border:2px solid #fff}
+.bot.running .st{background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.6);animation:ping 1.6s infinite}
+.bot.ready .st{background:var(--mint-dark)}
+.bot.off .st{background:#b5b7ba}.bot.off .body{opacity:.55;filter:grayscale(1)}
+.bot.done .st{background:var(--gold)}
+.bot.planned .body{border-style:dashed;border-color:var(--mint-dark);background:var(--mint-tint)}
+.bot.planned .st{background:#fff;border-color:var(--mint-dark)}
+.bot.sel .body{border-color:var(--ink);box-shadow:0 0 0 4px rgba(7,231,183,.35)}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes walk{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-4px) rotate(3deg)}}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(34,197,94,.6)}100%{box-shadow:0 0 0 8px rgba(34,197,94,0)}}
+.house-wrap{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px}
+@media(max-width:1000px){.house-wrap{grid-template-columns:1fr}}
+.apanel{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.apanel .big{font-size:34px;line-height:1}
+.apanel h4{font-size:16px;margin:8px 0 2px}
+.apanel dl{margin:10px 0 0;font-size:12.5px}
+.apanel dt{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+.apanel dd{margin:2px 0 0;color:var(--ink)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+
+/* ladder */
+.ladder{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+@media(max-width:1100px){.ladder{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.ladder{grid-template-columns:1fr}}
+.step{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 16px 14px}
+.step .no{font-family:var(--head);font-weight:800;font-size:30px;color:var(--mint-light);line-height:1;margin-bottom:6px}
+.step h4{font-size:13.5px;margin:0 0 6px}
+.step .pr{font-family:var(--head);font-weight:800;color:var(--ink);font-size:14px;margin:6px 0}
+.step p{font-size:12px;color:var(--body);margin:0}
+.step.cur{border-color:var(--mint-dark);background:var(--mint-tint)}
+
+/* gates timeline */
+.gates{display:flex;gap:0;overflow-x:auto;padding:8px 0 4px}
+.gate{flex:0 0 170px;position:relative;padding:0 10px 0 0}
+.gate::before{content:'';position:absolute;left:0;right:0;top:9px;height:2px;background:var(--line-2)}
+.gate .dot{position:relative;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid var(--line-2);z-index:1}
+.gate.next .dot{border-color:var(--mint-dark);background:var(--mint)}
+.gate.past .dot{border-color:var(--ink);background:var(--ink)}
+.gate .dt{font:600 11px var(--mono);color:var(--ink);margin-top:8px}
+.gate .k{font-size:11px;color:var(--mint-dark);font-weight:600}
+.gate .c{font-size:11.5px;color:var(--body);line-height:1.35;margin-top:4px}
+
+/* charts */
+.chart{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.chart svg{width:100%;height:auto;display:block}
+.chart .cap{font-size:11.5px;color:var(--muted);margin-top:6px}
+
+/* sections visibility */
+.view{display:none}.view.on{display:block}
+
+/* mobile */
+.menu-btn{display:none}
+@media(max-width:860px){
+  .app{grid-template-columns:1fr}
+  .side{position:fixed;left:0;top:0;bottom:0;width:260px;z-index:50;transform:translateX(-100%);transition:.2s;box-shadow:0 0 0 100vw rgba(0,0,0,0)}
+  body.menu .side{transform:none;box-shadow:0 0 0 100vw rgba(0,0,0,.25)}
+  .menu-btn{display:inline-flex}
+  .top,.wrap,.editbar{padding-left:16px;padding-right:16px;margin-left:0;margin-right:0}
+  .dl .d{flex-basis:160px}
+}
+footer{padding:18px 28px;border-top:1px solid var(--line);color:var(--muted);font-size:11.5px;font-family:var(--mono);display:flex;gap:14px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side" id="side">
+  <div class="brand">
+    <svg viewBox="0 0 29.5 30"><circle cx="14.75" cy="15" r="14.75" fill="#07e7b7"/><path d="M7.5 13.2l3.6 7.2 3.65-7.2 3.65 7.2 3.6-7.2" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="wm"><b>Jay OS</b><span>WIN TO WIN</span></div>
+  </div>
+  <div class="nav on" data-v="today"><span class="ic">🏠</span>Сегодня<span class="cnt" id="cnt-today"></span></div>
+  <div class="nav" data-v="strategy"><span class="ic">🧭</span>Стратегия<span class="cnt">Q4'26–Q4'27</span></div>
+  <div class="nav" data-v="advisors"><span class="ic">🧑‍💼</span>Советники<span class="cnt">4</span></div>
+  <div class="nav" data-v="brain"><span class="ic">🧠</span>Company Brain<span class="cnt" id="cnt-brain"></span></div>
+  <div class="nav" data-v="w2w"><span class="ic">🏢</span>W2W<span class="cnt" id="cnt-w2w"></span></div>
+  <div class="nav" data-v="agents"><span class="ic">🤖</span>Agents House<span class="cnt" id="cnt-agents"></span></div>
+  <div class="sec">Окна</div>
+  <a class="nav ext" id="lnk-strategy" target="_blank"><span class="ic">📄</span>Полная стратегия ↗</a>
+  <a class="nav ext" id="lnk-map" target="_blank"><span class="ic">🗺</span>Карта компании ↗</a>
+  <a class="nav ext" id="lnk-crm" target="_blank"><span class="ic">📇</span>CRM-бот ↗</a>
+  <div class="sec">Архив</div>
+  <a class="nav ext" id="lnk-archive" target="_blank" title="Старый JOS целиком: Home Alliance, Venture Studios, Apollo/US, отчёты, ROI backlog, IT capacity — всё сохранено"><span class="ic">🗄</span>HA · VS · US ↗</a>
+  <div class="side-foot"><i></i>агенты на сервере<br><span id="foot-built"></span></div>
+</aside>
+
+<main class="main">
+  <div class="top">
+    <button class="btn sm menu-btn" onclick="document.body.classList.toggle('menu')">☰</button>
+    <div><h1 id="top-title">Сегодня</h1><div class="sub" id="top-sub"></div></div>
+    <div class="sp"></div>
+    <button class="btn" id="btn-edit" onclick="JOS.toggleEdit()">✏️ Править</button>
+    <button class="btn" onclick="JOS.exportEdits()">⬇ Экспорт</button>
+    <button class="btn" onclick="JOS.resetEdits()">↺ Сброс</button>
+  </div>
+  <div class="editbar">Режим правки: кликни на любой текст с пунктиром и пиши. Галочки и правки живут в этом браузере (localStorage) и переживают пересборку страницы. «Экспорт» — JSON для переноса в data/jos.</div>
+
+  <div class="wrap">
+    <section class="view on" id="v-today"></section>
+    <section class="view" id="v-strategy"></section>
+    <section class="view" id="v-advisors"></section>
+    <section class="view" id="v-brain"></section>
+    <section class="view" id="v-w2w"></section>
+    <section class="view" id="v-agents"></section>
+  </div>
+  <footer><span>Jay OS v7 · только W2W</span><span id="foot-src"></span><span>правки: localStorage <code>jos7-edits</code></span></footer>
+</main>
+</div>
+
+<script>
+const D = /*__DATA__*/{};
+const S = D.strategy, ADV = D.advisors.advisors, AG = D.agents, BR = D.brain, L = D.links;
+const TODAY = new Date(); TODAY.setHours(0,0,0,0);
+const KEY = 'jos7-edits';
+let E = {text:{}, done:{}}; try{ E = Object.assign(E, JSON.parse(localStorage.getItem(KEY)||'{}')); }catch(e){}
+const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(E)); }catch(e){} };
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt = (n, d=1) => (n==null||isNaN(n)) ? '—' : Number(n).toLocaleString('ru-RU',{minimumFractionDigits:d,maximumFractionDigits:d});
+const daysTo = iso => { const m = /(\d{4})-(\d{2})-(\d{2})/.exec(iso||''); if(!m) return null; const d = new Date(+m[1], +m[2]-1, +m[3]); return Math.round((d - TODAY)/86400000); };
+const dateRu = iso => { const m = /(\d{4})-(\d{2})-(\d{2})/.exec(iso||''); if(!m) return esc(iso); return `${m[3]}.${m[2]}`; };
+const E_ = (key, html) => `<span data-e="${key}">${E.text[key] != null ? E.text[key] : html}</span>`;
+const dl = n => n==null ? '' : n<0 ? `${-n} дн назад` : n===0 ? 'сегодня' : n===1 ? 'завтра' : `через ${n} дн`;
+
+/* ---------- TODAY ---------- */
+function allTasks(){
+  const t = [];
+  ADV.forEach(a => a.tasks.forEach(x => t.push({...x, who:a.title, color:a.color, emoji:a.emoji})));
+  return t;
+}
+function deadlines(){
+  const seen = new Set(), out = [];
+  const push = (date, what, src) => { const k = date+what.slice(0,40); if(seen.has(k)) return; seen.add(k); out.push({date, what, src, n: daysTo(date)}); };
+  (S.decisions.first_week||[]).forEach(d => push(d.deadline, `${d.no}: ${d.title}`, 'решение'));
+  (S.decisions.spine||[]).forEach(d => push(d.deadline, `№${d.no}: ${d.title}`, 'решение'));
+  (S.targets.gates||[]).forEach(g => push(g.date, `Ворота · ${g.kind}`, 'ворота'));
+  return out.filter(x => x.n != null && x.n >= -3).sort((a,b)=>a.n-b.n);
+}
+function renderToday(){
+  const dls = deadlines().slice(0, 10);
+  const three = S.summary.three_numbers_end_2027_base;
+  const tasks = allTasks().filter(t => !E.done[t.id]).sort((a,b)=>(daysTo(a.due)??99)-(daysTo(b.due)??99)).slice(0,8);
+  const run = AG.agents.filter(a=>a.state==='running').length, rdy = AG.agents.filter(a=>a.state==='ready').length, pl = AG.agents.filter(a=>a.state==='planned').length;
+  const cadence = S.org.cadence || [];
+  const wd = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс']; const dow = (TODAY.getDay()+6)%7;
+  const week = wd.map((n,i)=>({n,i,ev:[]}));
+  const put = (i, txt, cls='') => week[i].ev.push({txt, cls});
+  cadence.forEach(c => { const w = c.when.toLowerCase(); const txt = c.what.split(/[:;]/)[0].slice(0,70);
+    if(w.startsWith('понедельник')) put(0, txt, 'mint'); else if(w.startsWith('среда')) put(2, txt, 'mint'); });
+  put(1,'17:30 LinkedIn (агент)'); put(2,'17:30 LinkedIn (агент)'); put(3,'17:30 LinkedIn (агент)');
+  for(let i=0;i<7;i++) put(i,'19:00 IG-карусель (агент)');
+  dls.filter(x=>x.n>=0 && x.n<7).forEach(x => { const d = new Date(TODAY); d.setDate(d.getDate()+x.n); put((d.getDay()+6)%7, '⏰ '+x.what.slice(0,60), ''); });
+  document.getElementById('v-today').innerHTML = `
+  <div class="eyebrow">${TODAY.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})}</div>
+  <h2 class="h2">Фокус: ${E_('today.focus','<span class="hl">W2W</span> — агенты, Company Brain, сбор денег')}</h2>
+  <p class="lead">${E_('today.lead','Один вход — AI-агент на процесс за $2 000 + $150/мес. Ядро — Company Brain. Всё остальное (Home Alliance, Venture Studios, US) — в архиве.')}</p>
+
+  <div class="sect"><div class="sect-h"><h3>Ближайшие дедлайны</h3><span class="tag">из решений и ворот стратегии</span></div>
+    <div class="dl">${dls.map(x=>`<div class="d ${x.n<=3?'hot':''} ${x.n<0?'past':''}"><div class="when">${dateRu(x.date)} · ${esc(x.src)}</div><div class="days">${x.n<0?'просрочено':x.n===0?'сегодня':x.n+' дн'}</div><div class="what">${esc(x.what.length>90?x.what.slice(0,88)+"…":x.what)}</div></div>`).join('')}</div>
+  </div>
+
+  <div class="grid g3 sect">
+    ${three.map((t,i)=>`<div class="stat ${t.value<0?'neg':i===0?'hl':''}"><div class="v">${fmt(t.value)}<small>млн сум</small></div><div class="l">${esc(t.name)}</div><div class="n">${t.usd?'≈ $'+fmt(t.usd,0):'≈ $'+fmt(t.usd_k,1)+'K'} · база, модель</div></div>`).join('')}
+  </div>
+
+  <div class="grid g2 sect">
+    <div class="card white"><div class="sect-h"><h3>Задачи от советников</h3><span class="tag">${allTasks().filter(t=>!E.done[t.id]).length} открытых</span></div>
+      ${tasks.map(taskRow).join('')}
+      <p class="small muted" style="margin-top:10px">Полный список — во вкладке «Советники». Галочка сохраняется.</p>
+    </div>
+    <div>
+      <div class="card white" style="margin-bottom:12px"><div class="sect-h"><h3>Агенты</h3><span class="tag">${esc(AG.checked)}</span></div>
+        <div class="grid g3" style="gap:8px">
+          <div class="stat pos" style="padding:10px 12px"><div class="v" style="font-size:22px">${run}</div><div class="l">работают</div></div>
+          <div class="stat" style="padding:10px 12px"><div class="v" style="font-size:22px">${rdy}</div><div class="l">по расписанию</div></div>
+          <div class="stat" style="padding:10px 12px"><div class="v" style="font-size:22px;color:var(--mint-dark)">${pl}</div><div class="l">ждут доступов</div></div>
+        </div>
+        <p class="small muted" style="margin:10px 0 0">Сервер ${esc(L.server)} · <a href="#" onclick="JOS.go('agents');return false">открыть дом агентов →</a></p>
+      </div>
+      <div class="card mint"><h4>Три риска плана</h4>${S.summary.three_risks.map((r,i)=>`<p class="small"><b>${i+1}.</b> ${esc(r.risk.split('.')[0]).slice(0,140)}.</p>`).join('')}</div>
+    </div>
+  </div>
+
+  <div class="sect"><div class="sect-h"><h3>Ритм недели</h3><span class="tag">org.cadence · 20 ч/нед, 10 из них продажи</span></div>
+    <div class="week">${week.map(w=>`<div class="day ${w.i===dow?'today':''}"><h5>${w.n}</h5>${w.ev.map(e=>`<div class="ev ${e.cls}">${esc(e.txt)}</div>`).join('')}</div>`).join('')}</div>
+  </div>
+
+  <div class="grid g4 sect">
+    <a class="card white" href="${esc(L.strategy_page)}" target="_blank"><h4>📄 Полная стратегия ↗</h4><p class="small">12 разделов, 3 сценария, 119 допущений, 31 действие 30/60/90</p></a>
+    <a class="card white" href="${esc(L.w2w_map)}" target="_blank"><h4>🗺 Карта компании ↗</h4><p class="small">Оргсхема, роли, доли, KPI, партнёрская программа</p></a>
+    <a class="card white" href="${esc(L.crm_bot)}" target="_blank"><h4>📇 CRM и Jay AI ↗</h4><p class="small">Лиды, стадии, сводка; заказ и КП; рилы</p></a>
+    <a class="card white" href="${esc(L.archive_page)}" target="_blank"><h4>🗄 Архив ↗</h4><p class="small">Home Alliance, Venture Studios, Apollo/US, отчёты, ROI — всё старое в одном месте</p></a>
+  </div>`;
+  bindTasks();
+}
+function taskRow(t){
+  const n = daysTo(t.due); const cls = n==null?'':n<=0?'today':n<=3?'soon':'';
+  return `<label class="task ${E.done[t.id]?'done':''}"><input type="checkbox" data-done="${t.id}" ${E.done[t.id]?'checked':''}><div class="t">${E_('task.'+t.id, esc(t.text))}<div><span class="who">${t.emoji||''} ${esc(t.who||'')}</span> <span class="src">${esc(t.src||'')}</span></div></div><div class="d ${cls}">${dateRu(t.due)}${n!=null?'<br>'+dl(n):''}</div></label>`;
+}
+function bindTasks(){
+  document.querySelectorAll('[data-done]').forEach(cb => cb.onchange = () => { E.done[cb.dataset.done] = cb.checked; if(!cb.checked) delete E.done[cb.dataset.done]; save(); cb.closest('.task').classList.toggle('done', cb.checked); const c=document.getElementById('cnt-today'); if(c) c.textContent = allTasks().filter(t=>!E.done[t.id]).length; });
+}
+
+/* ---------- STRATEGY ---------- */
+function barChart(items, {w=640, h=180, color='var(--mint)', fmtV=v=>fmt(v,0), neg='var(--coral)'}={}){
+  const max = Math.max(...items.map(i=>Math.abs(i.v)), 1); const pad = 28, bw = (w-2*pad)/items.length; const zero = h-34;
+  const scale = (zero-14)/max;
+  return `<svg viewBox="0 0 ${w} ${h}">${items.map((it,i)=>{ const x = pad+i*bw+bw*0.15, bh = Math.abs(it.v)*scale, y = it.v>=0?zero-bh:zero;
+    return `<rect x="${x}" y="${y}" width="${bw*0.7}" height="${Math.max(bh,1)}" rx="4" fill="${it.v>=0?(it.c||color):neg}" opacity="${it.dim?.45:1}"/><text x="${x+bw*0.35}" y="${it.v>=0?y-4:y+bh+12}" font-size="10" text-anchor="middle" fill="#131313" font-weight="600">${fmtV(it.v)}</text><text x="${x+bw*0.35}" y="${h-10}" font-size="9.5" text-anchor="middle" fill="#8a8a8a">${esc(it.l)}</text>`; }).join('')}<line x1="${pad}" x2="${w-pad}" y1="${zero}" y2="${zero}" stroke="#d9dcdf"/></svg>`;
+}
+function renderStrategy(){
+  const sm = S.summary, three = sm.three_numbers_end_2027_base, sc = S.finance.scenario_summary;
+  const q = S.targets.by_quarter, gates = S.targets.gates;
+  const lines = S.targets.receipts_by_line_15m; const lineNames = {collection:'сбор по договорам',care_support:'Care/поддержка',upsell:'доработки',agent_setup:'агенты: внедрение',agent_sub:'агенты: подписка',brain_setup:'Brain: внедрение',brain_sub:'Brain: подписка',custom:'проекты партнёров'};
+  const nextGate = gates.find(g => daysTo(g.date) >= 0);
+  document.getElementById('v-strategy').innerHTML = `
+  <div class="eyebrow">Стратегия W2W · ${esc(S.meta.period.plan)}</div>
+  <h2 class="h2">Один вход — <span class="hl">агент на процесс</span>. Ядро — Company Brain.</h2>
+  <p class="lead">${E_('strat.lead', esc(S.thesis))}</p>
+  <div class="chip-row" style="margin:-8px 0 18px"><a class="btn pri" href="${esc(L.strategy_page)}" target="_blank">📄 Открыть полную стратегию ↗</a><span class="pill grey">${S.assumptions_count} допущений</span><span class="pill grey">${S.open_questions.length} вопросов</span><span class="pill grey">${S.plan_90d.length} действий 30/60/90</span><span class="pill mint">сгенерировано ${esc(S.meta.generated)}</span></div>
+
+  <div class="grid g3 sect">
+    <div class="card white"><div class="eyebrow">Где мы</div><p class="small">${E_('strat.where', esc(sm.where_we_are))}</p></div>
+    <div class="card white"><div class="eyebrow">Куда идём</div><p class="small">${E_('strat.go', esc(sm.where_we_go))}</p></div>
+    <div class="card white"><div class="eyebrow">На чём зарабатываем</div><p class="small">${E_('strat.earn', esc(sm.how_we_earn))}</p></div>
+  </div>
+
+  <div class="grid g3 sect">${three.map((t,i)=>`<div class="stat ${t.value<0?'neg':i===0?'hl':''}"><div class="v">${fmt(t.value)}<small>млн сум</small></div><div class="l">${esc(t.name)}</div><div class="n">${t.usd?'≈ $'+fmt(t.usd,0):'≈ $'+fmt(t.usd_k,1)+'K'} · модель, база</div></div>`).join('')}</div>
+
+  <div class="sect"><div class="sect-h"><h3>Лестница продукта</h3><span class="tag">цены — допущения A09, A10, A18</span></div>
+    <div class="ladder">${S.ladder.slice(0,5).map(s=>`<div class="step ${s.step===1?'cur':''}"><div class="no">0${s.step}</div><h4>${esc(s.name)}</h4><div class="pr">${esc(s.price)}</div><p>${esc(s.what)}</p></div>`).join('')}</div>
+  </div>
+
+  <div class="sect"><div class="sect-h"><h3>Восемь ворот</h3><span class="tag">следующие: ${nextGate?dateRu(nextGate.date)+' · '+dl(daysTo(nextGate.date)):'—'}</span></div>
+    <div class="gates">${gates.map(g=>{const n=daysTo(g.date);return `<div class="gate ${n<0?'past':(g===nextGate?'next':'')}"><div class="dot"></div><div class="dt">${esc(g.date)}</div><div class="k">${esc(g.kind)}</div><div class="c">${esc(g.check).slice(0,120)}…</div></div>`;}).join('')}</div>
+  </div>
+
+  <div class="grid g2 sect">
+    <div class="chart"><div class="sect-h"><h3>Поступления по кварталам</h3><span class="tag">база, млн сум</span></div>${barChart(q.map(x=>({l:x.quarter.replace('_',' '), v:x.receipts_mln_uzs.total})))}<div class="cap">Итог 15 месяцев ${fmt(S.finance.headline.cash_in_15m)} млн · в среднем ${fmt(S.finance.headline.avg_cash_in_per_month)} млн/мес против 28–30 подтверждённых в истории</div></div>
+    <div class="chart"><div class="sect-h"><h3>Накопленный итог от кассы 0</h3><span class="tag">база, млн сум</span></div>${barChart(q.map(x=>({l:x.quarter.replace('_',' '), v:x.cumulative_from_zero_cash_mln_uzs})))}<div class="cap">Яма растёт до конца горизонта: ${fmt(S.finance.headline.closing_cash_end)} млн на 2027-12; при расходах «как есть» ${fmt(S.finance.headline.net_cash_flow_15m_if_costs_as_is)}</div></div>
+  </div>
+
+  <div class="grid g2 sect">
+    <div class="chart"><div class="sect-h"><h3>Откуда деньги за 15 месяцев</h3><span class="tag">млн сум</span></div>${barChart(Object.entries(lines).filter(([k])=>k!=='src').map(([k,v])=>({l:lineNames[k]||k, v})), {h:200})}<div class="cap">42% плана — линии без единой оплаты в истории (агенты, Brain, Care)</div></div>
+    <div class="card white"><div class="sect-h"><h3>Три сценария</h3><span class="tag">конец 2027</span></div>
+      <div class="tbl" style="border:0"><table style="min-width:0"><thead><tr><th></th>${sc.map(s=>`<th class="num">${esc(s.name_ru)}</th>`).join('')}</tr></thead><tbody>
+        <tr><td>Поступления 15 мес</td>${sc.map(s=>`<td class="num">${fmt(s.cash_in_15m)}</td>`).join('')}</tr>
+        <tr><td>Итог от кассы 0</td>${sc.map(s=>`<td class="num" style="color:${s.net_cash_flow_15m<0?'var(--coral-dark)':'var(--mint-dark)'}">${fmt(s.net_cash_flow_15m)}</td>`).join('')}</tr>
+        <tr><td>MRR дек 2027</td>${sc.map(s=>`<td class="num">${fmt(s.mrr_end)} <span class="muted">($${fmt(s.mrr_end_usd,0)})</span></td>`).join('')}</tr>
+        <tr><td>Клиентов на Brain</td>${sc.map(s=>`<td class="num">${fmt(s.brain_clients_end,0)}</td>`).join('')}</tr>
+        <tr><td>Первых агентов</td>${sc.map(s=>`<td class="num">${s.deals_total_15m.agent_first}</td>`).join('')}</tr>
+        <tr><td>Нужно финансирования</td>${sc.map(s=>`<td class="num">${fmt(s.financing_need_calendar)}</td>`).join('')}</tr>
+      </tbody></table></div>
+      <p class="small muted" style="margin-top:8px">Точка безубыточности: ${fmt(S.finance.breakeven.guaranteed_core_mode_mln_uzs)} млн сум поступлений по работам в месяц (${fmt(S.finance.breakeven.guaranteed_core_mode_with_debt_repayment_mln_uzs)} с долгом людям).</p>
+    </div>
+  </div>
+
+  <div class="grid g2 sect">
+    <div class="card white"><div class="sect-h"><h3>Решения Jay</h3><span class="tag">сессия до ${esc(S.decisions.session.deadline)} · ${esc(S.decisions.session.format)}</span></div>
+      <ul class="clean">${S.decisions.spine.filter(d=>d.tier==='session').map(d=>`<li><b>№${d.no}</b> ${esc(d.title)} <span class="pill ${daysTo(d.deadline)<=7?'bad':'grey'}">${dateRu(d.deadline)}</span><div class="small muted">по умолчанию: ${esc(d.default)}</div></li>`).join('')}</ul>
+      <details><summary>Остальные ${S.decisions.spine.filter(d=>d.tier!=='session').length} решений (идут по умолчанию)</summary><div class="in"><ul class="clean small">${S.decisions.spine.filter(d=>d.tier!=='session').map(d=>`<li><b>№${d.no}</b> ${esc(d.title)} <span class="mono muted">${esc(d.deadline)}</span><div class="muted">${esc(d.default)}</div></li>`).join('')}</ul></div></details>
+      <details><summary>Первая неделя из планов (${S.decisions.first_week.length})</summary><div class="in"><ul class="clean small">${S.decisions.first_week.map(d=>`<li><b>${esc(d.no)}</b> ${esc(d.title)} <span class="mono muted">${esc(d.deadline)}</span></li>`).join('')}</ul></div></details>
+    </div>
+    <div class="card white"><div class="sect-h"><h3>План 30 / 60 / 90</h3><span class="tag">${S.plan_90d.length} действий · галочки сохраняются</span></div>
+      <div style="max-height:520px;overflow:auto">${S.plan_90d.map((p,i)=>taskRow({id:'p90-'+i, text:p.action, due:p.due, who:p.owner, src:p.window})).join('')}</div>
+    </div>
+  </div>
+
+  <div class="grid g2 sect">
+    <div class="card"><div class="sect-h"><h3>Чего не делаем</h3></div><ul class="small" style="margin:0;padding-left:18px">${S.not_doing.slice(0,12).map(n=>`<li>${esc(typeof n==='string'?n:(n.what||n.item||JSON.stringify(n)))}</li>`).join('')}</ul></div>
+    <div class="card"><div class="sect-h"><h3>Стоп-триггеры</h3><span class="tag">finance.rules</span></div><ul class="clean small">${S.finance.cut_triggers.map(c=>`<li><b>${esc(c.date)}</b> — ${esc(c.check)}<div class="muted">→ ${esc(c.action)}</div></li>`).join('')}</ul></div>
+  </div>
+
+  <details><summary>Ретроспектива 18 месяцев — ${S.retro.observations.length} наблюдений</summary><div class="in"><ol class="small" style="padding-left:18px;margin:0">${S.retro.observations.map(o=>`<li style="margin-bottom:6px">${esc(o.text)}</li>`).join('')}</ol></div></details>
+  <details><summary>Открытые вопросы к Jay — ${S.open_questions.length}</summary><div class="in"><ul class="clean small">${S.open_questions.map(q=>`<li><b>${q.no}.</b> ${esc(q.title)} <span class="mono muted">${esc(q.deadline||'')}</span><div class="muted">по умолчанию: ${esc(q.default)}</div></li>`).join('')}</ul></div></details>`;
+  bindTasks();
+}
+
+/* ---------- ADVISORS ---------- */
+function renderAdvisors(){
+  const jr = S.org.jay_role;
+  document.getElementById('v-advisors').innerHTML = `
+  <div class="eyebrow">Совет директоров Jay · 4 AI-советника</div>
+  <h2 class="h2">Каждый держит <span class="hl">одну зону</span> и даёт задачи с дедлайном</h2>
+  <p class="lead">${E_('adv.lead','Построены из болей последних 18 месяцев: перегруз, долги по именам, воронка без встреч, касса без учёта. Промпты и раннер лежат в репозитории (agents/advisors); запуск на сервере — после доступов к календарю, CRM и финансам.')}</p>
+  <div class="grid g2 sect">${ADV.map(advCard).join('')}</div>
+
+  <div class="grid g2 sect">
+    <div class="card white"><div class="sect-h"><h3>Бюджет часов Jay</h3><span class="tag">A26 · 20 ч/нед</span></div>
+      <div class="tbl" style="border:0"><table style="min-width:0"><thead><tr><th>Блок</th><th class="num">ч/нед</th><th>Что внутри</th></tr></thead><tbody>${jr.hours_budget.map(h=>`<tr><td><b>${esc(h.block)}</b></td><td class="num">${h.hours}</td><td class="small">${esc(h.what)}</td></tr>`).join('')}</tbody></table></div>
+    </div>
+    <div class="card white"><div class="sect-h"><h3>Что Jay передаёт</h3><span class="tag">org.jay_role.hands_over</span></div>
+      <ul class="clean small">${jr.hands_over.map(h=>`<li><b>${esc(h.what)}</b> → ${esc(h.to)} <span class="pill grey">${esc(h.from)}</span></li>`).join('')}</ul>
+      <div class="eyebrow" style="margin-top:12px">Делает сам</div><ul class="small" style="margin:0;padding-left:18px">${jr.does_himself.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
+    </div>
+  </div>
+  <div class="card soft"><h4>Как работает агент-советник</h4><p class="small">Раз в неделю (или по расписанию зоны) советник читает свои источники — strategy.json, vault, CRM, календарь — и пишет одну страницу: что изменилось, 3–5 задач с дедлайном, что просрочено. Страница идёт в Telegram Jay и в <code>data/jos/advisors.json</code>, откуда попадает сюда при пересборке. Советник не действует сам: не пишет клиентам, не двигает деньги, не правит календарь без команды.</p></div>`;
+  bindTasks();
+  document.querySelectorAll('.adv-tabs button').forEach(b => b.onclick = () => { const card = b.closest('.adv'); card.querySelectorAll('.adv-tabs button').forEach(x=>x.classList.toggle('on', x===b)); card.querySelectorAll('.pane').forEach(p=>p.style.display = p.dataset.p===b.dataset.p?'':'none'); });
+}
+function advCard(a){
+  const open = a.tasks.filter(t=>!E.done[t.id]).length;
+  return `<div class="adv">
+    <div class="hd"><div class="av" style="background:${a.color}22;border:1px solid ${a.color}66">${a.emoji}</div><div><h4>${esc(a.title)} <span class="pill ${a.status==='live'?'mint':'grey'}">${a.status==='live'?'работает':'готов · ждёт доступов'}</span></h4><div class="ru">${esc(a.ru)} · ${esc(a.rhythm)}</div></div></div>
+    <div class="bd">
+      <p class="small" style="margin:0 0 10px">${E_('adv.'+a.id+'.mandate', esc(a.mandate))}</p>
+      <div class="adv-tabs"><button class="on" data-p="tasks">Задачи <span class="muted">${open}</span></button><button data-p="kpi">KPI</button><button data-p="pain">Боли</button><button data-p="src">Что смотрит</button></div>
+      <div class="pane" data-p="tasks">${a.tasks.map(t=>taskRow({...t, who:'', emoji:''})).join('')}</div>
+      <div class="pane" data-p="kpi" style="display:none">${a.kpis.map(k=>`<div class="kpi-line"><div class="m">${esc(k.metric)}</div><div class="r"><b>${esc(k.target)}</b><br><span class="muted">сейчас: ${esc(k.now)}</span></div></div>`).join('')}</div>
+      <div class="pane" data-p="pain" style="display:none"><ul class="small" style="margin:0;padding-left:18px">${a.pains.map(p=>`<li>${esc(p)}</li>`).join('')}</ul></div>
+      <div class="pane" data-p="src" style="display:none"><ul class="small" style="margin:0;padding-left:18px">${a.watches.map(p=>`<li>${esc(p)}</li>`).join('')}</ul></div>
+    </div>
+    <div class="foot">промпт: <code>agents/advisors/${a.id}/SKILL.md</code></div>
+  </div>`;
+}
+
+/* ---------- BRAIN ---------- */
+function brainGraph(){
+  const W=900, H=420, cx=W/2, cy=H/2;
+  const cl = BR.clients.filter(c=>c.id!=='cli_win_to_win' && c.state!=='архив').slice(0,18);
+  const nodes = cl.map((c,i)=>{ const a = -Math.PI/2 + i*2*Math.PI/cl.length; const r = 165; const size = c.docs ? 10 + Math.min(22, Math.sqrt(c.docs)*1.4) : 8;
+    return {c, x: cx+Math.cos(a)*r*1.9*(1), y: cy+Math.sin(a)*r*0.95, size}; });
+  const col = s => ({'спор':'#ff9a7a','установленная база':'#07e7b7','пилот':'#5fa8ff','сбор':'#f5a623','пайплайн':'#c3aaff','КП':'#c3aaff','лид':'#d9dcdf','пауза':'#f5a623'}[s]||'#e6e8ea');
+  return `<svg viewBox="0 0 ${W} ${H}">
+    ${nodes.map(n=>`<line x1="${cx}" y1="${cy}" x2="${n.x}" y2="${n.y}" stroke="#e6e8ea" stroke-width="${n.c.docs?1+Math.min(4,n.c.docs/120):1}"/>`).join('')}
+    <circle cx="${cx}" cy="${cy}" r="46" fill="#07e7b7"/><text x="${cx}" y="${cy-4}" text-anchor="middle" font-size="13" font-weight="800" fill="#131313">W2W Brain</text><text x="${cx}" y="${cy+12}" text-anchor="middle" font-size="10" fill="#131313">${BR.totals.w2w_docs} док.</text>
+    ${nodes.map(n=>`<g class="gn" data-id="${esc(n.c.id)}" style="cursor:pointer"><circle cx="${n.x}" cy="${n.y}" r="${n.size}" fill="${col(n.c.state)}" stroke="#fff" stroke-width="2"/><text x="${n.x}" y="${n.y+n.size+12}" text-anchor="middle" font-size="10.5" font-weight="600" fill="#131313">${esc(n.c.name.split(' (')[0]).slice(0,22)}</text>${n.c.docs?`<text x="${n.x}" y="${n.y+4}" text-anchor="middle" font-size="9" fill="#131313">${n.c.docs}</text>`:''}</g>`).join('')}
+  </svg>`;
+}
+function renderBrain(){
+  const stateCls = s => ({'спор':'bad','установленная база':'mint','пилот':'blue','сбор':'warn','пайплайн':'lav','КП':'lav','пауза':'warn','архив':'grey'}[s]||'grey');
+  const cl = BR.clients.filter(c=>c.id!=='cli_win_to_win');
+  document.getElementById('v-brain').innerHTML = `
+  <div class="brain-hero">
+    <div><div class="eyebrow">Company Brain · второй мозг W2W</div><h2>${E_('brain.h', esc(BR.pitch.headline))}</h2>
+      <ul class="small" style="padding-left:18px;margin:0 0 12px">${BR.pitch.lines.map(l=>`<li>${esc(l)}</li>`).join('')}</ul>
+      <div class="srcs">${BR.sources.map(s=>`<span class="s">${s.emoji} ${esc(s.name)}</span>`).join('')}</div>
+      <p class="small muted" style="margin:12px 0 0">Снимок ${esc(BR.snapshot)} из мозга, который собрал ${esc(BR.owner)}. Это то же самое, что мы продаём клиентам — на наших данных.</p>
+    </div>
+    <div>
+      <div class="grid g2" style="gap:8px;margin-bottom:10px">
+        <div class="stat white" style="background:#fff"><div class="v">${BR.totals.clients}</div><div class="l">клиентов</div></div>
+        <div class="stat" style="background:#fff"><div class="v">${BR.totals.projects}</div><div class="l">проектов</div></div>
+        <div class="stat" style="background:#fff"><div class="v">${BR.totals.people}</div><div class="l">людей</div></div>
+        <div class="stat" style="background:#fff"><div class="v">${fmt(BR.totals.w2w_docs,0)}</div><div class="l">документов W2W</div></div>
+      </div>
+      <div class="ask"><div class="q"><input id="ask-in" placeholder="Спроси мозг: «что было с RIDO в октябре?»" list="ask-list"><button class="btn mint" onclick="JOS.ask()">Спросить</button></div>
+        <datalist id="ask-list">${BR.demo_questions.map(q=>`<option value="${esc(q.q)}">`).join('')}</datalist>
+        <div class="a" id="ask-out"></div>
+        <div class="small muted" style="margin-top:8px">Демо-ответы из снимка. Живые ответы — в Claude с подключённым W2W Brain (MCP).</div></div>
+    </div>
+  </div>
+
+  <div class="sect" style="margin-top:22px"><div class="sect-h"><h3>Карта клиентов</h3><span class="tag">размер = документов в мозге · цвет = состояние</span></div>
+    <div class="graph">${brainGraph()}</div>
+    <div class="legend"><span><i style="background:#07e7b7"></i>установленная база</span><span><i style="background:#ff9a7a"></i>спор</span><span><i style="background:#f5a623"></i>сбор / пауза</span><span><i style="background:#5fa8ff"></i>пилот</span><span><i style="background:#c3aaff"></i>пайплайн / КП</span><span><i style="background:#d9dcdf"></i>лид / без документов</span></div>
+  </div>
+
+  <div class="sect"><div class="sect-h"><h3>Клиенты</h3><span class="tag">${cl.length} · клик — детали</span></div>
+    <div class="grid g3">${cl.filter(c=>c.docs).map(c=>`<div class="cl" data-cl="${esc(c.id)}"><div class="nm"><span>${esc(c.name)}</span><span class="docs">${c.docs} док.</span></div><div class="sm">${esc(c.summary||'')}</div><div style="margin-top:6px"><span class="pill ${stateCls(c.state)}">${esc(c.state)}</span> ${c.country?`<span class="pill grey">${esc(c.country)}</span>`:''} ${c.people?`<span class="pill grey">${c.people} контактов</span>`:''}</div>${c.projects?`<div class="pr">${c.projects.map(p=>`<span>${esc(p)}</span>`).join('')}</div>`:''}</div>`).join('')}</div>
+    <details style="margin-top:10px"><summary>Ещё ${cl.filter(c=>!c.docs).length} клиентов без документов в снимке</summary><div class="in chip-row">${cl.filter(c=>!c.docs).map(c=>`<span class="pill grey">${esc(c.name)} · ${esc(c.state)}</span>`).join('')}</div></details>
+  </div>
+
+  <div class="grid g2 sect">
+    <div class="card white"><div class="sect-h"><h3>Что умеет мозг</h3><span class="tag">инструменты MCP</span></div><ul class="clean small">${BR.capabilities.map(c=>`<li><b>${esc(c.ru)}</b> <span class="mono muted">${esc(c.name)}</span><div>${esc(c.what)}</div></li>`).join('')}</ul></div>
+    <div class="card white"><div class="sect-h"><h3>Команда W2W в мозге</h3><span class="tag">${BR.team.length}</span></div><div class="chip-row">${BR.team.map(t=>`<span class="pill">${esc(t)}</span>`).join('')}</div>
+      <details style="margin-top:10px"><summary>Проекты без привязки к клиенту (${BR.projects_unlinked.length})</summary><div class="in chip-row">${BR.projects_unlinked.map(p=>`<span class="pill grey">${esc(p)}</span>`).join('')}</div></details></div>
+  </div>
+
+  <div class="card mint"><div class="sect-h"><h3>Как продаём</h3><span class="tag">product.brain</span></div><p class="small">${esc(S.product.brain.package_start)}</p><p class="small"><b>Условия:</b> ${S.product.brain.conditions.map(esc).join(' · ')}</p></div>`;
+  document.querySelectorAll('[data-cl],.gn').forEach(el => el.onclick = () => { const id = el.dataset.cl||el.dataset.id; const c = BR.clients.find(x=>x.id===id); if(!c) return; const out = document.getElementById('ask-out'); out.className='a on'; out.innerHTML = `<b>${esc(c.name)}</b> — ${esc(c.summary||'документов в снимке нет')}<div class="tool">get_entity("${esc(c.id)}") · ${c.docs??0} документов</div>`; window.scrollTo({top:0,behavior:'smooth'}); });
+}
+
+/* ---------- W2W ---------- */
+function renderW2W(){
+  const ib = S.installed_base.accounts, acc = S.sales.accounts, pl = S.price_list, team = S.retro.team, roles = S.org.roles, rc = S.retro.clients;
+  const hist = S.retro.by_month;
+  const monthItems = hist.map(m => ({l: String(m.month||'').slice(2,7), v: Number(m.dated_receipts_seen_mln_uzs)||0}));
+  const nomItems = hist.map(m => ({l: String(m.month||'').slice(2,7), v: Number(m.contracted_nominal_mln_uzs)||0, c:'#c3aaff'}));
+  document.getElementById('v-w2w').innerHTML = `
+  <div class="eyebrow">Win to Win · IT-аутсорс → AI-агенты → Company Brain</div>
+  <h2 class="h2">Клиенты, оффер, команда</h2>
+  <p class="lead">${E_('w2w.lead','Установленная база — 80% денег плана. Новый вход — агент на один процесс. Крупные КП (> $10 000) не делаем: только оплачиваемая BA-фаза и партнёр-исполнитель.')}</p>
+  <div class="chip-row" style="margin:-8px 0 18px"><a class="btn" href="${esc(L.w2w_map)}" target="_blank">🗺 Карта компании ↗</a><a class="btn" href="${esc(L.site)}" target="_blank">w2w.uz ↗</a><a class="btn" href="${esc(L.crm_bot)}" target="_blank">📇 CRM-бот ↗</a><a class="btn" href="${esc(L.meet)}" target="_blank">📅 /meet ↗</a></div>
+
+  <div class="sect"><div class="sect-h"><h3>Установленная база</h3><span class="tag">spine-A34 · первый оффер: сбор и акт → Care → доработка → агент</span></div>
+    <div class="grid g4">${ib.map(a=>`<div class="card white"><h4>${esc(a.client)}</h4><p class="small">${esc(a.product_status)}</p><p class="small muted">гарантия: ${esc(a.warranty_end_hint)}</p><p class="small"><b>Оффер:</b> ${esc(a.open_offer)}</p></div>`).join('')}</div>
+  </div>
+
+  <div class="sect"><div class="sect-h"><h3>Аккаунты под агентов</h3><span class="tag">sales.accounts · ${acc.length}</span></div>
+    <div class="tbl"><table><thead><tr><th>#</th><th>Аккаунт</th><th>Агент</th><th>Стоп</th><th class="num">P(оплата)</th><th>Не раньше</th><th>Владелец</th></tr></thead><tbody>
+      ${acc.map(a=>`<tr><td class="mono">${a.no}</td><td><b>${esc(a.account)}</b><div class="small muted">${esc(a.decider||'')}</div></td><td class="small">${esc(a.agent)}</td><td class="small">${esc(a.stop)}</td><td class="num">${esc(a.p_pay)}</td><td class="mono">${esc(a.not_before)}</td><td class="small">${esc(a.owner)}</td></tr>`).join('')}
+    </tbody></table></div>
+    <details><summary>Шаги по каждому аккаунту</summary><div class="in"><ul class="clean small">${acc.map(a=>`<li><b>${esc(a.account)}</b>: ${esc(a.steps||'')}</li>`).join('')}</ul></div></details>
+  </div>
+
+  <div class="grid g2 sect">
+    <div class="card white"><div class="sect-h"><h3>Прайс</h3><span class="tag">одна публичная цена: от 24 млн сум и 1,8 млн/мес</span></div>
+      <div class="tbl" style="border:0"><table style="min-width:0"><thead><tr><th>Продукт</th><th class="num">Внедрение</th><th class="num">В месяц</th></tr></thead><tbody>${pl.map(p=>`<tr><td><b>${esc(p.name_ru)}</b><div class="small muted">${esc((p.terms||'').slice(0,110))}</div></td><td class="num">${p.setup_usd?'$'+fmt(p.setup_usd,0):'—'}</td><td class="num">${p.monthly_usd?'$'+fmt(p.monthly_usd,0):'—'}</td></tr>`).join('')}</tbody></table></div>
+    </div>
+    <div class="chart"><div class="sect-h"><h3>Подтверждённые поступления по месяцам</h3><span class="tag">млн сум · только то, что видно в источниках</span></div>${barChart(monthItems, {h:200, fmtV:v=>v?fmt(v,0):''})}<div class="cap">Платежи с известной датой (нижняя граница). Подтверждено ${fmt(S.retro.headline.confirmed_receipts.low_mln_uzs,0)}–${fmt(S.retro.headline.confirmed_receipts.high_mln_uzs,0)} из ${fmt(S.retro.headline.contracts.nominal_mln_uzs,0)} млн номинала (${S.retro.headline.contracts.count} договоров, ${S.retro.headline.contracts.clients} клиентов)</div>
+      <details style="margin-top:8px"><summary>Номинал договоров по месяцу подписания</summary><div class="in">${barChart(nomItems, {h:180, fmtV:v=>v?fmt(v,0):''})}</div></details></div>
+  </div>
+
+  <div class="sect"><div class="sect-h"><h3>Клиенты за 18 месяцев</h3><span class="tag">retro.clients</span></div>
+    <div class="tbl"><table><thead><tr><th>Клиент</th><th class="num">Договоров</th><th class="num">Номинал</th><th class="num">Оплачено (видно)</th><th>Состояние</th><th>Источник лида</th></tr></thead><tbody>
+      ${rc.map(c=>`<tr><td><b>${esc(c.client)}</b></td><td class="num">${c.contracts}</td><td class="num">${fmt(c.contracted?.value)}</td><td class="num">${fmt(c.paid_seen?.value)}</td><td class="small">${esc(c.state)}</td><td class="small muted">${esc(c.lead_source)}</td></tr>`).join('')}
+    </tbody></table></div>
+  </div>
+
+  <div class="grid g2 sect">
+    <div class="card white"><div class="sect-h"><h3>Команда</h3><span class="tag">8 со следами работы, не 25</span></div><ul class="clean small">${team.map(t=>`<li><b>${esc(t.name)}</b> — ${esc(t.role)}<div class="muted">${esc(t.does)}</div></li>`).join('')}</ul></div>
+    <div class="card white"><div class="sect-h"><h3>Целевые роли</h3><span class="tag">три линии, ни одного нового оклада</span></div>
+      ${roles.map(r=>`<details><summary>${esc(r.role)}</summary><div class="in small"><p><b>Зона:</b> ${esc(r.zone)}</p><p><b>KPI деньги:</b> ${esc(r.kpi_money)}</p><p><b>KPI дисциплина:</b> ${esc(r.kpi_discipline)}</p><p><b>Не делает:</b> ${esc(r.not_doing)}</p></div></details>`).join('')}
+      <div class="eyebrow" style="margin-top:12px">Дыры сейчас</div><ul class="small" style="margin:0;padding-left:18px">${S.org.as_is.holes.map(h=>`<li>${esc(h)}</li>`).join('')}</ul>
+    </div>
+  </div>
+
+  <div class="sect"><div class="sect-h"><h3>Каталог агентов</h3><span class="tag">product.agents · до 5 типов</span></div>
+    <div class="grid g5">${S.product.agents.map(a=>`<div class="card"><div class="eyebrow">агент ${a.no}</div><h4>${esc(a.name)}</h4><p class="small">${esc(a.status)}</p><p class="small muted">${esc(a.for)}</p></div>`).join('')}</div>
+  </div>`;
+}
+
+/* ---------- AGENTS HOUSE ---------- */
+let houseTimer = null, selBot = null;
+function renderAgents(){
+  const st = {running:'работает', ready:'по расписанию', done:'сделано', off:'выключен', planned:'ждёт доступов'};
+  document.getElementById('v-agents').innerHTML = `
+  <div class="eyebrow">Agents House · где живут агенты</div>
+  <h2 class="h2">${AG.agents.filter(a=>a.state==='running').length} работают сейчас, ${AG.agents.filter(a=>a.state==='ready').length} по расписанию, ${AG.agents.filter(a=>a.state==='planned').length} ждут доступов</h2>
+  <p class="lead">${E_('ag.lead','Все агенты живут на сервере WIN-26VA5TE5144 (ноутбук — только пульт). Кликни на агента — что делает, когда ходит, где лежит. Проверено '+esc(AG.checked)+'.')}</p>
+  <div class="house-wrap">
+    <div><div class="house" id="house">${AG.rooms.map(r=>`<div class="room ${r.id}" style="left:${r.x}%;top:${r.y}%;width:${r.w}%;height:${r.h}%"><div class="rn">${esc(r.name)}</div><div class="rs">${esc(r.sub)}</div></div>`).join('')}</div>
+      <div class="legend"><span><i style="background:#22c55e"></i>работает</span><span><i style="background:#05a884"></i>по расписанию</span><span><i style="background:#f5a623"></i>сделано</span><span><i style="background:#b5b7ba"></i>выключен</span><span><i style="background:#fff;border:1.5px solid #05a884"></i>ждёт доступов</span></div></div>
+    <div class="apanel" id="apanel"><div class="big">🏠</div><h4>Выбери агента</h4><p class="small muted">Советники — в комнате «Совет». Контент-агенты публикуют сами: LinkedIn Вт·Ср·Чт 17:30, IG каждый день 19:00.</p>
+      <dl><dt>Сервер</dt><dd>${esc(L.server)}</dd><dt>Пульт</dt><dd>ноутбук ROG Flow Z13 · Claude Code</dd><dt>Не на сервере</dt><dd>публикация JOS (пароль и GitHub-токен остаются на ноутбуке)</dd></dl></div>
+  </div>
+  <div class="sect" style="margin-top:18px"><div class="tbl"><table><thead><tr><th></th><th>Агент</th><th>Комната</th><th>Статус</th><th>Расписание</th><th>Что делает</th><th>Где</th></tr></thead><tbody>
+    ${AG.agents.map(a=>`<tr><td>${a.emoji}</td><td><b>${esc(a.name)}</b></td><td class="small">${esc((AG.rooms.find(r=>r.id===a.room)||{}).name||a.room)}</td><td><span class="pill ${a.state==='running'?'mint':a.state==='ready'?'blue':a.state==='done'?'warn':a.state==='planned'?'lav':'grey'}">${st[a.state]}</span></td><td class="mono">${esc(a.schedule)}</td><td class="small">${esc(a.does)}</td><td class="mono small">${esc(a.where)}</td></tr>`).join('')}
+  </tbody></table></div></div>`;
+  const house = document.getElementById('house');
+  const rooms = Object.fromEntries(AG.rooms.map(r=>[r.id,r]));
+  const byRoom = {};
+  AG.agents.forEach(a => { (byRoom[a.room] ||= []).push(a); });
+  const bots = [];
+  Object.entries(byRoom).forEach(([rid, list]) => { const r = rooms[rid]; list.forEach((a,i) => {
+    const cols = Math.min(list.length, 4); const row = Math.floor(i/cols), col = i%cols;
+    const dx = r.x + r.w*(0.14 + 0.72*(cols>1?col/(cols-1):0.5)), dy = r.y + r.h*(0.5 + (list.length>4 ? (row?0.22:-0.1) : 0.12));
+    const desk = document.createElement('div'); desk.className='desk'; desk.style.left=(dx-2.75)+'%'; desk.style.top=(dy+6)+'%'; house.appendChild(desk);
+    const b = document.createElement('div'); b.className='bot '+a.state; b.dataset.id=a.id; b.style.left=dx+'%'; b.style.top=dy+'%';
+    b.innerHTML = `<div class="body">${a.emoji}</div><span class="st"></span><span class="nm">${esc(a.name)}</span>`;
+    b.onclick = () => selectBot(a, b); house.appendChild(b); bots.push({a,b,r,home:{x:dx,y:dy}});
+  }); });
+  function wander(){ bots.forEach(o => { if(o.a.state==='off') return; if(Math.random() < (o.a.state==='running'?0.55:0.3)){
+      const go = Math.random()<0.4; const x = go ? o.r.x + 8 + Math.random()*(o.r.w-16) : o.home.x; const y = go ? o.r.y + 14 + Math.random()*(o.r.h-22) : o.home.y;
+      o.b.classList.add('moving'); o.b.style.left=x+'%'; o.b.style.top=y+'%'; setTimeout(()=>o.b.classList.remove('moving'), 2400); } }); }
+  clearInterval(houseTimer); houseTimer = setInterval(wander, 3200); setTimeout(wander, 600);
+  function selectBot(a, b){ document.querySelectorAll('.bot').forEach(x=>x.classList.remove('sel')); b.classList.add('sel');
+    document.getElementById('apanel').innerHTML = `<div class="big">${a.emoji}</div><h4>${esc(a.name)}</h4><span class="pill ${a.state==='running'?'mint':a.state==='ready'?'blue':a.state==='done'?'warn':a.state==='planned'?'lav':'grey'}">${st[a.state]}</span>
+      <dl><dt>Что делает</dt><dd>${esc(a.does)}</dd><dt>Расписание</dt><dd>${esc(a.schedule)}</dd><dt>Последний запуск</dt><dd>${esc(a.last)}</dd><dt>Где</dt><dd class="mono">${esc(a.where)}</dd><dt>Комната</dt><dd>${esc((rooms[a.room]||{}).name||'')}</dd></dl>
+      ${a.state==='planned'?'<p class="small muted" style="margin-top:10px">Советник построен (промпт + раннер). Запуск на сервере — после того как Jay даст доступы к календарю, CRM и финансам.</p>':''}`; }
+}
+
+/* ---------- app ---------- */
+const JOS = {
+  go(v){ document.querySelectorAll('.nav[data-v]').forEach(n=>n.classList.toggle('on', n.dataset.v===v)); document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on', x.id==='v-'+v));
+    const titles = {today:['Сегодня','план дня, дедлайны, задачи советников'], strategy:['Стратегия','Q4 2026 – Q4 2027 · база, модель, допущения'], advisors:['Советники','Chief of Staff · HR · Маркетинг · Финансы'], brain:['Company Brain','второй мозг W2W — то, что продаём'], w2w:['W2W','клиенты, оффер, команда'], agents:['Agents House','все агенты на сервере']};
+    document.getElementById('top-title').textContent = titles[v][0]; document.getElementById('top-sub').textContent = titles[v][1];
+    document.body.classList.remove('menu'); location.hash = v; window.scrollTo(0,0); this.applyEdit(); },
+  toggleEdit(){ document.body.classList.toggle('editing'); document.getElementById('btn-edit').classList.toggle('on', document.body.classList.contains('editing')); this.applyEdit(); },
+  applyEdit(){ const on = document.body.classList.contains('editing'); document.querySelectorAll('[data-e]').forEach(el => { el.contentEditable = on; if(on && !el._b){ el._b = 1; el.addEventListener('blur', () => { E.text[el.dataset.e] = el.innerHTML; save(); }); } }); },
+  exportEdits(){ const blob = new Blob([JSON.stringify(E, null, 2)], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'jos7-edits.json'; a.click(); },
+  resetEdits(){ if(!confirm('Сбросить все правки и галочки в этом браузере?')) return; E = {text:{}, done:{}}; save(); location.reload(); },
+  ask(){ const q = (document.getElementById('ask-in').value||'').toLowerCase().trim(); const out = document.getElementById('ask-out'); if(!q){ out.className='a'; return; }
+    const hit = BR.demo_questions.find(x => x.q.toLowerCase()===q) || BR.demo_questions.find(x => q.split(/\s+/).filter(w=>w.length>3).some(w => x.q.toLowerCase().includes(w) || x.a.toLowerCase().includes(w)));
+    const cl = BR.clients.find(c => q.includes(c.name.toLowerCase().split(' ')[0]));
+    out.className = 'a on';
+    out.innerHTML = hit ? `${esc(hit.a)}<div class="tool">${esc(hit.tool)}</div>` : cl ? `<b>${esc(cl.name)}</b> — ${esc(cl.summary||'документов в снимке нет')}<div class="tool">get_entity("${esc(cl.id)}")</div>` : `В снимке нет готового ответа. Живой мозг ответил бы через <span class="mono">search("${esc(q)}")</span>.`; }
+};
+document.querySelectorAll('.nav[data-v]').forEach(n => n.onclick = () => JOS.go(n.dataset.v));
+document.getElementById('lnk-strategy').href = L.strategy_page; document.getElementById('lnk-map').href = L.w2w_map; document.getElementById('lnk-crm').href = L.crm_bot; document.getElementById('lnk-archive').href = L.archive_page;
+document.getElementById('foot-built').textContent = 'собрано ' + D.built; document.getElementById('foot-src').textContent = 'стратегия ' + S.meta.generated + ' · мозг ' + BR.snapshot + ' · агенты ' + AG.checked;
+document.getElementById('cnt-today').textContent = allTasks().filter(t=>!E.done[t.id]).length;
+document.getElementById('cnt-brain').textContent = BR.totals.clients; document.getElementById('cnt-w2w').textContent = S.installed_base.accounts.length + ' акк.'; document.getElementById('cnt-agents').textContent = AG.agents.filter(a=>a.state==='running').length + ' live';
+renderToday(); renderStrategy(); renderAdvisors(); renderBrain(); renderW2W(); renderAgents();
+const h = (location.hash||'').slice(1); if(['today','strategy','advisors','brain','w2w','agents'].includes(h)) JOS.go(h); else JOS.applyEdit();
+</script>
+</body>
+</html>
