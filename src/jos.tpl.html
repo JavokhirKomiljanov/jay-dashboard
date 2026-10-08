@@ -277,7 +277,7 @@ footer{padding:18px 28px;border-top:1px solid var(--line);color:var(--muted);fon
   <div class="sec">Окна</div>
   <a class="nav ext" id="lnk-strategy" target="_blank"><span class="ic">📄</span>Полная стратегия ↗</a>
   <a class="nav ext" id="lnk-map" target="_blank"><span class="ic">🗺</span>Карта компании ↗</a>
-  <a class="nav ext" id="lnk-crm" target="_blank"><span class="ic">📇</span>CRM-бот ↗</a>
+  <a class="nav ext" id="lnk-crm" target="_blank" title="/jos · /cos /hr /mkt /fin · /tasks · /done · /run · /publish"><span class="ic">🤖</span>Jay AI (чат) ↗</a>
   <div class="sec">Архив</div>
   <a class="nav ext" id="lnk-archive" target="_blank" title="Старый JOS целиком: Home Alliance, Venture Studios, Apollo/US, отчёты, ROI backlog, IT capacity — всё сохранено"><span class="ic">🗄</span>HA · VS · US ↗</a>
   <div class="side-foot"><i></i>агенты на сервере<br><span id="foot-built"></span></div>
@@ -495,7 +495,7 @@ function renderAdvisors(){
   document.getElementById('v-advisors').innerHTML = `
   <div class="eyebrow">Совет директоров Jay · 4 AI-советника</div>
   <h2 class="h2">Каждый держит <span class="hl">одну зону</span> и даёт задачи с дедлайном</h2>
-  <p class="lead">${E_('adv.lead','Построены из болей последних 18 месяцев: перегруз, долги по именам, воронка без встреч, касса без учёта. Промпты и раннер лежат в репозитории (agents/advisors); запуск на сервере — после доступов к календарю, CRM и финансам.')}</p>
+  <p class="lead">${E_('adv.lead','Построены из болей последних 18 месяцев: перегруз, долги по именам, воронка без встреч, касса без учёта. Промпты и раннер лежат в репозитории (agents/advisors); работают на сервере по расписанию; говорить с ними — в Jay AI (/cos /hr /mkt /fin /jos).')}</p>
   <div class="grid g2 sect">${ADV.map(advCard).join('')}</div>
 
   <div class="grid g2 sect">
@@ -507,6 +507,7 @@ function renderAdvisors(){
       <div class="eyebrow" style="margin-top:12px">Делает сам</div><ul class="small" style="margin:0;padding-left:18px">${jr.does_himself.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
     </div>
   </div>
+  <div class="card mint" style="margin-bottom:12px"><h4>💬 Поговорить с советником — в Telegram</h4><p class="small">В <a href="${esc(L.crm_bot)}" target="_blank">Jay AI</a>: <code>/cos</code> <code>/hr</code> <code>/mkt</code> <code>/fin</code> — чат с советником (он читает свою страницу и задачи, может добавить или закрыть задачу); <code>/jos</code> — оператор всей системы; <code>/tasks</code> — открытые задачи; <code>/done cos-3</code> — закрыть; <code>/run fin</code> — перезапустить советника на сервере; <code>/publish</code> — обновить эту страницу.</p></div>
   <div class="card soft"><h4>Как работает агент-советник</h4><p class="small">Раз в неделю (или по расписанию зоны) советник читает свои источники — strategy.json, vault, CRM, календарь — и пишет одну страницу: что изменилось, 3–5 задач с дедлайном, что просрочено. Страница идёт в Telegram Jay и в <code>data/jos/advisors.json</code>, откуда попадает сюда при пересборке. Советник не действует сам: не пишет клиентам, не двигает деньги, не правит календарь без команды.</p></div>`;
   bindTasks();
   document.querySelectorAll('.adv-tabs button').forEach(b => b.onclick = () => { const card = b.closest('.adv'); card.querySelectorAll('.adv-tabs button').forEach(x=>x.classList.toggle('on', x===b)); card.querySelectorAll('.pane').forEach(p=>p.style.display = p.dataset.p===b.dataset.p?'':'none'); });
