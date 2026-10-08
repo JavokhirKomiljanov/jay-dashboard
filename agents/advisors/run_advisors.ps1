@@ -34,5 +34,7 @@ $skill
 
 Set-Location $repo
 $log = Join-Path $out "$date.log"
-$prompt | & claude -p --model $Model --permission-mode acceptEdits --output-format text 2>&1 | Tee-Object -FilePath $log
+$dirs = @((Split-Path -Parent (Split-Path -Parent $Strategy)), "C:\Users\user\Dev\jay-crm", "C:\Users\user\Dev\jay-channel-publisher", "C:\Users\user\Dev\ig-pipeline", $Vault, "C:\Users\user\Claude") | Where-Object { Test-Path $_ }
+$addDirs = @(); foreach ($d in $dirs) { $addDirs += "--add-dir"; $addDirs += $d }
+$prompt | & claude -p --model $Model --permission-mode acceptEdits --output-format text @addDirs 2>&1 | Tee-Object -FilePath $log
 if (-not (Test-Path "$out\$date.md")) { Write-Warning "advisor $Advisor produced no page; see $log" }
