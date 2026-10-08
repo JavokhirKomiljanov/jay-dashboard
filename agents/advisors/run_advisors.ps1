@@ -2,7 +2,7 @@
 # Usage: run_advisors.ps1 -Advisor cos|hr|mkt|fin [-Model claude-fable-5-1]
 param(
   [Parameter(Mandatory=$true)][ValidateSet("cos","hr","mkt","fin")][string]$Advisor,
-  [string]$Model = "claude-fable-5-1",
+  [string]$Model = "claude-opus-5-5",
   [string]$Strategy = "C:\Users\user\Dev\w2w-strategy\strategy\strategy.json",
   [string]$Vault = "F:\Obsidian\Javokhir\Jay"
 )
