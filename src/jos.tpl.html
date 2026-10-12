@@ -247,6 +247,9 @@ ul.clean{list-style:none;margin:0;padding:0}ul.clean li{padding:6px 0;border-bot
 
 /* sections visibility */
 .view{display:none}.view.on{display:block}
+/* sales / instagram panels (separate encrypted pages, refreshed without rebuilding this one) */
+iframe.panel{width:100%;min-height:80vh;border:0;display:block;background:transparent}
+.panel-foot{margin:10px 0 0}
 
 /* mobile */
 .menu-btn{display:none}
@@ -273,6 +276,8 @@ footer{padding:18px 28px;border-top:1px solid var(--line);color:var(--muted);fon
   <div class="nav" data-v="advisors"><span class="ic">🧑‍💼</span>Советники<span class="cnt">4</span></div>
   <div class="nav" data-v="brain"><span class="ic">🧠</span>Company Brain<span class="cnt" id="cnt-brain"></span></div>
   <div class="nav" data-v="w2w"><span class="ic">🏢</span>W2W<span class="cnt" id="cnt-w2w"></span></div>
+  <div class="nav" data-v="sales"><span class="ic">📇</span>Продажи<span class="cnt">CRM</span></div>
+  <div class="nav" data-v="instagram"><span class="ic">📷</span>Instagram<span class="cnt">IG</span></div>
   <div class="nav" data-v="agents"><span class="ic">🤖</span>Agents House<span class="cnt" id="cnt-agents"></span></div>
   <div class="sec">Окна</div>
   <a class="nav ext" id="lnk-strategy" target="_blank"><span class="ic">📄</span>Полная стратегия ↗</a>
@@ -300,6 +305,8 @@ footer{padding:18px 28px;border-top:1px solid var(--line);color:var(--muted);fon
     <section class="view" id="v-advisors"></section>
     <section class="view" id="v-brain"></section>
     <section class="view" id="v-w2w"></section>
+    <section class="view" id="v-sales"><iframe class="panel" data-page="sales" title="Продажи · CRM" loading="lazy"></iframe><p class="small muted panel-foot"><a data-open="sales" target="_blank">Открыть отдельной страницей ↗</a></p></section>
+    <section class="view" id="v-instagram"><iframe class="panel" data-page="instagram" title="Instagram" loading="lazy"></iframe><p class="small muted panel-foot"><a data-open="instagram" target="_blank">Открыть отдельной страницей ↗</a></p></section>
     <section class="view" id="v-agents"></section>
   </div>
   <footer><span>Jay OS v7 · только W2W</span><span id="foot-src"></span><span>правки: localStorage <code>jos7-edits</code></span></footer>
@@ -398,10 +405,15 @@ function renderToday(){
     <div class="week">${week.map(w=>`<div class="day ${w.i===dow?'today':''}"><h5>${w.n}</h5>${w.ev.map(e=>`<div class="ev ${e.cls}">${esc(e.txt)}</div>`).join('')}</div>`).join('')}</div>
   </div>
 
+  <div class="grid g2 sect">
+    <a class="card mint" href="#sales" onclick="JOS.go('sales');return false"><h4>📇 Продажи · CRM →</h4><p class="small">Лиды из Telegram @ceo_w2w: сколько ждут ответа, воронка, медиана ответа. Обновляется с сервера несколько раз в день.</p></a>
+    <a class="card mint" href="#instagram" onclick="JOS.go('instagram');return false"><h4>📷 Instagram →</h4><p class="small">Подписчики, просмотры постов, AI-карусели 19:00, DM-бот «+», статус агентов.</p></a>
+  </div>
+
   <div class="grid g4 sect">
     <a class="card white" href="${esc(L.strategy_page)}" target="_blank"><h4>📄 Полная стратегия ↗</h4><p class="small">12 разделов, 3 сценария, 119 допущений, 31 действие 30/60/90</p></a>
     <a class="card white" href="${esc(L.w2w_map)}" target="_blank"><h4>🗺 Карта компании ↗</h4><p class="small">Оргсхема, роли, доли, KPI, партнёрская программа</p></a>
-    <a class="card white" href="${esc(L.crm_bot)}" target="_blank"><h4>📇 CRM и Jay AI ↗</h4><p class="small">Лиды, стадии, сводка; заказ и КП; рилы</p></a>
+    <a class="card white" href="#sales" onclick="JOS.go('sales');return false"><h4>📇 Продажи →</h4><p class="small">CRM: кто ждёт ответа, воронка, все лиды и переписка</p></a>
     <a class="card white" href="${esc(L.archive_page)}" target="_blank"><h4>🗄 Архив ↗</h4><p class="small">Home Alliance, Venture Studios, Apollo/US, отчёты, ROI — всё старое в одном месте</p></a>
   </div>`;
   bindTasks();
@@ -679,8 +691,9 @@ function renderAgents(){
 /* ---------- app ---------- */
 const JOS = {
   go(v){ document.querySelectorAll('.nav[data-v]').forEach(n=>n.classList.toggle('on', n.dataset.v===v)); document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on', x.id==='v-'+v));
-    const titles = {today:['Сегодня','план дня, дедлайны, задачи советников'], strategy:['Стратегия','Q4 2026 – Q4 2027 · база, модель, допущения'], advisors:['Советники','Chief of Staff · HR · Маркетинг · Финансы'], brain:['Company Brain','второй мозг W2W — то, что продаём'], w2w:['W2W','клиенты, оффер, команда'], agents:['Agents House','все агенты на сервере']};
+    const titles = {today:['Сегодня','план дня, дедлайны, задачи советников'], strategy:['Стратегия','Q4 2026 – Q4 2027 · база, модель, допущения'], advisors:['Советники','Chief of Staff · HR · Маркетинг · Финансы'], brain:['Company Brain','второй мозг W2W — то, что продаём'], w2w:['W2W','клиенты, оффер, команда'], sales:['Продажи','Jay CRM · лиды Telegram @ceo_w2w'], instagram:['Instagram','@javohir_w2w · AI-блог и его агенты'], agents:['Agents House','все агенты на сервере']};
     document.getElementById('top-title').textContent = titles[v][0]; document.getElementById('top-sub').textContent = titles[v][1];
+    const fr = document.querySelector('#v-'+v+' iframe.panel'); if(fr && !fr.src) fr.src = panelUrl(fr.dataset.page);
     document.body.classList.remove('menu'); location.hash = v; window.scrollTo(0,0); this.applyEdit(); },
   toggleEdit(){ document.body.classList.toggle('editing'); document.getElementById('btn-edit').classList.toggle('on', document.body.classList.contains('editing')); this.applyEdit(); },
   applyEdit(){ const on = document.body.classList.contains('editing'); document.querySelectorAll('[data-e]').forEach(el => { el.contentEditable = on; if(on && !el._b){ el._b = 1; el.addEventListener('blur', () => { E.text[el.dataset.e] = el.innerHTML; save(); }); } }); },
@@ -692,13 +705,21 @@ const JOS = {
     out.className = 'a on';
     out.innerHTML = hit ? `${esc(hit.a)}<div class="tool">${esc(hit.tool)}</div>` : cl ? `<b>${esc(cl.name)}</b> — ${esc(cl.summary||'документов в снимке нет')}<div class="tool">get_entity("${esc(cl.id)}")</div>` : `В снимке нет готового ответа. Живой мозг ответил бы через <span class="mono">search("${esc(q)}")</span>.`; }
 };
+/* panels: sales.html / instagram.html are encrypted with the same salt → "Remember me" unlocks them inside the frame.
+   Local preview of *.plaintext.html loads the plaintext panels instead. */
+function panelUrl(p){ const plain = /plaintext/.test(location.pathname); return plain ? p + '.plaintext.html' : ((L[p + '_page']) || (p + '.html')); }
+document.querySelectorAll('[data-open]').forEach(a => a.href = panelUrl(a.dataset.open));
+window.addEventListener('message', e => { const m = e.data; if(!m || m.jos !== 'h') return;
+  const fr = document.querySelector(`iframe.panel[data-page="${m.page}"]`); if(fr && m.h) fr.style.height = (m.h + 8) + 'px'; });
 document.querySelectorAll('.nav[data-v]').forEach(n => n.onclick = () => JOS.go(n.dataset.v));
 document.getElementById('lnk-strategy').href = L.strategy_page; document.getElementById('lnk-map').href = L.w2w_map; document.getElementById('lnk-crm').href = L.jay_ai_chat; document.getElementById('lnk-archive').href = L.archive_page;
 document.getElementById('foot-built').textContent = 'собрано ' + D.built; document.getElementById('foot-src').textContent = 'стратегия ' + S.meta.generated + ' · мозг ' + BR.snapshot + ' · агенты ' + AG.checked;
 document.getElementById('cnt-today').textContent = allTasks().filter(t=>!E.done[t.id]).length;
 document.getElementById('cnt-brain').textContent = BR.totals.clients; document.getElementById('cnt-w2w').textContent = S.installed_base.accounts.length + ' акк.'; document.getElementById('cnt-agents').textContent = AG.agents.filter(a=>a.state==='running').length + ' live';
 renderToday(); renderStrategy(); renderAdvisors(); renderBrain(); renderW2W(); renderAgents();
-const h = (location.hash||'').slice(1); if(['today','strategy','advisors','brain','w2w','agents'].includes(h)) JOS.go(h); else JOS.applyEdit();
+const VIEWS = ['today','strategy','advisors','brain','w2w','sales','instagram','agents'];
+const h = (location.hash||'').slice(1); if(VIEWS.includes(h)) JOS.go(h); else JOS.applyEdit();
+window.addEventListener('hashchange', () => { const v = (location.hash||'').slice(1); if(VIEWS.includes(v) && !document.getElementById('v-'+v).classList.contains('on')) JOS.go(v); });
 </script>
 </body>
 </html>

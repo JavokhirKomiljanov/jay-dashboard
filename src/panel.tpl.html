@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jay OS — панель</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/*__CSS__*/
+/* ---- panel-only ---- */
+body{background:var(--bg)}
+.ptop{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 28px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);z-index:10}
+.ptop h1{font-size:18px;font-weight:800}
+.ptop .sp{flex:1}
+body.embedded .ptop{display:none}
+body.embedded .wrap{padding:0}
+.stale{display:none;margin:0 0 14px;padding:10px 14px;border-radius:12px;background:#fff6e6;border:1px solid #ffd58a;color:#b36b00;font-size:12.5px}
+.stale.on{display:block}
+.funnel .row{display:grid;grid-template-columns:150px minmax(0,1fr) 54px;gap:10px;align-items:center;padding:5px 0}
+.funnel .bar{height:22px;border-radius:7px;background:var(--mint);min-width:2px}
+.funnel .row.zero .bar{background:var(--line-2)}
+.funnel .row.lost .bar{background:var(--coral)}
+.funnel .nm{font-size:12.5px;color:var(--ink);font-weight:500}
+.funnel .n{font:600 13px var(--mono);text-align:right;color:var(--ink)}
+.flt{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 10px}
+.flt input{border:1px solid var(--line-2);border-radius:10px;padding:7px 11px;font:inherit;min-width:220px;outline:none}
+.flt input:focus{border-color:var(--mint-dark)}
+.flt button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 11px;font-size:11.5px;font-weight:600;color:var(--body);cursor:pointer}
+.flt button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+td .snip{color:var(--body);font-size:12px;line-height:1.35;max-width:440px}
+.wt{font:600 12px var(--mono);white-space:nowrap}
+.wt.bad{color:var(--coral-dark)}.wt.warn{color:#b36b00}
+.topics{columns:2;column-gap:24px}
+@media(max-width:700px){.topics{columns:1}}
+.topics li{break-inside:avoid;padding:4px 0;font-size:12.5px;list-style:none}
+.topics li.done{color:var(--muted);text-decoration:line-through}
+.gap li{margin:4px 0}
+</style>
+</head>
+<body>
+<div class="ptop"><h1 id="pt"></h1><span class="muted small" id="ps"></span><div class="sp"></div><a class="btn sm" href="index.html">← Jay OS</a></div>
+<div class="wrap"><div class="stale" id="stale"></div><div id="root"></div></div>
+<footer id="foot"></footer>
+<script>
+const D = /*__DATA__*/{};
+if (window.self !== window.top) document.body.classList.add('embedded');
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt = (n, d=0) => (n==null||isNaN(n)) ? '—' : Number(n).toLocaleString('ru-RU',{minimumFractionDigits:d,maximumFractionDigits:d});
+const dmy = iso => { const m = /(\d{4})-(\d{2})-(\d{2})T?(\d{2})?:?(\d{2})?/.exec(iso||''); if(!m) return '—'; return `${m[3]}.${m[2]}${m[4]?' '+m[4]+':'+m[5]:''}`; };
+const hm = h => h==null ? '—' : h < 1 ? Math.round(h*60)+' мин' : h < 48 ? Math.round(h)+' ч' : Math.round(h/24)+' дн';
+const sinceH = iso => { const t = Date.parse(iso||''); return isNaN(t) ? null : (Date.now()-t)/3600000; };
+function bars(items, {w=640, h=170, color='var(--mint)'}={}){
+  const max = Math.max(...items.map(i=>i.v||0), 1), pad = 22, bw = (w-2*pad)/items.length, zero = h-30, sc = (zero-16)/max;
+  return `<svg viewBox="0 0 ${w} ${h}">${items.map((it,i)=>{ const x = pad+i*bw+bw*.15, bh = (it.v||0)*sc, y = zero-bh;
+    return `<rect x="${x}" y="${y}" width="${bw*.7}" height="${Math.max(bh,1)}" rx="4" fill="${it.c||color}"/><text x="${x+bw*.35}" y="${y-4}" font-size="10" text-anchor="middle" fill="#131313" font-weight="600">${it.v?fmt(it.v):''}</text><text x="${x+bw*.35}" y="${h-10}" font-size="9.5" text-anchor="middle" fill="#8a8a8a">${esc(it.l)}</text>`; }).join('')}<line x1="${pad}" x2="${w-pad}" y1="${zero}" y2="${zero}" stroke="#d9dcdf"/></svg>`;
+}
+function pairBars(items, {w=640, h=170}={}){
+  const max = Math.max(...items.flatMap(i=>[i.a||0,i.b||0]), 1), pad = 22, bw = (w-2*pad)/items.length, zero = h-30, sc = (zero-16)/max;
+  return `<svg viewBox="0 0 ${w} ${h}">${items.map((it,i)=>{ const x = pad+i*bw+bw*.12, bwi = bw*.36;
+    const r = (v,dx,c) => { const bh=(v||0)*sc; return `<rect x="${x+dx}" y="${zero-bh}" width="${bwi}" height="${Math.max(bh,1)}" rx="3" fill="${c}"/>`; };
+    return r(it.a,0,'#c3aaff') + r(it.b,bwi+2,'var(--mint)') + `<text x="${x+bwi}" y="${h-10}" font-size="9.5" text-anchor="middle" fill="#8a8a8a">${esc(it.l)}</text>`; }).join('')}<line x1="${pad}" x2="${w-pad}" y1="${zero}" y2="${zero}" stroke="#d9dcdf"/></svg>`;
+}
+function line(points, {w=640, h=170}={}){
+  if(points.length < 2) return '<p class="small muted">Мало точек для графика.</p>';
+  const vs = points.map(p=>p.v), mn = Math.min(...vs), mx = Math.max(...vs), pad = 30, span = Math.max(mx-mn, 1);
+  const X = i => pad + i*(w-2*pad)/(points.length-1), Y = v => h-28 - (v-mn)/span*(h-56);
+  const d = points.map((p,i)=>`${i?'L':'M'}${X(i).toFixed(1)},${Y(p.v).toFixed(1)}`).join(' ');
+  return `<svg viewBox="0 0 ${w} ${h}"><path d="${d}" fill="none" stroke="var(--mint-dark)" stroke-width="2.5" stroke-linejoin="round"/>${points.map((p,i)=>`<circle cx="${X(i)}" cy="${Y(p.v)}" r="3" fill="#fff" stroke="var(--mint-dark)" stroke-width="2"/>${(i===0||i===points.length-1||i%3===0)?`<text x="${X(i)}" y="${Y(p.v)-8}" font-size="10" text-anchor="middle" fill="#131313" font-weight="600">${fmt(p.v)}</text><text x="${X(i)}" y="${h-8}" font-size="9.5" text-anchor="middle" fill="#8a8a8a">${esc(p.l)}</text>`:''}`).join('')}</svg>`;
+}
+const pillTemp = t => t==='hot'?'<span class="pill bad">горячий</span>':t==='warm'?'<span class="pill warn">тёплый</span>':t==='cold'?'<span class="pill blue">холодный</span>':'';
+const taskPill = s => s==='Running'?'<span class="pill mint">работает</span>':s==='Ready'?'<span class="pill blue">по расписанию</span>':s==='Disabled'?'<span class="pill grey">выключен</span>':`<span class="pill warn">${esc(s||'нет')}</span>`;
+
+/* ============ SALES ============ */
+function renderSales(){
+  const C = D.crm, k = C.kpi, A = C.agent;
+  document.title = 'Jay OS — Продажи';
+  document.getElementById('pt').textContent = 'Продажи · CRM';
+  const maxF = Math.max(...C.funnel.map(f=>f.n), 1);
+  const wait = C.leads.filter(l=>l.waiting);
+  const weeks = C.weeks.map(w=>({l: w.w.slice(8,10)+'.'+w.w.slice(5,7), v: w.new, a: w.in, b: w.out}));
+  const tg = l => l.username ? `<a href="https://t.me/${esc(l.username)}" target="_blank">@${esc(l.username)}</a>` : '';
+  const waitCls = h => h>=72?'bad':h>=24?'warn':'';
+  document.getElementById('root').innerHTML = `
+  <div class="eyebrow">Jay CRM · Telegram @ceo_w2w · обновлено ${dmy(C.generated)}</div>
+  <h2 class="h2">${fmt(k.active)} активных лидов, <span class="hl">${fmt(k.waiting)} ждут ответа</span></h2>
+  <p class="lead">Все личные чаты sales-аккаунта, кроме команды и ботов. Отвечать можно прямо в Telegram или через CRM-бота — ответ уйдёт от @ceo_w2w.</p>
+  <div class="chip-row" style="margin:-6px 0 18px">
+    <a class="btn" href="${esc(A.bot)}" target="_blank">📇 CRM-бот ↗</a>
+    ${A.web_url?`<a class="btn" href="${esc(A.web_url)}" target="_blank" title="Адрес туннеля меняется при перезапуске агента. Актуальный — команда /link в боте.">🌐 CRM в браузере ↗</a>`:''}
+    <span class="pill ${A.state==='running'?'mint':'bad'}">агент: ${A.state==='running'?'работает':esc(A.state||'нет данных')}</span>
+    <span class="pill ${A.tg_sales.state==='connected'?'mint':'bad'}">Telegram: ${A.tg_sales.state==='connected'?'подключён, синк '+dmy(A.tg_sales.last_sync):esc(A.tg_sales.state||'?')}</span>
+    <span class="pill grey" title="${esc(A.instagram.detail||'')}">Instagram-лиды: ${A.instagram.state==='not_configured'?'не подключены':esc(A.instagram.state||'?')}</span>
+  </div>
+
+  <div class="grid g5 sect">
+    <div class="stat"><div class="v">${fmt(k.active)}</div><div class="l">активных лидов</div><div class="n">${fmt(k.archived)} в архиве</div></div>
+    <div class="stat hl"><div class="v">${fmt(k.new_7d)}</div><div class="l">новых за 7 дней</div><div class="n">${fmt(k.new_30d)} за 30 дней</div></div>
+    <div class="stat ${k.waiting?'neg':'pos'}"><div class="v">${fmt(k.waiting)}</div><div class="l">ждут нашего ответа</div><div class="n">${fmt(k.waiting_24h)} дольше суток</div></div>
+    <div class="stat ${k.oldest_wait_h>=24?'neg':''}"><div class="v">${hm(sinceH(wait[0]?.last_in) ?? k.oldest_wait_h)}</div><div class="l">дольше всех ждёт</div><div class="n">${esc(k.oldest_wait_name||'—')}</div></div>
+    <div class="stat"><div class="v">${hm(k.median_resp_h)}</div><div class="l">медиана ответа, 30 дн</div><div class="n">по ${fmt(k.resp_samples_30d)} ответам</div></div>
+  </div>
+
+  <div class="grid g2 sect">
+    <div class="card white"><div class="sect-h"><h3>Воронка</h3><span class="tag">стадии CRM</span></div>
+      <div class="funnel">${C.funnel.map(f=>`<div class="row ${f.n?'':'zero'} ${f.lost?'lost':''}"><div class="nm">${esc(f.name)}</div><div><div class="bar" style="width:${f.n/maxF*100}%"></div></div><div class="n">${fmt(f.n)}</div></div>`).join('')}</div>
+      <div class="chip-row" style="margin-top:10px">${pillTemp('hot')} ${fmt(k.temps.hot)} ${pillTemp('warm')} ${fmt(k.temps.warm)} ${pillTemp('cold')} ${fmt(k.temps.cold)}</div>
+    </div>
+    <div class="card mint"><h4>Чего не хватает в CRM</h4>
+      <ul class="small gap" style="margin:0;padding-left:18px">
+        <li>Дальше «В диалоге» не продвинут ни один лид: квалификация, КП, переговоры и сделки пустые. Стадию ставит человек: кнопки в карточке бота или <span class="mono">/stage</span>.</li>
+        <li>Сумма сделки заполнена у ${fmt(k.value_set)} из ${fmt(k.active)}. Без неё JOS не может посчитать деньги в воронке.</li>
+        <li>Следующий шаг заполнен у ${fmt(k.next_action_set)} из ${fmt(k.active)}. Команда <span class="mono">/next</span> в боте.</li>
+        <li>Instagram-лиды в CRM не идут: у агента нет IG-токена. Комментарии и директ видны во вкладке «Instagram».</li>
+      </ul></div>
+  </div>
+
+  <div class="grid g2 sect">
+    <div class="chart"><div class="sect-h"><h3>Новые лиды по неделям</h3><span class="tag">12 недель · по дате первого сообщения</span></div>${bars(weeks.map(w=>({l:w.l, v:w.v})))}</div>
+    <div class="chart"><div class="sect-h"><h3>Сообщения по неделям</h3><span class="tag"><span style="color:#8a6ad8">■</span> входящие · <span style="color:var(--mint-dark)">■</span> наши</span></div>${pairBars(weeks)}</div>
+  </div>
+
+  <div class="sect"><div class="sect-h"><h3>Ждут ответа · ${fmt(wait.length)}</h3><span class="tag">последнее сообщение клиента позже нашего · сначала самые давние</span></div>
+    ${wait.length?`<div class="tbl"><table><thead><tr><th>Лид</th><th>Ждёт</th><th>Последнее сообщение клиента</th><th>Стадия</th><th class="num">Скор</th></tr></thead><tbody>
+      ${wait.map(l=>`<tr><td><b>${esc(l.name)}</b><div class="small">${tg(l)}</div></td><td><span class="wt ${waitCls(sinceH(l.last_in))}">${hm(sinceH(l.last_in))}</span><div class="small muted">${dmy(l.last_in)}</div></td><td><div class="snip">${esc(l.snippet)||'<span class="muted">медиа</span>'}</div></td><td class="small">${esc(l.stage_name)} ${pillTemp(l.temp)}</td><td class="num">${l.score??'—'}</td></tr>`).join('')}
+    </tbody></table></div>`:'<div class="card white"><p>Никто не ждёт ответа. 👌</p></div>'}
+  </div>
+
+  <div class="sect"><div class="sect-h"><h3>Все лиды</h3><span class="tag" id="cnt-all"></span></div>
+    <div class="flt"><input id="q" placeholder="Поиск: имя, @username, текст, интерес"> <span id="stg"></span></div>
+    <div class="tbl"><table><thead><tr><th>Лид</th><th>Стадия</th><th>Интерес</th><th class="num">Вх/исх</th><th>Последняя активность</th><th>Первое сообщение</th><th class="num">Скор</th></tr></thead><tbody id="all"></tbody></table></div>
+  </div>
+
+  <div class="sect"><div class="sect-h"><h3>О чём спрашивают</h3><span class="tag">поле «интерес» в CRM</span></div>
+    <div class="chip-row">${C.intents.map(([n,c])=>`<span class="pill">${esc(n)} · ${fmt(c)}</span>`).join('')||'<span class="muted small">не заполнено</span>'}</div></div>`;
+
+  let stage = 'all';
+  const stages = [['all','все'], ...C.funnel.filter(f=>f.n).map(f=>[f.key, f.name+' · '+f.n]), ['waiting','ждут ответа']];
+  const stg = document.getElementById('stg');
+  stg.innerHTML = stages.map(([k,n])=>`<button data-s="${k}" class="${k==='all'?'on':''}">${esc(n)}</button>`).join(' ');
+  const draw = () => { const q = (document.getElementById('q').value||'').toLowerCase().trim();
+    const rows = C.leads.filter(l => (stage==='all' || (stage==='waiting'?l.waiting:l.stage===stage)) && (!q || [l.name,l.username,l.snippet,l.intent,l.company].join(' ').toLowerCase().includes(q)));
+    document.getElementById('cnt-all').textContent = rows.length + ' из ' + C.leads.length;
+    document.getElementById('all').innerHTML = rows.map(l=>`<tr><td><b>${esc(l.name)}</b>${l.waiting?' <span class="pill bad">ждёт</span>':''}<div class="small">${tg(l)}${l.company?' · '+esc(l.company):''}</div></td><td class="small">${esc(l.stage_name)} ${pillTemp(l.temp)}</td><td class="small">${esc(l.intent)||'<span class="muted">—</span>'}</td><td class="num">${l.msg_in}/${l.msg_out}</td><td class="mono">${dmy(l.last_activity)}</td><td class="mono">${dmy(l.created)}</td><td class="num">${l.score??'—'}</td></tr>`).join(''); post(); };
+  document.getElementById('q').oninput = draw;
+  stg.onclick = e => { const b = e.target.closest('button'); if(!b) return; stage = b.dataset.s; stg.querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===b)); draw(); };
+  draw();
+  document.getElementById('foot').innerHTML = `<span>Источник: CRM на сервере (jay-crm/data/crm.sqlite), снимок ${dmy(C.generated)}</span><span>Копия в Obsidian: W2W/CRM/ (сводка + карточка каждого лида с перепиской)</span>`;
+  return C.generated;
+}
+
+/* ============ INSTAGRAM ============ */
+function renderIG(){
+  const G = D.ig, k = G.kpi, a = G.automation, T = a.tasks, ins = G.insights || {};
+  document.title = 'Jay OS — Instagram';
+  document.getElementById('pt').textContent = 'Instagram · @' + (G.account.username||'');
+  const hist = G.history.map(h=>({l: dmy(h.at).slice(0,5), v: h.followers}));
+  const t = (name, label, what) => { const x = T[name]; return `<tr><td><b>${label}</b><div class="small muted">${what}</div></td><td>${x?taskPill(x.state):'<span class="pill grey">нет задачи</span>'}</td><td class="mono">${x?dmy(x.last):'—'}${x&&x.rc&&x.state!=='Running'?` <span class="pill bad" title="код ${x.rc}">ошибка</span>`:''}</td><td class="mono">${x&&x.next?dmy(x.next):'—'}</td></tr>`; };
+  const ai = a.ai_carousel, dm = a.dm;
+  const dmState = dm.mode==='live' ? 'отправляет' : dm.mode==='test' ? 'только тестерам' : 'не отправляет (режим dry)';
+  const v = x => x==null ? '<span class="muted" title="Meta не вернула значение">—</span>' : fmt(x);
+  document.getElementById('root').innerHTML = `
+  <div class="eyebrow">AI-блог · узбекский · статистика Meta от ${dmy(G.fetched_at)}</div>
+  <h2 class="h2">${fmt(k.followers)} подписчиков${k.followers_delta!=null?` <span class="hl">${k.followers_delta>=0?'+':''}${fmt(k.followers_delta)}</span> <small class="muted" style="font-size:13px">с ${dmy(k.followers_since).slice(0,5)}</small>`:''}</h2>
+  <p class="lead">Карусели публикуются сами каждый день в 19:00, статистика собирается в 06:40. Рилсы публикуются только после кнопки 📤 в Telegram.</p>
+  <div class="chip-row" style="margin:-6px 0 18px"><a class="btn" href="${esc(G.url)}" target="_blank">📷 Открыть профиль ↗</a></div>
+
+  <div class="grid g5 sect">
+    <div class="stat hl"><div class="v">${fmt(k.followers)}</div><div class="l">подписчиков</div><div class="n">подписок ${fmt(k.follows)}</div></div>
+    <div class="stat"><div class="v">${fmt(k.posts)}</div><div class="l">публикаций всего</div><div class="n">${fmt(k.posts_7d)} за 7 дней</div></div>
+    <div class="stat"><div class="v">${fmt(k.reel_avg_views_30d)}</div><div class="l">средние просмотры Reels</div><div class="n">${fmt(k.reels_30d)} рилс за 30 дней</div></div>
+    <div class="stat"><div class="v">${fmt(k.car_avg_views_30d)}</div><div class="l">средние просмотры каруселей</div><div class="n">${fmt(k.cars_30d)} каруселей за 30 дней</div></div>
+    <div class="stat"><div class="v">${fmt(ins.reach)}</div><div class="l">охват аккаунта</div><div class="n" title="Meta отдаёт значение без явного периода">просмотров ${fmt(ins.views)} · период Meta не указан</div></div>
+  </div>
+
+  <div class="grid g2 sect">
+    <div class="chart"><div class="sect-h"><h3>Подписчики</h3><span class="tag">по дням сбора статистики</span></div>${line(hist)}<div class="cap">История ведётся с ${dmy(G.history[0]?.at)}; более старые точки остались на старом диске.</div></div>
+    <div class="card white"><div class="sect-h"><h3>Автоматизация</h3><span class="tag">агенты на сервере</span></div>
+      <div class="tbl" style="border:0"><table style="min-width:0"><thead><tr><th>Агент</th><th>Статус</th><th>Последний</th><th>Следующий</th></tr></thead><tbody>
+        ${t('ig-carousel-daily','AI-карусель','каждый день 19:00 · тема из банка, узбекский')}
+        ${t('ig-ingest-daily','Сбор статистики','каждый день 06:40 · подписчики, посты, токен')}
+        ${t('ig-dm-bot','DM-бот «+»','комментарий «+» → ссылка в директ')}
+        ${t('brand-pm-daily','Brand PM','09:00 · бриф по бренду в Telegram')}
+        ${t('brand-pm-weekly','Brand PM, неделя','воскресенье 20:00 · обзор')}
+      </tbody></table></div></div>
+  </div>
+
+  <div class="grid g3 sect">
+    <div class="card white"><h4>AI-карусели</h4><p class="small">Опубликовано <b>${fmt(ai.done.length)}</b>, в банке осталось <b>${fmt(ai.left)}</b> тем из ${fmt(ai.total)}.${ai.left!=null&&ai.left<=5?' <span class="pill bad">банк тем почти пуст</span>':''}</p>
+      <ul class="clean small">${ai.done.slice().reverse().map(d=>`<li>${dmy(d.at).slice(0,5)} · <a href="${esc(d.permalink)}" target="_blank">${esc(d.title)}</a></li>`).join('')||'<li class="muted">пока ни одной</li>'}</ul></div>
+    <div class="card white"><h4>DM-бот по слову «+»</h4><p class="small"><b>${dmState}</b> · триггеров ${fmt(dm.triggers)} · отправлено ${fmt(dm.hits_total)}</p>
+      <p class="small muted">Следит за ${fmt(dm.media_watched)} публикациями. Пока Meta не даст доступ к комментариям (App Review), комментарии в API не видны, и рилсы с «+» обслуживает ManyChat.</p></div>
+    <div class="card"><h4>Старые карусели из рилс</h4><p class="small">Выключены 12.10 после поста про финансы. Было опубликовано ${fmt(a.reel_carousel.done.length)}.</p>
+      <details><summary>Список</summary><div class="in"><ul class="clean small">${a.reel_carousel.done.map(d=>`<li>${dmy(d.at).slice(0,5)} · <a href="${esc(d.permalink)}" target="_blank">открыть</a></li>`).join('')}</ul></div></details></div>
+  </div>
+
+  <div class="sect"><div class="sect-h"><h3>Последние публикации</h3><span class="tag">«—» значит Meta не вернула число, а не ноль</span></div>
+    <div class="tbl"><table><thead><tr><th>Дата</th><th>Тип</th><th>Подпись</th><th class="num">Просмотры</th><th class="num">Охват</th><th class="num">Лайки</th><th class="num">Комм.</th><th class="num">Сохр.</th><th class="num">Репосты</th></tr></thead><tbody>
+      ${G.media.map(m=>`<tr><td class="mono">${dmy(m.at)}</td><td><span class="pill ${m.kind==='Reel'?'lav':'mint'}">${esc(m.kind)}</span></td><td class="small"><a href="${esc(m.permalink)}" target="_blank">${esc(m.caption)||'без подписи'}</a></td><td class="num">${v(m.views)}</td><td class="num">${v(m.reach)}</td><td class="num">${v(m.likes)}</td><td class="num">${v(m.comments)}</td><td class="num">${v(m.saved)}</td><td class="num">${v(m.shares)}</td></tr>`).join('')}
+    </tbody></table></div></div>
+
+  <div class="sect"><div class="sect-h"><h3>Банк тем AI-каруселей</h3><span class="tag">${fmt(ai.total)} тем · зачёркнуто = опубликовано</span></div>
+    <div class="card white"><ul class="topics" style="margin:0;padding:0">${ai.topics.map(x=>`<li class="${x.done?'done':''}">${x.done?'✓':'○'} ${esc(x.title)}</li>`).join('')}</ul></div></div>`;
+  document.getElementById('foot').innerHTML = `<span>Источник: ig-pipeline на сервере, Meta Graph API ${dmy(G.fetched_at)}</span><span>Копия в Obsidian: Brand/Social/Instagram-javokhirkomiljanov.md и «Instagram — автоматизация.md»</span>`;
+  return G.generated;
+}
+
+function post(){ try{ parent.postMessage({jos:'h', page:D.page, h:document.documentElement.scrollHeight}, '*'); }catch(e){} }
+const gen = D.page === 'sales' ? renderSales() : renderIG();
+document.getElementById('ps').textContent = 'обновлено ' + dmy(gen);
+const age = sinceH(gen);
+if (age != null && age > 26) { const s = document.getElementById('stale'); s.classList.add('on'); s.textContent = `Данные устарели: последнее обновление ${dmy(gen)} (${hm(age)} назад). Обновление идёт с ноутбука — он, видимо, был выключен.`; }
+window.addEventListener('load', post); window.addEventListener('resize', post); new ResizeObserver(post).observe(document.body); post();
+</script>
+</body>
+</html>
