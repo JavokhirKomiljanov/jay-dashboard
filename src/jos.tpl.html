@@ -252,6 +252,44 @@ iframe.panel{width:100%;min-height:80vh;border:0;display:block;background:transp
 .panel-foot{margin:10px 0 0}
 
 /* mobile */
+/* ===== finance (Notion-like editable) ===== */
+.fin-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px}
+.fin-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 10px}
+.fin-bar input[type=search],.fin-bar select{font:inherit;font-size:12.5px;border:1px solid var(--line-2);border-radius:10px;padding:6px 10px;background:#fff;color:var(--ink);min-width:0}
+.fin-bar input[type=search]{flex:1 1 180px}
+.ftbl table{min-width:1200px}
+.ftbl td{padding:2px 4px;vertical-align:middle}
+.ftbl th{padding:8px 8px;cursor:pointer;user-select:none;white-space:nowrap}
+.ftbl th.ns{cursor:default}
+.ftbl tr:hover td{background:#fafbfb}
+.fi{font:inherit;font-size:12.5px;color:var(--ink);border:1px solid transparent;background:transparent;border-radius:7px;padding:5px 6px;width:100%;min-width:0}
+.fi:hover{border-color:var(--line)}
+.fi:focus{outline:none;border-color:var(--mint-dark);background:#fff}
+input.fi[type=number]{text-align:right;font-variant-numeric:tabular-nums}
+select.fi{cursor:pointer;-webkit-appearance:none;appearance:none}
+select.fi.st-Paid{color:var(--mint-dark);font-weight:600}
+select.fi.st-Not\ paid{color:var(--coral-dark);font-weight:600}
+select.fi.st-In\ progress{color:#b36b00;font-weight:600}
+select.fi.im-Urgent{color:var(--coral-dark)}
+.rest{font-variant-numeric:tabular-nums;text-align:right;padding:0 8px;white-space:nowrap;font-weight:600}
+.rest.z{color:var(--faint);font-weight:400}
+.xbtn{border:0;background:none;color:var(--faint);cursor:pointer;font-size:14px;padding:4px 8px;border-radius:6px}
+.xbtn:hover{color:var(--coral-dark);background:#fff0eb}
+.ftot td{font-weight:700;color:var(--ink);padding:8px;border-top:1px solid var(--line-2);background:var(--card)}
+.debt-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;min-width:0}
+.debt-card h4{display:flex;align-items:baseline;gap:8px;font-size:15px;margin:0 0 4px}
+.debt-card h4 .v{margin-left:auto;font-family:var(--head);font-weight:800;font-size:20px;color:var(--coral-dark)}
+.debt-card h4 .v.z{color:var(--mint-dark)}
+.debt-line{display:flex;gap:8px;align-items:center;padding:7px 0;border-top:1px dashed var(--line);font-size:12.5px;flex-wrap:wrap}
+.debt-line .grow{flex:1;min-width:120px}
+.fin-form{display:grid;grid-template-columns:repeat(6,minmax(0,1fr)) auto;gap:8px;align-items:end;background:var(--mint-tint);border:1px solid var(--mint-light);border-radius:var(--r);padding:12px;margin:0 0 14px}
+.fin-form label{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;display:flex;flex-direction:column;gap:3px}
+.fin-form .fi{background:#fff;border-color:var(--line-2)}
+@media(max-width:900px){.fin-form{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.saved-flash{font-size:11px;color:var(--mint-dark);opacity:0;transition:opacity .3s}
+.saved-flash.on{opacity:1}
+@media(max-width:640px){#fin-kpi .g5{grid-template-columns:repeat(2,minmax(0,1fr))}#fin-kpi .stat{padding:12px}#fin-kpi .stat .v{font-size:20px}}
+
 .menu-btn{display:none}
 @media(max-width:860px){
   .app{grid-template-columns:1fr}
@@ -278,6 +316,7 @@ footer{padding:18px 28px;border-top:1px solid var(--line);color:var(--muted);fon
   <div class="nav" data-v="w2w"><span class="ic">🏢</span>W2W<span class="cnt" id="cnt-w2w"></span></div>
   <div class="nav" data-v="sales"><span class="ic">📇</span>Продажи<span class="cnt">CRM</span></div>
   <div class="nav" data-v="instagram"><span class="ic">📷</span>Instagram<span class="cnt">IG</span></div>
+  <div class="nav" data-v="finance"><span class="ic">💰</span>Финансы<span class="cnt" id="cnt-finance"></span></div>
   <div class="nav" data-v="agents"><span class="ic">🤖</span>Agents House<span class="cnt" id="cnt-agents"></span></div>
   <div class="sec">Окна</div>
   <a class="nav ext" id="lnk-strategy" target="_blank"><span class="ic">📄</span>Полная стратегия ↗</a>
@@ -307,6 +346,7 @@ footer{padding:18px 28px;border-top:1px solid var(--line);color:var(--muted);fon
     <section class="view" id="v-w2w"></section>
     <section class="view" id="v-sales"><iframe class="panel" data-page="sales" title="Продажи · CRM" loading="lazy"></iframe><p class="small muted panel-foot"><a data-open="sales" target="_blank">Открыть отдельной страницей ↗</a></p></section>
     <section class="view" id="v-instagram"><iframe class="panel" data-page="instagram" title="Instagram" loading="lazy"></iframe><p class="small muted panel-foot"><a data-open="instagram" target="_blank">Открыть отдельной страницей ↗</a></p></section>
+    <section class="view" id="v-finance"></section>
     <section class="view" id="v-agents"></section>
   </div>
   <footer><span>Jay OS v7 · только W2W</span><span id="foot-src"></span><span>правки: localStorage <code>jos7-edits</code></span></footer>
@@ -405,7 +445,8 @@ function renderToday(){
     <div class="week">${week.map(w=>`<div class="day ${w.i===dow?'today':''}"><h5>${w.n}</h5>${w.ev.map(e=>`<div class="ev ${e.cls}">${esc(e.txt)}</div>`).join('')}</div>`).join('')}</div>
   </div>
 
-  <div class="grid g2 sect">
+  <div class="grid g3 sect">
+    <a class="card mint" href="#finance" onclick="JOS.go('finance');return false"><h4>💰 Финансы и долги →</h4><p class="small">Открыто (Not paid + In progress): <b>${money(finOpen())}</b>. Расходы из Notion, правятся как в Notion — статус, суммы, платежи.</p></a>
     <a class="card mint" href="#sales" onclick="JOS.go('sales');return false"><h4>📇 Продажи · CRM →</h4><p class="small">Лиды из Telegram @ceo_w2w: сколько ждут ответа, воронка, медиана ответа. Обновляется с сервера несколько раз в день.</p></a>
     <a class="card mint" href="#instagram" onclick="JOS.go('instagram');return false"><h4>📷 Instagram →</h4><p class="small">Подписчики, просмотры постов, AI-карусели 19:00, DM-бот «+», статус агентов.</p></a>
   </div>
@@ -688,10 +729,180 @@ function renderAgents(){
       ${a.state==='planned'?'<p class="small muted" style="margin-top:10px">Советник построен (промпт + раннер). Запуск на сервере — после того как Jay даст доступы к календарю, CRM и финансам.</p>':''}`; }
 }
 
+/* ---------- finance: Notion «Company Expenses» copy, edited in place like Notion ----------
+   Base = D.finance (data/jos/finance.json, imported from Notion). Every edit is saved to
+   localStorage["jos7-finance"] (full state), so it survives rebuilds. ⬇ JSON exports it. */
+const FKEY = 'jos7-finance', FS = D.finance || {rows:[], categories:[], statuses:[], importance:[]};
+const clone = o => JSON.parse(JSON.stringify(o));
+let F; try{ F = JSON.parse(localStorage.getItem(FKEY)||'null'); }catch(e){ F = null; }
+if(!F || !Array.isArray(F.rows)) F = {seed: FS.imported, rows: clone(FS.rows), categories: clone(FS.categories), balance_note: FS.balance_note||'', deleted: [], updated: null};
+F.deleted = F.deleted || [];
+const fin = {tab:'rows', q:'', st:'', cat:'', who:'', sort:'date', dir:-1};
+const num = v => (v===''||v==null||isNaN(+v)) ? 0 : +v;
+const paidOf = r => r.status==='Paid' ? num(r.amount) : Math.min(num(r.paid), num(r.amount));
+const restOf = r => r.status==='Paid' ? 0 : Math.max(0, num(r.amount) - num(r.paid));
+const money = n => (n<0?'−':'') + '$' + Math.abs(Math.round(n)).toLocaleString('ru-RU');
+const finNew = () => 'local-' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+function finSave(){ F.updated = new Date().toISOString(); try{ localStorage.setItem(FKEY, JSON.stringify(F)); }catch(e){ alert('Не удалось сохранить в браузере: ' + e.message); }
+  const f = document.getElementById('fin-saved'); if(f){ f.classList.add('on'); clearTimeout(f._t); f._t = setTimeout(()=>f.classList.remove('on'), 1200); } finBadge(); }
+const finOpen = () => F.rows.filter(r=>r.status==='Not paid'||r.status==='In progress').reduce((s,r)=>s+restOf(r),0);
+function finBadge(){ const open = finOpen(); const el = document.getElementById('cnt-finance'); if(el) el.textContent = open>=1000 ? '$'+Math.round(open/1000)+'K' : money(open); }
+function finPeople(){ return [...new Set(F.rows.map(r=>(r.person||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b)); }
+function finCats(){ return [...new Set([...F.categories.map(c=>c.name), ...F.rows.map(r=>r.category).filter(Boolean)])]; }
+function finFresh(){ return FS.imported && FS.imported > (F.seed||'') ? FS.rows.filter(r => !F.rows.some(x=>x.id===r.id) && !F.deleted.includes(r.id)) : []; }
+
+function finKpis(){
+  const R = F.rows, sum = (a,f) => a.reduce((s,r)=>s+f(r),0);
+  const total = sum(R, r=>num(r.amount)), paid = sum(R, paidOf);
+  const open = R.filter(r=>r.status==='Not paid'||r.status==='In progress'), nost = R.filter(r=>!r.status && num(r.amount));
+  const openSum = sum(open, restOf), nostSum = sum(nost, restOf);
+  return `<div class="grid g5">
+    <div class="stat"><div class="v">${money(total)}</div><div class="l">Всего записано</div><div class="n">${R.length} строк</div></div>
+    <div class="stat pos"><div class="v">${money(paid)}</div><div class="l">Оплачено</div><div class="n">${R.filter(r=>r.status==='Paid').length} строк Paid + частичные</div></div>
+    <div class="stat neg"><div class="v">${money(openSum)}</div><div class="l">Открыто: Not paid + In progress</div><div class="n">${open.length} строк — это и есть долги</div></div>
+    <div class="stat"><div class="v">${money(nostSum)}</div><div class="l">Без статуса</div><div class="n">${nost.length} строк — проставь статус</div></div>
+    <div class="stat"><div class="v" style="font-size:16px"><input class="fi" style="font:inherit;padding:2px 4px" value="${esc(F.balance_note)}" onchange="F.balance_note=this.value;finSave()"></div><div class="l">Баланс / пересчёт кассы</div><div class="n">заметка из Notion, правится</div></div>
+  </div>`;
+}
+function finOpts(list, cur, empty){ return (empty!=null?`<option value="">${empty}</option>`:'') + list.map(o=>`<option${o===cur?' selected':''}>${esc(o)}</option>`).join('') + (cur && !list.includes(cur) ? `<option selected>${esc(cur)}</option>` : ''); }
+function finRow(r){
+  const i = esc(r.id);
+  return `<tr data-id="${i}">
+    <td style="min-width:130px"><input class="fi" data-f="name" value="${esc(r.name)}" placeholder="Название"></td>
+    <td style="min-width:120px"><input class="fi" data-f="person" list="fin-people" value="${esc(r.person)}" placeholder="Кто"></td>
+    <td style="width:112px"><input class="fi" type="number" step="any" data-f="amount" value="${r.amount==null?'':esc(r.amount)}" placeholder="0"></td>
+    <td style="width:112px"><input class="fi" type="number" step="any" data-f="paid" value="${r.paid==null?'':esc(r.paid)}" placeholder="${r.status==='Paid'?esc(r.amount||''):'0'}"></td>
+    <td class="rest${restOf(r)?'':' z'}" data-rest>${restOf(r)?money(restOf(r)):'—'}</td>
+    <td style="width:140px"><input class="fi" type="date" data-f="date" value="${esc(r.date)}"></td>
+    <td style="width:128px"><select class="fi st-${esc(r.status)}" data-f="status">${finOpts(FS.statuses, r.status, '—')}</select></td>
+    <td style="width:90px"><select class="fi im-${esc(r.importance)}" data-f="importance">${finOpts(FS.importance, r.importance, '—')}</select></td>
+    <td style="width:120px"><select class="fi" data-f="category">${finOpts(finCats(), r.category, '—')}</select></td>
+    <td style="min-width:220px"><input class="fi" data-f="note" value="${esc(r.note)}" placeholder="Заметка" title="${esc(r.note)}"></td>
+    <td style="width:34px"><button class="xbtn" title="Удалить строку" onclick="finDel('${i}')">✕</button></td>
+  </tr>`;
+}
+function finFiltered(){
+  const q = fin.q.toLowerCase();
+  let R = F.rows.filter(r => (!fin.st || (fin.st==='—' ? !r.status : r.status===fin.st)) && (!fin.cat || r.category===fin.cat) && (!fin.who || (r.person||'').trim()===fin.who)
+    && (!q || [r.name,r.person,r.note,r.category,r.amount].join(' ').toLowerCase().includes(q)));
+  const k = fin.sort, d = fin.dir;
+  R.sort((a,b) => { let x = a[k], y = b[k]; if(k==='amount'||k==='paid'){ x=num(x); y=num(y); } else if(k==='rest'){ x=restOf(a); y=restOf(b); } else { x=String(x||''); y=String(y||''); }
+    return (x>y?1:x<y?-1:0)*d; });
+  return R;
+}
+function finTable(){
+  const R = finFiltered(), cols = [['name','Название'],['person','Кто (Debt)'],['amount','Сумма $'],['paid','Оплачено $'],['rest','Остаток'],['date','Дата'],['status','Статус'],['importance','Важность'],['category','Категория'],['note','Заметка']];
+  const tot = R.reduce((s,r)=>s+num(r.amount),0), totRest = R.reduce((s,r)=>s+restOf(r),0);
+  return `<div class="tbl ftbl"><table><thead><tr>${cols.map(([k,t])=>`<th class="${['amount','paid','rest'].includes(k)?'num':''}" onclick="finSort('${k}')">${t}${fin.sort===k?(fin.dir>0?' ▲':' ▼'):''}</th>`).join('')}<th class="ns"></th></tr></thead>
+    <tbody id="fin-body">${R.map(finRow).join('') || `<tr><td colspan="11" class="muted" style="padding:14px">Ничего не найдено</td></tr>`}</tbody>
+    <tfoot><tr class="ftot"><td colspan="2">Итого по фильтру · ${R.length}</td><td class="num">${money(tot)}</td><td></td><td class="num">${money(totRest)}</td><td colspan="6"></td></tr></tfoot></table></div>`;
+}
+function finRowsView(){
+  const ppl = finPeople();
+  return `<div class="fin-bar">
+      <input type="search" placeholder="Поиск: имя, заметка, сумма…" value="${esc(fin.q)}" oninput="fin.q=this.value;finRedrawTable()">
+      <select onchange="fin.st=this.value;finRedrawTable()"><option value="">Все статусы</option>${[...FS.statuses,'—'].map(s=>`<option${fin.st===s?' selected':''} value="${esc(s)}">${s==='—'?'Без статуса':esc(s)}</option>`).join('')}</select>
+      <select onchange="fin.cat=this.value;finRedrawTable()"><option value="">Все категории</option>${finCats().map(c=>`<option${fin.cat===c?' selected':''}>${esc(c)}</option>`).join('')}</select>
+      <select onchange="fin.who=this.value;finRedrawTable()"><option value="">Все люди</option>${ppl.map(p=>`<option${fin.who===p?' selected':''}>${esc(p)}</option>`).join('')}</select>
+      <button class="btn pri" onclick="finAdd()">＋ Строка</button>
+    </div><div id="fin-table">${finTable()}</div>`;
+}
+function finDebtsView(){
+  const by = {}; F.rows.forEach(r => { const p = (r.person||'').trim() || '— без имени'; (by[p] = by[p] || []).push(r); });
+  const ppl = Object.entries(by).map(([p, rs]) => ({p, rs, total: rs.reduce((s,r)=>s+num(r.amount),0), paid: rs.reduce((s,r)=>s+paidOf(r),0), open: rs.reduce((s,r)=>s+restOf(r),0)})).sort((a,b)=>b.open-a.open || b.total-a.total);
+  const line = r => `<div class="debt-line"><span class="grow"><b>${esc(r.name||'—')}</b> ${r.note?`<span class="muted">· ${esc(r.note)}</span>`:''}<br><span class="small muted">${r.date?dateRu(r.date)+'.'+r.date.slice(0,4):'без даты'} · ${esc(r.category||'—')}</span></span>
+      <span class="pill ${r.status==='Paid'?'mint':r.status==='Not paid'?'bad':r.status==='In progress'?'warn':'grey'}">${esc(r.status||'без статуса')}</span>
+      <span class="mono">${money(num(r.amount))}${num(r.paid)&&r.status!=='Paid'?` · оплачено ${money(num(r.paid))}`:''}</span>
+      ${r.status!=='Paid'?`<button class="btn sm" onclick="finPay('${esc(r.id)}')">＋ платёж</button><button class="btn sm mint" onclick="finSet('${esc(r.id)}','status','Paid');finRender()">✓ Оплачено</button>`:`<button class="btn sm" onclick="finSet('${esc(r.id)}','status','Not paid');finRender()">↺ Не оплачено</button>`}</div>`;
+  return `<div class="fin-form">
+      <label>Кто<input class="fi" id="nd-who" list="fin-people" placeholder="Имя"></label>
+      <label>Сумма $<input class="fi" id="nd-amt" type="number" step="any" placeholder="0"></label>
+      <label>Дата<input class="fi" id="nd-date" type="date" value="${new Date().toISOString().slice(0,10)}"></label>
+      <label>Статус<select class="fi" id="nd-st">${finOpts(FS.statuses,'Not paid')}</select></label>
+      <label>Категория<select class="fi" id="nd-cat">${finOpts(finCats(),'', '—')}</select></label>
+      <label>Заметка<input class="fi" id="nd-note" placeholder="за что / условия"></label>
+      <button class="btn pri" onclick="finAddDebt()">＋ Долг</button>
+    </div>
+    <p class="small muted" style="margin:0 0 12px">Группировка по полю «Debt» из Notion (кто). Остаток = сумма − оплачено; строки «Paid» = 0. Частичная оплата — кнопка «＋ платёж».</p>
+    <div class="grid g2">${ppl.map(x => { const openRs = x.rs.filter(r=>r.status!=='Paid'), done = x.rs.filter(r=>r.status==='Paid');
+      return `<div class="debt-card"><h4>${esc(x.p)} <span class="small muted" style="font-weight:500">${x.rs.length} строк</span><span class="v${x.open?'':' z'}">${x.open?money(x.open):'закрыто'}</span></h4>
+        <div class="small muted">всего ${money(x.total)} · оплачено ${money(x.paid)}</div>
+        ${openRs.map(line).join('')}
+        ${done.length?`<details style="margin-top:8px"><summary class="small">Оплачено · ${done.length}</summary>${done.map(line).join('')}</details>`:''}
+      </div>`; }).join('')}</div>`;
+}
+function finCatsView(){
+  const now = new Date(), ym = now.toISOString().slice(0,7), y = String(now.getFullYear());
+  const rows = finCats().map(name => { const c = F.categories.find(x=>x.name===name) || {name, budget:null}; const rs = F.rows.filter(r=>r.category===name);
+    const s = f => rs.filter(f).reduce((a,r)=>a+num(r.amount),0);
+    return {c, n: rs.length, month: s(r=>(r.date||'').startsWith(ym)), year: s(r=>(r.date||'').startsWith(y)), all: s(()=>true)}; });
+  return `<div class="tbl"><table><thead><tr><th>Категория</th><th class="num">Бюджет / мес $</th><th class="num">Этот месяц</th><th class="num">Остаток бюджета</th><th class="num">Этот год</th><th class="num">Всё время</th><th class="num">Строк</th><th></th></tr></thead><tbody>
+    ${rows.map(x=>`<tr><td><input class="fi" value="${esc(x.c.name)}" onchange="finRenameCat(${esc(JSON.stringify(x.c.name))}, this.value)"></td>
+      <td style="width:120px"><input class="fi" type="number" step="any" value="${x.c.budget==null?'':esc(x.c.budget)}" placeholder="—" onchange="finBudget(${esc(JSON.stringify(x.c.name))}, this.value)"></td>
+      <td class="num">${money(x.month)}</td><td class="num">${x.c.budget==null?'—':money(num(x.c.budget)-x.month)}</td><td class="num">${money(x.year)}</td><td class="num">${money(x.all)}</td><td class="num">${x.n}</td>
+      <td style="width:34px">${x.n?'':`<button class="xbtn" title="Удалить категорию" onclick="finDelCat(${esc(JSON.stringify(x.c.name))})">✕</button>`}</td></tr>`).join('')}
+    </tbody></table></div>
+    <div class="fin-bar" style="margin-top:10px"><input type="search" id="nc-name" placeholder="Новая категория"><button class="btn" onclick="finAddCat()">＋ Категория</button></div>
+    <p class="small muted">«Этот месяц / год» — по дате строки (${ym}). В Notion все записи — 2025 год, поэтому 2026 пока пусто.</p>`;
+}
+function renderFinance(){
+  const fresh = finFresh();
+  document.getElementById('v-finance').innerHTML = `
+    ${fresh.length?`<div class="card mint sect"><b>В копии из Notion (${esc(FS.imported)}) есть ${fresh.length} новых строк.</b> <button class="btn sm pri" onclick="finMerge()">Добавить их</button></div>`:''}
+    <div id="fin-kpi" class="sect">${finKpis()}</div>
+    <div class="fin-tabs">
+      ${[['rows','📋 Все записи'],['debts','🧾 Долги по людям'],['cats','🗂 Категории']].map(([k,t])=>`<button class="btn${fin.tab===k?' on':''}" onclick="fin.tab='${k}';finRender()">${t}</button>`).join('')}
+      <span class="sp" style="flex:1"></span>
+      <span class="saved-flash" id="fin-saved">✓ сохранено</span>
+      <button class="btn sm" onclick="finExport()">⬇ JSON</button>
+      <label class="btn sm" style="cursor:pointer">⬆ Импорт<input type="file" accept="application/json,.json" hidden onchange="finImport(this.files[0])"></label>
+      <button class="btn sm" onclick="finReset()">↺ К копии Notion</button>
+    </div>
+    <datalist id="fin-people">${finPeople().map(p=>`<option value="${esc(p)}">`).join('')}</datalist>
+    <div id="fin-pane">${fin.tab==='debts'?finDebtsView():fin.tab==='cats'?finCatsView():finRowsView()}</div>
+    <p class="small muted" style="margin-top:14px">Источник: ${esc(FS.source||'Notion')} · импорт ${esc(FS.imported||'—')} · правки сохраняются сразу в этом браузере${F.updated?' · последняя '+esc(F.updated.slice(0,16).replace('T',' ')):''}. На другом устройстве — ⬇ JSON здесь → ⬆ Импорт там.</p>`;
+  finBind(); finBadge();
+}
+function finRender(){ const y = window.scrollY; renderFinance(); window.scrollTo(0, y); }
+function finRedrawTable(){ const t = document.getElementById('fin-table'); if(t){ t.innerHTML = finTable(); finBind(); } }
+function finBind(){
+  document.querySelectorAll('#fin-body tr[data-id]').forEach(tr => tr.querySelectorAll('[data-f]').forEach(el => el.addEventListener('change', () => {
+    const f = el.dataset.f; let v = el.value; if(f==='amount'||f==='paid') v = v==='' ? null : +v;
+    finSet(tr.dataset.id, f, v);
+    if(el.tagName==='SELECT') el.className = 'fi ' + (f==='status'?'st-':f==='importance'?'im-':'') + (f==='category'?'':el.value);
+    const r = F.rows.find(x=>x.id===tr.dataset.id), rc = tr.querySelector('[data-rest]'); if(r && rc){ rc.textContent = restOf(r)?money(restOf(r)):'—'; rc.className = 'rest' + (restOf(r)?'':' z'); }
+    document.getElementById('fin-kpi').innerHTML = finKpis();
+  })));
+}
+function finSet(id, f, v){ const r = F.rows.find(x=>x.id===id); if(!r) return; r[f] = v; if((f==='paid'||f==='amount') && r.status!=='Paid' && num(r.amount)>0 && num(r.paid)>=num(r.amount)) r.status = 'Paid'; finSave(); }
+function finAdd(){ F.rows.unshift({id: finNew(), name:'', person: fin.who||'', amount:null, paid:null, date: new Date().toISOString().slice(0,10), status: fin.st && fin.st!=='—' ? fin.st : 'Not paid', importance:'', category: fin.cat||'', note:''}); finSave(); fin.sort='date'; fin.dir=-1; finRender();
+  const first = document.querySelector('#fin-body tr[data-id] input[data-f="name"]'); if(first) first.focus(); }
+function finAddDebt(){ const g = id => document.getElementById(id).value; const who = g('nd-who').trim(), amt = g('nd-amt');
+  if(!who || !amt){ alert('Нужно имя и сумма'); return; }
+  F.rows.unshift({id: finNew(), name:'Debt', person: who, amount: +amt, paid:null, date: g('nd-date'), status: g('nd-st'), importance:'', category: g('nd-cat'), note: g('nd-note')}); finSave(); finRender(); }
+function finPay(id){ const r = F.rows.find(x=>x.id===id); if(!r) return; const left = restOf(r);
+  const v = prompt(`Сколько оплачено сейчас? Остаток ${money(left)}`, left); if(v==null || v==='' || isNaN(+v)) return;
+  const add = +v; r.paid = num(r.paid) + add; if(r.status==='Not paid' || !r.status) r.status = 'In progress';
+  if(num(r.paid) >= num(r.amount)) r.status = 'Paid';
+  r.note = (r.note ? r.note + ' · ' : '') + `платёж ${money(add)} ${new Date().toISOString().slice(0,10)}`; finSave(); finRender(); }
+function finDel(id){ const r = F.rows.find(x=>x.id===id); if(!r || !confirm(`Удалить «${r.name||'строку'}» ${r.person||''} ${r.amount!=null?money(num(r.amount)):''}?`)) return;
+  F.rows = F.rows.filter(x=>x.id!==id); if(!id.startsWith('local-')) F.deleted.push(id); finSave(); finRender(); }
+function finSort(k){ if(fin.sort===k) fin.dir = -fin.dir; else { fin.sort = k; fin.dir = (k==='amount'||k==='rest'||k==='date') ? -1 : 1; } finRedrawTable(); }
+function finBudget(name, v){ let c = F.categories.find(x=>x.name===name); if(!c){ c = {name, budget:null}; F.categories.push(c); } c.budget = v==='' ? null : +v; finSave(); finRender(); }
+function finRenameCat(old, nv){ nv = nv.trim(); if(!nv || nv===old) return; F.categories.forEach(c=>{ if(c.name===old) c.name = nv; }); if(!F.categories.some(c=>c.name===nv)) F.categories.push({name:nv, budget:null}); F.rows.forEach(r=>{ if(r.category===old) r.category = nv; }); finSave(); finRender(); }
+function finAddCat(){ const el = document.getElementById('nc-name'), n = el.value.trim(); if(!n || finCats().includes(n)) return; F.categories.push({name:n, budget:null}); finSave(); finRender(); }
+function finDelCat(name){ F.categories = F.categories.filter(c=>c.name!==name); finSave(); finRender(); }
+function finMerge(){ const add = finFresh(); F.rows.push(...clone(add)); F.seed = FS.imported; finSave(); finRender(); }
+function finExport(){ const blob = new Blob([JSON.stringify(Object.assign({source: FS.source, exported: new Date().toISOString()}, F), null, 2)], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'jos-finance-' + new Date().toISOString().slice(0,10) + '.json'; a.click(); }
+function finImport(file){ if(!file) return; const rd = new FileReader(); rd.onload = () => { try{ const o = JSON.parse(rd.result); if(!Array.isArray(o.rows)) throw new Error('нет rows');
+    if(!confirm(`Заменить данные в этом браузере на файл (${o.rows.length} строк)?`)) return; F = {seed: o.seed||FS.imported, rows: o.rows, categories: o.categories||F.categories, balance_note: o.balance_note||'', deleted: o.deleted||[], updated: null}; finSave(); finRender(); }catch(e){ alert('Не тот файл: ' + e.message); } }; rd.readAsText(file); }
+function finReset(){ if(!confirm('Выбросить все правки финансов в этом браузере и вернуться к копии из Notion? Сначала лучше сделать ⬇ JSON.')) return;
+  F = {seed: FS.imported, rows: clone(FS.rows), categories: clone(FS.categories), balance_note: FS.balance_note||'', deleted: [], updated: null}; try{ localStorage.removeItem(FKEY); }catch(e){} finRender(); }
+
 /* ---------- app ---------- */
 const JOS = {
   go(v){ document.querySelectorAll('.nav[data-v]').forEach(n=>n.classList.toggle('on', n.dataset.v===v)); document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on', x.id==='v-'+v));
-    const titles = {today:['Сегодня','план дня, дедлайны, задачи советников'], strategy:['Стратегия','Q4 2026 – Q4 2027 · база, модель, допущения'], advisors:['Советники','Chief of Staff · HR · Маркетинг · Финансы'], brain:['Company Brain','второй мозг W2W — то, что продаём'], w2w:['W2W','клиенты, оффер, команда'], sales:['Продажи','Jay CRM · лиды Telegram @ceo_w2w'], instagram:['Instagram','@javohir_w2w · AI-блог и его агенты'], agents:['Agents House','все агенты на сервере']};
+    const titles = {today:['Сегодня','план дня, дедлайны, задачи советников'], strategy:['Стратегия','Q4 2026 – Q4 2027 · база, модель, допущения'], advisors:['Советники','Chief of Staff · HR · Маркетинг · Финансы'], brain:['Company Brain','второй мозг W2W — то, что продаём'], w2w:['W2W','клиенты, оффер, команда'], sales:['Продажи','Jay CRM · лиды Telegram @ceo_w2w'], instagram:['Instagram','@javohir_w2w · AI-блог и его агенты'], finance:['Финансы','расходы и долги W2W · копия Notion, правится здесь'], agents:['Agents House','все агенты на сервере']};
     document.getElementById('top-title').textContent = titles[v][0]; document.getElementById('top-sub').textContent = titles[v][1];
     const fr = document.querySelector('#v-'+v+' iframe.panel'); if(fr && !fr.src) fr.src = panelUrl(fr.dataset.page);
     document.body.classList.remove('menu'); location.hash = v; window.scrollTo(0,0); this.applyEdit(); },
@@ -716,8 +927,8 @@ document.getElementById('lnk-strategy').href = L.strategy_page; document.getElem
 document.getElementById('foot-built').textContent = 'собрано ' + D.built; document.getElementById('foot-src').textContent = 'стратегия ' + S.meta.generated + ' · мозг ' + BR.snapshot + ' · агенты ' + AG.checked;
 document.getElementById('cnt-today').textContent = allTasks().filter(t=>!E.done[t.id]).length;
 document.getElementById('cnt-brain').textContent = BR.totals.clients; document.getElementById('cnt-w2w').textContent = S.installed_base.accounts.length + ' акк.'; document.getElementById('cnt-agents').textContent = AG.agents.filter(a=>a.state==='running').length + ' live';
-renderToday(); renderStrategy(); renderAdvisors(); renderBrain(); renderW2W(); renderAgents();
-const VIEWS = ['today','strategy','advisors','brain','w2w','sales','instagram','agents'];
+renderToday(); renderStrategy(); renderAdvisors(); renderBrain(); renderW2W(); renderFinance(); renderAgents();
+const VIEWS = ['today','strategy','advisors','brain','w2w','sales','instagram','finance','agents'];
 const h = (location.hash||'').slice(1); if(VIEWS.includes(h)) JOS.go(h); else JOS.applyEdit();
 window.addEventListener('hashchange', () => { const v = (location.hash||'').slice(1); if(VIEWS.includes(v) && !document.getElementById('v-'+v).classList.contains('on')) JOS.go(v); });
 </script>
