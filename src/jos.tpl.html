@@ -290,6 +290,42 @@ select.fi.im-Urgent{color:var(--coral-dark)}
 .saved-flash.on{opacity:1}
 @media(max-width:640px){#fin-kpi .g5{grid-template-columns:repeat(2,minmax(0,1fr))}#fin-kpi .stat{padding:12px}#fin-kpi .stat .v{font-size:20px}}
 
+/* ===== 👛 personal finance (Мои финансы) ===== */
+.me-quick{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;margin:0 0 6px}
+.me-quick input,.me-quick select{font:inherit;font-size:13px;border:1px solid var(--line-2);border-radius:10px;padding:8px 10px;background:#fff;color:var(--ink);min-width:0}
+.me-quick #mq-text{font-size:14px;flex:1 1 240px}.me-quick #mq-cat{flex:0 1 190px}.me-quick #mq-date{flex:0 0 140px}
+.me-quick input:focus,.me-quick select:focus{outline:none;border-color:var(--mint-dark)}
+.me-qt{display:flex;gap:4px}
+.me-x{display:flex;align-items:center;gap:6px;font-size:12px;white-space:nowrap;cursor:pointer;user-select:none}
+.me-x input{accent-color:var(--coral-dark);width:16px;height:16px;margin:0}
+#mq-prev{min-height:16px;margin:0 0 14px 4px}
+#mq-prev.err{color:var(--coral-dark)}#mq-prev.ok{color:var(--mint-dark)}
+@media(max-width:640px){.me-quick #mq-text{flex-basis:100%}.me-quick #mq-cat{flex:1 1 140px}.me-quick .btn.pri{flex:1 1 100%;justify-content:center}}
+.me-bar{height:6px;border-radius:99px;background:var(--card-2);overflow:hidden;min-width:60px}
+.me-bar i{display:block;height:100%;background:var(--mint-dark);border-radius:99px}
+.me-bar i.warn{background:var(--gold)}.me-bar i.over{background:var(--coral-dark)}
+.me-days{display:flex;align-items:flex-end;gap:2px;height:96px;margin-top:8px}
+.me-days .d{flex:1;display:flex;flex-direction:column-reverse;min-width:0;height:100%}
+.me-days .d b{display:block;background:var(--mint-light)}
+.me-days .d b.x{background:var(--coral)}
+.me-days .d.t{box-shadow:inset 0 -2px 0 var(--ink)}
+.me-days-l{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:3px}
+.me-line{display:flex;gap:8px;align-items:center;padding:8px 0;border-top:1px dashed var(--line);font-size:12.5px;flex-wrap:wrap}
+.me-line .grow{flex:1;min-width:140px}
+.me-line select{font:inherit;font-size:12px;border:1px solid var(--line-2);border-radius:8px;padding:4px 6px;background:#fff;max-width:170px}
+.me-cols{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:14px;align-items:start}
+@media(max-width:1180px){.me-cols{grid-template-columns:1fr}}
+.me-code{font-family:var(--mono);font-size:11.5px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;white-space:pre-wrap;word-break:break-all;margin:6px 0}
+.fin-form.me-dform{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:640px){.fin-form.me-dform{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ftbl.me table{min-width:980px}
+.ftbl.me.sm table{min-width:720px}
+tr.me-inbox td{background:#fff9ef}
+.x-on{color:var(--coral-dark);font-weight:700}
+body.me-hide .mv{filter:blur(7px);user-select:none}
+#me-kpi .stat .v{font-size:22px}
+@media(max-width:640px){#me-kpi .g5{grid-template-columns:repeat(2,minmax(0,1fr))}#me-kpi .stat{padding:12px}#me-kpi .stat .v{font-size:18px}}
+
 .menu-btn{display:none}
 @media(max-width:860px){
   .app{grid-template-columns:1fr}
@@ -316,7 +352,8 @@ footer{padding:18px 28px;border-top:1px solid var(--line);color:var(--muted);fon
   <div class="nav" data-v="w2w"><span class="ic">🏢</span>W2W<span class="cnt" id="cnt-w2w"></span></div>
   <div class="nav" data-v="sales"><span class="ic">📇</span>Продажи<span class="cnt">CRM</span></div>
   <div class="nav" data-v="instagram"><span class="ic">📷</span>Instagram<span class="cnt">IG</span></div>
-  <div class="nav" data-v="finance"><span class="ic">💰</span>Финансы<span class="cnt" id="cnt-finance"></span></div>
+  <div class="nav" data-v="finance"><span class="ic">💰</span>Финансы W2W<span class="cnt" id="cnt-finance"></span></div>
+  <div class="nav" data-v="me"><span class="ic">👛</span>Мои финансы<span class="cnt" id="cnt-me"></span></div>
   <div class="nav" data-v="agents"><span class="ic">🤖</span>Agents House<span class="cnt" id="cnt-agents"></span></div>
   <div class="sec">Окна</div>
   <a class="nav ext" id="lnk-strategy" target="_blank"><span class="ic">📄</span>Полная стратегия ↗</a>
@@ -347,6 +384,7 @@ footer{padding:18px 28px;border-top:1px solid var(--line);color:var(--muted);fon
     <section class="view" id="v-sales"><iframe class="panel" data-page="sales" title="Продажи · CRM" loading="lazy"></iframe><p class="small muted panel-foot"><a data-open="sales" target="_blank">Открыть отдельной страницей ↗</a></p></section>
     <section class="view" id="v-instagram"><iframe class="panel" data-page="instagram" title="Instagram" loading="lazy"></iframe><p class="small muted panel-foot"><a data-open="instagram" target="_blank">Открыть отдельной страницей ↗</a></p></section>
     <section class="view" id="v-finance"></section>
+    <section class="view" id="v-me"></section>
     <section class="view" id="v-agents"></section>
   </div>
   <footer><span>Jay OS v7 · только W2W</span><span id="foot-src"></span><span>правки: localStorage <code>jos7-edits</code></span></footer>
@@ -445,8 +483,9 @@ function renderToday(){
     <div class="week">${week.map(w=>`<div class="day ${w.i===dow?'today':''}"><h5>${w.n}</h5>${w.ev.map(e=>`<div class="ev ${e.cls}">${esc(e.txt)}</div>`).join('')}</div>`).join('')}</div>
   </div>
 
-  <div class="grid g3 sect">
-    <a class="card mint" href="#finance" onclick="JOS.go('finance');return false"><h4>💰 Финансы и долги →</h4><p class="small">Открыто (Not paid + In progress): <b>${money(finOpen())}</b>. Расходы из Notion, правятся как в Notion — статус, суммы, платежи.</p></a>
+  <div class="grid g4 sect">
+    <a class="card mint" href="#me" onclick="JOS.go('me');return false"><h4>👛 Мои финансы →</h4><p class="small">${(() => { const m = meMonth(ME_YM), n = meInbox().length; return `${ymRu(ME_YM)}: расходы <b>${mf(m.exp)}</b>, из них ⚡ неожиданные <b>${mf(m.unexp)}</b>. Я должен <b>${mf(meOwe('out'))}</b>, мне должны <b>${mf(meOwe('in'))}</b>.${n ? ` <b>📥 ${n} с телефона ждут разбора.</b>` : ''}`; })()}</p></a>
+    <a class="card mint" href="#finance" onclick="JOS.go('finance');return false"><h4>💰 Финансы W2W →</h4><p class="small">Открыто (Not paid + In progress): <b>${money(finOpen())}</b>. Расходы из Notion, правятся как в Notion — статус, суммы, платежи.</p></a>
     <a class="card mint" href="#sales" onclick="JOS.go('sales');return false"><h4>📇 Продажи · CRM →</h4><p class="small">Лиды из Telegram @ceo_w2w: сколько ждут ответа, воронка, медиана ответа. Обновляется с сервера несколько раз в день.</p></a>
     <a class="card mint" href="#instagram" onclick="JOS.go('instagram');return false"><h4>📷 Instagram →</h4><p class="small">Подписчики, просмотры постов, AI-карусели 19:00, DM-бот «+», статус агентов.</p></a>
   </div>
@@ -952,12 +991,431 @@ function finImport(file){ if(!file) return; const rd = new FileReader(); rd.onlo
 function finReset(){ if(!confirm('Выбросить ВСЕ правки финансов (на всех устройствах) и вернуться к копии из Notion? Сначала лучше сделать ⬇ JSON.')) return;
   F = {seed: FS.imported, rows: clone(FS.rows), categories: clone(FS.categories), balance_note: FS.balance_note||'', deleted: [], cu: Date.now(), bu: Date.now(), updated: null, rev: F.rev, replace: true}; finSave(); finRender(); }
 
+/* ---------- 👛 Мои финансы: Jay's personal money (2026-10-16) ----------
+   Own cloud store = JOS Tasks bridge, ns 'me' (D.mesync). The phone / automations append records with the
+   add-only key (fin:'add') — they arrive as «📥 с телефона» until sorted. Same sync scheme as «Финансы W2W»:
+   localStorage at once, cloud ~1 s later, row-level merge by r.u on conflict, deletions win.
+   Amounts keep their own currency (UZS/USD) and are shown in the chosen one at the CBU rate (cbu.uz). */
+const MKEY = 'jos7-me', MUI = 'jos7-me-ui', MSYNC = D.mesync && D.mesync.url ? D.mesync : null;
+const ME_CATS = [['Продукты','🛒'],['Кафе и доставка','🍽'],['Транспорт и такси','🚕'],['Дом и коммуналка','🏠'],['Связь и подписки','📱'],['Здоровье','💊'],['Одежда','👕'],['Семья','👨‍👩‍👧'],['Подарки','🎁'],['Развлечения','🎉'],['Обучение','📚'],['Поездки','✈️'],['Прочее','📦'],['Доход','💰','i'],['Прочий доход','➕','i']]
+  .map(([name, ic, k]) => ({name, ic, kind: k || 'e', limit: null}));
+const ME_GUESS = [[/такси|taxi|yandex go|uber|mytaxi|метро|metro|бензин|заправ|benzin|parking|парков/i,'Транспорт и такси'],[/korzinka|makro|havas|baraka|магазин|продукт|supermarket|market/i,'Продукты'],[/кафе|cafe|ресторан|restoran|кофе|coffee|evos|kfc|bellissimo|wolt|express24|eats|доставк|oqtepa|lavash|burger|pizza/i,'Кафе и доставка'],[/netflix|spotify|chatgpt|openai|claude|anthropic|icloud|apple|google|youtube|подписк|beeline|ucell|uzmobile|mobiuz|uztelecom|интернет|internet/i,'Связь и подписки'],[/аптек|apteka|врач|клиник|klinika|анализ|стомат/i,'Здоровье'],[/коммунал|свет|газ|вода|электр|аренд|ijara|kvartira|квартир/i,'Дом и коммуналка'],[/зарплат|дивиденд|salary/i,'Доход']];
+const meGuess = s => { for(const [re, c] of ME_GUESS) if(re.test(s || '')) return c; return ''; };
+// same parser as the Apps Script (JOS-Tasks-Setup/Code.gs parseMoney_) — keep both in sync
+function meNum(t){ t = String(t).trim(); const m = t.match(/^(\d{1,3}(?:([ ,.])\d{3})+)(?:[.,](\d{1,2}))?$/);
+  if(m) return +(m[1].split(m[2]).join('') + (m[3] ? '.' + m[3] : '')); return +t.replace(/\s/g, '').replace(',', '.'); }
+function parseMoney(text){
+  const s = String(text || '').replace(/\s+/g, ' ');
+  const clean = s.replace(/\d{1,2}[.\/-]\d{1,2}[.\/-]\d{2,4}/g, ' ').replace(/\d{1,2}:\d{2}(:\d{2})?/g, ' ').replace(/\*+\s?\d+/g, ' ');
+  const N = '(\\d{1,3}(?:[ ,.]\\d{3})+(?:[.,]\\d{1,2})?|\\d+(?:[.,]\\d{1,2})?)', CUR = '(UZS|USD|сум|сўм|so\'?m|sum|\\$|долл\\w*|у\\.е\\.?)';
+  let m = clean.match(new RegExp(N + '\\s*' + CUR, 'i')), amount = 0, cur = '', raw = '';
+  if(m){ amount = meNum(m[1]); cur = /USD|\$|долл|у\.е/i.test(m[2]) ? 'USD' : 'UZS'; raw = m[0]; }
+  else if((m = clean.match(new RegExp('(?:\\$|USD)\\s*' + N, 'i')))){ amount = meNum(m[1]); cur = 'USD'; raw = m[0]; }
+  else if((m = clean.match(new RegExp(N)))){ amount = meNum(m[1]); raw = m[0]; }
+  const type = /(зачисл|пополн|поступ|перевод от|получен|вернул|popoln|zachisl|postup|kirim|tushdi|qabul|income|доход)/i.test(s) ? 'i' : 'e';
+  return {amount, cur, type, raw};
+}
+const ymOf = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+const isoOf = d => `${ymOf(d)}-${String(d.getDate()).padStart(2,'0')}`;
+const ME_TODAY = isoOf(new Date()), ME_YM = ymOf(new Date());
+const MONTHS_RU = ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
+const ymRu = ym => { const [y, m] = ym.split('-'); return MONTHS_RU[+m-1] + ' ' + y; };
+const ymAdd = (ym, n) => { const [y, m] = ym.split('-').map(Number); return ymOf(new Date(y, m-1+n, 1)); };
+const meBlank = () => ({tx: [], debts: [], fixed: [], cats: clone(ME_CATS), plan: {income: null, c: 'UZS'}, deleted: [], cu: 0, pu: 0});
+function meNorm(o){ const b = meBlank(); Object.keys(b).forEach(k => { if(o[k] == null) o[k] = b[k]; }); return o; }
+let M; try{ M = JSON.parse(localStorage.getItem(MKEY) || 'null'); }catch(e){ M = null; }
+M = meNorm(M && Array.isArray(M.tx) ? M : {}); if(M.rev == null) M.rev = 0;
+let MU = {disp: 'UZS', hide: false}; try{ Object.assign(MU, JSON.parse(localStorage.getItem(MUI) || '{}')); }catch(e){}
+const meUi = () => { try{ localStorage.setItem(MUI, JSON.stringify(MU)); }catch(e){} };
+const me = {tab: 'month', ym: ME_YM, q: '', t: '', cat: '', x: false, all: false, qt: 'e'};
+const meId = () => 'm-' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+let meRate = (D.fx && +D.fx.rate) || 0, meRateSrc = D.fx ? 'ЦБ ' + D.fx.date : '';
+const meV = (a, c) => { a = num(a); const d = MU.disp; if((c || 'UZS') === d) return a; if(!meRate) return 0; return d === 'UZS' ? a * meRate : a / meRate; };
+const meFmt = v => MU.disp === 'USD' ? (v<0?'−':'') + '$' + Math.abs(v).toLocaleString('ru-RU', {maximumFractionDigits: Math.abs(v) < 1000 ? 2 : 0}) : (v<0?'−':'') + Math.round(Math.abs(v)).toLocaleString('ru-RU') + ' сум';
+const mf = v => `<span class="mv">${meFmt(v)}</span>`;
+const mfo = (a, c) => `<span class="mv">${c === 'USD' ? '$' + num(a).toLocaleString('ru-RU', {maximumFractionDigits: 2}) : Math.round(num(a)).toLocaleString('ru-RU') + ' сум'}</span>`;
+const mfk = v => MU.disp === 'USD' ? '$' + (Math.abs(v) >= 1000 ? (v/1000).toFixed(1) + 'K' : Math.round(v)) : Math.abs(v) >= 1e6 ? (v/1e6).toLocaleString('ru-RU', {maximumFractionDigits: 1}) + ' млн' : Math.abs(v) >= 1e3 ? Math.round(v/1e3) + ' тыс' : String(Math.round(v));
+const restD = d => d.done ? 0 : Math.max(0, num(d.a) - num(d.paid));
+const meSum = (arr, f) => arr.reduce((s, x) => s + f(x), 0);
+
+/* cloud sync (same protocol as finance; ns 'me') */
+let meTimer = null, meBusy = false, mePending = false, meSync = MSYNC ? ['⏳ облако…','grey'] : ['облако не подключено — только этот браузер','grey'];
+const meStore = () => { try{ localStorage.setItem(MKEY, JSON.stringify(M)); }catch(e){} };
+const meOut = () => ({tx: M.tx, debts: M.debts, fixed: M.fixed, cats: M.cats, plan: M.plan, deleted: M.deleted, cu: M.cu || 0, pu: M.pu || 0});
+function meSave(){ M.dirty = true; M.ver = (M.ver || 0) + 1;
+  try{ localStorage.setItem(MKEY, JSON.stringify(M)); }catch(e){ alert('Не удалось сохранить в браузере: ' + e.message); }
+  const f = document.getElementById('me-saved'); if(f){ f.classList.add('on'); clearTimeout(f._t); f._t = setTimeout(() => f.classList.remove('on'), 1200); }
+  meBadge(); meQueue(); }
+function meStatus(txt, cls){ meSync = [txt, cls]; const el = document.getElementById('me-sync'); if(el){ el.textContent = txt; el.className = 'pill ' + cls; } }
+function meQueue(){ if(!MSYNC) return; clearTimeout(meTimer); meStatus('⏳ сохраняю…','warn'); meTimer = setTimeout(mePush, 900); }
+async function meApi(body){ const r = await fetch(MSYNC.url, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(Object.assign({secret: MSYNC.secret, ns: 'me'}, body))}); if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }
+function meMerge(srv, loc){
+  const del = [...new Set([...(srv.deleted || []), ...(loc.deleted || [])])];
+  const arr = k => { const map = new Map(); (srv[k] || []).forEach(r => map.set(r.id, r));
+    (loc[k] || []).forEach(r => { const s = map.get(r.id); if(!s || (r.u || 0) >= (s.u || 0)) map.set(r.id, r); });
+    const li = (loc[k] || []).map(r => r.id), ids = [...li, ...(srv[k] || []).map(r => r.id).filter(id => !li.includes(id))];
+    return ids.filter(id => !del.includes(id)).map(id => map.get(id)); };
+  return {tx: arr('tx'), debts: arr('debts'), fixed: arr('fixed'), deleted: del,
+    cats: (loc.cu || 0) >= (srv.cu || 0) ? loc.cats : srv.cats, cu: Math.max(loc.cu || 0, srv.cu || 0),
+    plan: (loc.pu || 0) >= (srv.pu || 0) ? loc.plan : srv.plan, pu: Math.max(loc.pu || 0, srv.pu || 0)};
+}
+function meSafeRender(){ const a = document.activeElement; if(a && a.closest && a.closest('#v-me') && /INPUT|SELECT|TEXTAREA/.test(a.tagName)){ mePending = true; return; } mePending = false; meRender(); }
+async function mePush(){
+  if(!MSYNC || !M.dirty) return; if(meBusy){ meQueue(); return; }
+  meBusy = true; const v0 = M.ver; let rerender = false;
+  try{
+    let res = await meApi({fin: 'put', rev: M.rev || 0, state: meOut()});
+    if(!res.ok && res.error === 'conflict'){
+      const st = M.replace ? meOut() : meMerge(meNorm(res.state || {}), meOut());
+      res = await meApi({fin: 'put', rev: res.rev, state: st});
+      if(res.ok && !M.replace){ Object.assign(M, st); rerender = true; }
+    }
+    if(!res.ok) throw new Error(res.error || 'ошибка');
+    M.rev = res.rev; M.synced = res.at; M.replace = false; if(M.ver === v0) M.dirty = false; meStore();
+    meStatus(M.dirty ? '⏳ сохраняю…' : '☁ сохранено в облаке', M.dirty ? 'warn' : 'mint');
+  }catch(e){ meStatus('⚠ нет связи — сохранено в браузере, отправлю позже', 'bad'); }
+  meBusy = false; if(rerender){ meSafeRender(); meBadge(); } if(M.dirty && meSync[1] !== 'bad') meQueue();
+}
+async function mePull(){
+  if(!MSYNC || meBusy) return;
+  try{
+    const res = await meApi({fin: 'get'}); if(!res.ok) throw new Error(res.error);
+    if(!res.state){ if(M.tx.length || M.debts.length || M.fixed.length || M.dirty){ M.dirty = true; M.ver = (M.ver || 0) + 1; meStore(); return mePush(); } meStatus('☁ облако пустое — добавь первую запись', 'mint'); return; }
+    if(M.dirty) return mePush();
+    if(res.rev !== M.rev){ Object.assign(M, meNorm(res.state)); M.rev = res.rev; M.synced = res.at; meStore(); meSafeRender(); meBadge(); }
+    meStatus('☁ синхронизировано', 'mint');
+  }catch(e){ meStatus('⚠ облако недоступно — работаю в браузере', 'bad'); }
+}
+if(MSYNC){
+  document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible') mePull(); });
+  window.addEventListener('online', () => { M.dirty ? mePush() : mePull(); });
+  document.addEventListener('focusout', () => setTimeout(() => { if(mePending) meSafeRender(); }, 50));
+  setInterval(() => { if(document.visibilityState === 'visible' && document.getElementById('v-me').classList.contains('on')) mePull(); }, 30000);
+}
+// live CBU rate (cbu.uz allows CORS); the build-time rate is the fallback
+fetch('https://cbu.uz/ru/arkhiv-kursov-valyut/json/USD/').then(r => r.json()).then(j => { if(j && j[0] && +j[0].Rate){ meRate = +j[0].Rate; meRateSrc = 'ЦБ ' + j[0].Date; meBadge(); if(document.getElementById('v-me').classList.contains('on')) meSafeRender(); } }).catch(() => {});
+
+/* numbers */
+function meMonth(ym){
+  const T = M.tx.filter(t => (t.d || '').startsWith(ym)), ex = T.filter(t => t.t !== 'i'), inc = T.filter(t => t.t === 'i'), xs = ex.filter(t => t.x);
+  const fixed = M.fixed.filter(f => f.on !== 0 && num(f.a) > 0), fixedDue = fixed.filter(f => !T.some(t => t.fx === f.id));
+  const debtsDue = M.debts.filter(d => d.dir === 'out' && !d.done && d.due && d.due.slice(0,7) <= ym && restD(d) > 0);
+  const v = t => meV(t.a, t.c);
+  return {T, ex, inc, xs, exp: meSum(ex, v), income: meSum(inc, v), unexp: meSum(xs, v), fixed, fixedDue,
+    fixedSum: meSum(fixedDue, f => meV(f.a, f.c)), debtsDue, debtsSum: meSum(debtsDue, d => meV(restD(d), d.c))};
+}
+const meOwe = dir => meSum(M.debts.filter(d => d.dir === dir), d => meV(restD(d), d.c));
+const meInbox = () => M.tx.filter(t => t.inbox);
+const mePeople = () => [...new Set(M.debts.map(d => (d.who || '').trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+const meCatOf = name => M.cats.find(c => c.name === name);
+function meBadge(){ const el = document.getElementById('cnt-me'); if(!el) return; const n = meInbox().length; el.textContent = MU.hide ? '•••' : (n ? '📥' + n + ' · ' : '') + mfk(meMonth(ME_YM).exp); }
+function meCatOpts(cur, kind, empty){ const list = M.cats.filter(c => !kind || c.kind === kind), names = list.map(c => c.name);
+  return `<option value="">${empty || '— категория'}</option>` + list.map(c => `<option value="${esc(c.name)}"${c.name === cur ? ' selected' : ''}>${c.ic || ''} ${esc(c.name)}</option>`).join('')
+    + (cur && !names.includes(cur) ? `<option value="${esc(cur)}" selected>${esc(cur)}</option>` : ''); }
+const meSrc = t => t.src === 'phone' ? '<span class="pill blue">📱</span>' : t.src === 'plan' ? '<span class="pill lav">план</span>' : '';
+
+/* quick add — on top of every sub-tab */
+function meQuick(){ return `<div class="me-quick">
+    <div class="me-qt"><button class="btn sm${me.qt === 'e' ? ' on' : ''}" onclick="meQt('e')">− Расход</button><button class="btn sm${me.qt === 'i' ? ' on' : ''}" onclick="meQt('i')">＋ Доход</button></div>
+    <input id="mq-text" autocomplete="off" enterkeyhint="done" placeholder="${me.qt === 'e' ? '50 000 такси · $20 ChatGPT · или вставь SMS банка' : '3 000 000 зарплата'}">
+    <select id="mq-cat">${meCatOpts('', me.qt)}</select>
+    <label class="me-x" title="Не было в плане: импульсная или вынужденная трата"${me.qt === 'i' ? ' style="visibility:hidden"' : ''}><input type="checkbox" id="mq-x"> ⚡ неожиданный</label>
+    <input type="date" id="mq-date" value="${ME_TODAY}">
+    <button class="btn pri" onclick="meQuickAdd()">Добавить</button>
+  </div><div id="mq-prev" class="small muted">Enter — добавить. Сумму и валюту беру из текста, категорию угадываю по словам.</div>`; }
+function meQt(t){ me.qt = t; meRender(); const el = document.getElementById('mq-text'); if(el) el.focus(); }
+function meQuickBind(){
+  const t = document.getElementById('mq-text'), c = document.getElementById('mq-cat'), pv = document.getElementById('mq-prev'); if(!t) return;
+  c.onchange = () => { c.dataset.touched = 1; t.oninput(); };
+  t.oninput = () => { const p = parseMoney(t.value); if(!t.value.trim()){ pv.className = 'small muted'; pv.textContent = 'Enter — добавить.'; return; }
+    const g = meGuess(t.value); if(!c.dataset.touched && g && (meCatOf(g) || {}).kind === me.qt) c.value = g;
+    pv.className = 'small ' + (p.amount ? 'muted' : 'err');
+    pv.innerHTML = p.amount ? `→ ${me.qt === 'e' ? 'расход' : 'доход'} <b>${mfo(p.amount, p.cur || 'UZS')}</b>${c.value ? ' · ' + esc(c.value) : ' · без категории'}${p.type === 'i' && me.qt === 'e' ? ' · <b>похоже на поступление — переключи на «＋ Доход»</b>' : ''}` : 'Не вижу сумму — напиши, например, «45 000 обед»'; };
+  t.onkeydown = e => { if(e.key === 'Enter'){ e.preventDefault(); meQuickAdd(); } };
+}
+function meQuickAdd(){
+  const t = document.getElementById('mq-text'), text = t.value.trim(), p = parseMoney(text), pv = document.getElementById('mq-prev');
+  if(!p.amount){ pv.className = 'small err'; pv.textContent = 'Не вижу сумму — напиши, например, «45 000 обед»'; t.focus(); return; }
+  const note = text.length <= 60 && p.raw ? text.replace(p.raw, ' ').replace(/\s+/g, ' ').trim() : text;
+  const tx = {id: meId(), d: document.getElementById('mq-date').value || ME_TODAY, t: me.qt, a: p.amount, c: p.cur || 'UZS', cat: document.getElementById('mq-cat').value,
+    x: me.qt === 'e' && document.getElementById('mq-x').checked ? 1 : 0, n: note, src: 'jos', u: Date.now()};
+  M.tx.unshift(tx); meSave(); meRender();
+  const pv2 = document.getElementById('mq-prev'); pv2.className = 'small ok';
+  pv2.innerHTML = `✓ Добавлено: ${tx.t === 'e' ? 'расход' : 'доход'} ${mfo(tx.a, tx.c)}${tx.cat ? ' · ' + esc(tx.cat) : ''}${tx.x ? ' · ⚡' : ''}${tx.n ? ' · ' + esc(tx.n) : ''}`;
+  document.getElementById('mq-text').focus();
+}
+
+/* 📊 month */
+function meKpis(){
+  const ym = me.ym, m = meMonth(ym), live = ym >= ME_YM;
+  const plan = num(M.plan.income) ? meV(M.plan.income, M.plan.c) : 0, base = Math.max(plan, m.income);
+  const free = base - m.exp - (live ? m.fixedSum + m.debtsSum : 0), owe = meOwe('out'), owed = meOwe('in');
+  return `<div class="grid g5">
+    <div class="stat pos"><div class="v">${mf(m.income)}</div><div class="l">Доход</div><div class="n">${plan ? 'план ' + mf(plan) : 'план не задан → «🗓 План»'}</div></div>
+    <div class="stat"><div class="v">${mf(m.exp)}</div><div class="l">Расходы</div><div class="n">${m.ex.length} операций${plan ? ' · ' + Math.round(m.exp / plan * 100) + '% плана дохода' : ''}</div></div>
+    <div class="stat neg"><div class="v">${mf(m.unexp)}</div><div class="l">⚡ Неожиданные</div><div class="n">${m.xs.length} шт · ${m.exp ? Math.round(m.unexp / m.exp * 100) : 0}% расходов</div></div>
+    <div class="stat ${free < 0 ? 'neg' : 'pos'}"><div class="v">${base || m.exp ? mf(free) : '—'}</div><div class="l">${live ? 'Свободно до конца месяца' : 'Итог месяца'}</div><div class="n">${live ? 'доход (план или факт) − расходы − ещё не оплаченные обязательные и долги со сроком' : 'доход − расходы'}</div></div>
+    <a class="stat" href="#me" onclick="me.tab='debts';meRender();return false" style="text-decoration:none"><div class="v" style="color:var(--coral-dark)">${mf(owe)}</div><div class="l">Я должен</div><div class="n">мне должны ${mf(owed)}</div></a>
+  </div>`;
+}
+function meMonthView(){
+  const ym = me.ym, m = meMonth(ym), live = ym >= ME_YM;
+  // categories with spend or a limit
+  const used = [...new Set(m.ex.map(t => t.cat || ''))];
+  const cats = [...M.cats.filter(c => c.kind === 'e' && (num(c.limit) || used.includes(c.name))).map(c => c.name), ...used.filter(n => n && !meCatOf(n)), ...(used.includes('') ? [''] : [])];
+  const rows = cats.map(name => { const c = meCatOf(name) || {name, ic: '', limit: null}, ts = m.ex.filter(t => (t.cat || '') === name);
+    const spent = meSum(ts, t => meV(t.a, t.c)), x = meSum(ts.filter(t => t.x), t => meV(t.a, t.c)), lim = num(c.limit) ? meV(c.limit, 'UZS') : 0;
+    return {name, ic: c.ic, spent, x, lim, n: ts.length}; }).sort((a, b) => b.spent - a.spent);
+  const catTbl = rows.length ? `<div class="tbl"><table style="min-width:0"><thead><tr><th>Категория</th><th class="num">Потрачено</th><th class="num">⚡</th><th class="num">Лимит</th><th class="num">Осталось</th><th style="width:22%"></th></tr></thead><tbody>
+      ${rows.map(r => { const pct = r.lim ? Math.min(100, r.spent / r.lim * 100) : 0, cls = !r.lim ? '' : r.spent > r.lim ? 'over' : pct > 80 ? 'warn' : '';
+        return `<tr><td>${r.ic || ''} ${r.name ? esc(r.name) : '<span class="muted">без категории</span>'} <span class="small muted">· ${r.n}</span></td><td class="num">${mf(r.spent)}</td><td class="num">${r.x ? `<span class="x-on">${mf(r.x)}</span>` : '<span class="muted">—</span>'}</td>
+          <td class="num">${r.lim ? mf(r.lim) : '<span class="muted">—</span>'}</td><td class="num">${r.lim ? `<b style="color:${r.spent > r.lim ? 'var(--coral-dark)' : 'var(--mint-dark)'}">${mf(r.lim - r.spent)}</b>` : ''}</td>
+          <td>${r.lim ? `<div class="me-bar"><i class="${cls}" style="width:${pct}%"></i></div>` : ''}</td></tr>`; }).join('')}
+    </tbody></table></div>` : `<div class="card white small muted">В ${ymRu(ym)} расходов пока нет. Добавь первую строку сверху или подключи телефон (вкладка «📱 Телефон»).</div>`;
+  // daily bars
+  const [y, mo] = ym.split('-').map(Number), dim = new Date(y, mo, 0).getDate();
+  const days = Array.from({length: dim}, (_, i) => { const iso = `${ym}-${String(i+1).padStart(2,'0')}`, ts = m.ex.filter(t => t.d === iso);
+    return {iso, all: meSum(ts, t => meV(t.a, t.c)), x: meSum(ts.filter(t => t.x), t => meV(t.a, t.c))}; });
+  const mx = Math.max(1, ...days.map(d => d.all));
+  const chart = `<div class="chart" style="margin-top:12px"><div class="sect-h"><h3>По дням</h3><span class="tag">светлое — обычные · коралл — ⚡ неожиданные</span></div>
+    <div class="me-days">${days.map(d => `<div class="d${d.iso === ME_TODAY ? ' t' : ''}" title="${dateRu(d.iso)}: ${meFmt(d.all)}${d.x ? ' (⚡ ' + meFmt(d.x) + ')' : ''}"><b style="height:${(d.all - d.x) / mx * 100}%"></b><b class="x" style="height:${d.x / mx * 100}%"></b></div>`).join('')}</div>
+    <div class="me-days-l"><span>1</span><span>${Math.round(dim/2)}</span><span>${dim}</span></div></div>`;
+  // right column
+  const inbox = meInbox();
+  const inboxCard = inbox.length ? `<div class="card" style="background:#fff9ef;border-color:#ffd58a;margin-bottom:12px"><div class="sect-h" style="margin:0 0 4px"><h3 style="font-size:14px">📥 С телефона — разобрать · ${inbox.length}</h3></div>
+      ${inbox.slice(0, 12).map(t => `<div class="me-line"><span class="grow"><b>${mfo(t.a, t.c)}</b> <span class="small muted">${dateRu(t.d)}</span><br><span class="small">${esc(t.n || '—')}</span></span>
+        <select id="mi-t-${esc(t.id)}"><option value="e"${t.t !== 'i' ? ' selected' : ''}>расход</option><option value="i"${t.t === 'i' ? ' selected' : ''}>доход</option></select>
+        <select id="mi-c-${esc(t.id)}">${meCatOpts(t.cat || meGuess(t.n), '')}</select>
+        <label class="me-x"><input type="checkbox" id="mi-x-${esc(t.id)}"${t.x ? ' checked' : ''}>⚡</label>
+        <button class="btn sm mint" onclick="meInboxOk('${esc(t.id)}')">✓</button></div>`).join('')}
+      ${inbox.length > 12 ? `<p class="small muted">ещё ${inbox.length - 12} — во вкладке «💸 Операции» (подсвечены)</p>` : ''}</div>` : '';
+  const fixedCard = `<div class="card white" style="margin-bottom:12px"><div class="sect-h" style="margin:0 0 4px"><h3 style="font-size:14px">Обязательные платежи · ${ymRu(ym)}</h3><span class="tag">${m.fixed.length - m.fixedDue.length}/${m.fixed.length}</span></div>
+    ${m.fixed.length ? m.fixed.slice().sort((a, b) => num(a.day) - num(b.day)).map(f => { const paid = m.T.find(t => t.fx === f.id);
+      const late = !paid && live && ym === ME_YM && num(f.day) && num(f.day) < new Date().getDate();
+      return `<div class="me-line"><span class="grow"><b>${esc(f.name || '—')}</b> <span class="small muted">${f.day ? 'до ' + f.day + '-го' : ''}${f.cat ? ' · ' + esc(f.cat) : ''}</span></span><span>${mfo(f.a, f.c)}</span>
+        ${paid ? `<span class="pill mint">✓ ${dateRu(paid.d)}</span>` : `${late ? '<span class="pill bad">срок прошёл</span>' : ''}<button class="btn sm" onclick="meFixPaid('${esc(f.id)}')">Оплатил</button>`}</div>`; }).join('')
+      : '<p class="small muted">Аренда, связь, кредит, подписки — добавь во вкладке «🗓 План», и здесь будет чек-лист на каждый месяц.</p>'}</div>`;
+  const soon = M.debts.filter(d => !d.done && d.due && restD(d) > 0 && daysTo(d.due) <= 30).sort((a, b) => (a.due > b.due ? 1 : -1));
+  const debtCard = soon.length ? `<div class="card white" style="margin-bottom:12px"><div class="sect-h" style="margin:0 0 4px"><h3 style="font-size:14px">Сроки по долгам · 30 дней</h3></div>
+    ${soon.map(d => { const n = daysTo(d.due); return `<div class="me-line"><span class="grow">${d.dir === 'out' ? 'Я → ' : '← '}<b>${esc(d.who || '—')}</b> <span class="small muted">${esc(d.n || '')}</span></span><span>${mfo(restD(d), d.c)}</span>
+      <span class="pill ${n < 0 ? 'bad' : n <= 3 ? 'warn' : 'grey'}">${n < 0 ? 'просрочен ' + (-n) + ' дн' : n === 0 ? 'сегодня' : 'через ' + n + ' дн'}</span></div>`; }).join('')}</div>` : '';
+  const xs = m.xs.slice().sort((a, b) => meV(b.a, b.c) - meV(a.a, a.c)).slice(0, 6);
+  const xCard = `<div class="card white"><div class="sect-h" style="margin:0 0 4px"><h3 style="font-size:14px">⚡ Крупные неожиданные</h3></div>
+    ${xs.length ? xs.map(t => `<div class="me-line"><span class="grow">${esc(t.n || t.cat || '—')} <span class="small muted">${dateRu(t.d)} · ${esc(t.cat || 'без категории')}</span></span><b class="x-on">${mfo(t.a, t.c)}</b></div>`).join('') : '<p class="small muted">Нет. Отмечай ⚡ при вводе, если трату не планировал — так видно, куда утекают деньги.</p>'}</div>`;
+  return `<div class="fin-bar"><button class="btn sm" onclick="me.ym=ymAdd(me.ym,-1);meRender()">‹</button><b style="text-transform:capitalize;min-width:120px;text-align:center">${ymRu(ym)}</b><button class="btn sm" onclick="me.ym=ymAdd(me.ym,1);meRender()">›</button>${ym !== ME_YM ? '<button class="btn sm" onclick="me.ym=ME_YM;meRender()">текущий</button>' : ''}</div>
+    <div id="me-kpi" class="sect" style="margin-bottom:16px">${meKpis()}</div>
+    <div class="me-cols"><div>${catTbl}${chart}</div><div>${inboxCard}${fixedCard}${debtCard}${xCard}</div></div>`;
+}
+
+/* 💸 operations */
+function meTxFiltered(){ const q = me.q.toLowerCase();
+  return M.tx.filter(t => (me.all || (t.d || '').startsWith(me.ym)) && (!me.t || (me.t === 'inbox' ? t.inbox : (t.t === 'i' ? 'i' : 'e') === me.t)) && (!me.cat || (me.cat === '—' ? !t.cat : t.cat === me.cat)) && (!me.x || t.x)
+    && (!q || [t.n, t.cat, t.a, t.d].join(' ').toLowerCase().includes(q))).sort((a, b) => (b.d || '').localeCompare(a.d || '') || (b.u || 0) - (a.u || 0)); }
+function meTxTot(){ const R = meTxFiltered(), e = meSum(R.filter(t => t.t !== 'i'), t => meV(t.a, t.c)), i = meSum(R.filter(t => t.t === 'i'), t => meV(t.a, t.c));
+  return `<td colspan="9">Итого по фильтру · ${R.length} · расходы ${mf(e)} · доходы ${mf(i)} · ⚡ ${mf(meSum(R.filter(t => t.t !== 'i' && t.x), t => meV(t.a, t.c)))}</td>`; }
+function meTxRow(t){ const i = esc(t.id);
+  return `<tr data-c="tx" data-id="${i}"${t.inbox ? ' class="me-inbox" title="пришло с телефона — проверь категорию"' : ''}>
+    <td style="width:140px"><input class="fi" type="date" data-f="d" value="${esc(t.d)}"></td>
+    <td style="width:96px"><select class="fi" data-f="t"><option value="e"${t.t !== 'i' ? ' selected' : ''}>Расход</option><option value="i"${t.t === 'i' ? ' selected' : ''}>Доход</option></select></td>
+    <td style="width:120px"><input class="fi mv" type="number" step="any" data-f="a" value="${esc(t.a)}"></td>
+    <td style="width:70px"><select class="fi" data-f="c">${['UZS','USD'].map(c => `<option${c === (t.c || 'UZS') ? ' selected' : ''}>${c}</option>`).join('')}</select></td>
+    <td style="width:180px"><select class="fi" data-f="cat">${meCatOpts(t.cat, '', '—')}</select></td>
+    <td style="width:44px;text-align:center"><input type="checkbox" data-f="x" title="⚡ неожиданный"${t.x ? ' checked' : ''} style="accent-color:var(--coral-dark)"></td>
+    <td style="min-width:240px"><input class="fi" data-f="n" value="${esc(t.n)}" title="${esc(t.n)}" placeholder="заметка"></td>
+    <td style="width:60px">${meSrc(t)}${t.inbox ? ' <button class="btn sm" title="Отметить как разобранное" onclick="meSet(\'tx\',\'' + i + '\',\'inbox\',0);meRender()">✓</button>' : ''}</td>
+    <td style="width:34px"><button class="xbtn" title="Удалить" onclick="meDel('tx','${i}')">✕</button></td></tr>`; }
+function meTxView(){
+  return `<div class="fin-bar">
+      <button class="btn sm${!me.all ? ' on' : ''}" onclick="me.all=false;meRender()">${ymRu(me.ym)}</button><button class="btn sm${me.all ? ' on' : ''}" onclick="me.all=true;meRender()">всё время</button>
+      <input type="search" placeholder="Поиск: заметка, сумма…" value="${esc(me.q)}" oninput="me.q=this.value;meTxRedraw()">
+      <select onchange="me.t=this.value;meTxRedraw()"><option value="">Расходы и доходы</option><option value="e"${me.t === 'e' ? ' selected' : ''}>Только расходы</option><option value="i"${me.t === 'i' ? ' selected' : ''}>Только доходы</option><option value="inbox"${me.t === 'inbox' ? ' selected' : ''}>📥 Неразобранные</option></select>
+      <select onchange="me.cat=this.value;meTxRedraw()"><option value="">Все категории</option>${M.cats.map(c => `<option value="${esc(c.name)}"${me.cat === c.name ? ' selected' : ''}>${c.ic || ''} ${esc(c.name)}</option>`).join('')}<option value="—"${me.cat === '—' ? ' selected' : ''}>Без категории</option></select>
+      <label class="me-x"><input type="checkbox"${me.x ? ' checked' : ''} onchange="me.x=this.checked;meTxRedraw()"> только ⚡</label>
+      <button class="btn sm" onclick="meCsv()">⬇ CSV</button>
+    </div><div id="me-tx">${meTxTable()}</div>`; }
+function meTxTable(){ const R = meTxFiltered();
+  return `<div class="tbl ftbl me"><table><thead><tr><th class="ns">Дата</th><th class="ns">Тип</th><th class="ns num">Сумма</th><th class="ns">Вал.</th><th class="ns">Категория</th><th class="ns" title="неожиданный">⚡</th><th class="ns">Заметка</th><th class="ns"></th><th class="ns"></th></tr></thead>
+    <tbody>${R.map(meTxRow).join('') || '<tr><td colspan="9" class="muted" style="padding:14px">Записей нет</td></tr>'}</tbody><tfoot><tr class="ftot" id="me-tx-tot">${meTxTot()}</tr></tfoot></table></div>`; }
+function meTxRedraw(){ const el = document.getElementById('me-tx'); if(el) el.innerHTML = meTxTable(); }
+
+/* 🤝 debts */
+function meDebtsView(){
+  const side = dir => { const ds = M.debts.filter(d => d.dir === dir), by = {};
+    ds.forEach(d => { const p = (d.who || '').trim() || '— без имени'; (by[p] = by[p] || []).push(d); });
+    const ppl = Object.entries(by).map(([p, rs]) => ({p, rs, open: meSum(rs, d => meV(restD(d), d.c))})).sort((a, b) => b.open - a.open);
+    const line = d => { const n = d.due ? daysTo(d.due) : null;
+      return `<div class="me-line"><span class="grow"><b>${esc(d.n || 'долг')}</b><br><span class="small muted">${d.d ? 'с ' + dateRu(d.d) + '.' + d.d.slice(2,4) : 'без даты'}${d.due ? ' · срок ' + dateRu(d.due) : ''}</span>
+          ${!d.done && n != null && n < 0 ? `<span class="pill bad">просрочен ${-n} дн</span>` : ''}</span>
+        <span class="mono">${d.done ? mfo(d.a, d.c) : mfo(restD(d), d.c)}${!d.done && num(d.paid) ? ` <span class="small muted">из ${mfo(d.a, d.c)}</span>` : ''}</span>
+        ${d.done ? `<button class="btn sm" onclick="meSet('debts','${esc(d.id)}','done',0);meRender()">↺ открыть</button>` : `<button class="btn sm" onclick="mePay('${esc(d.id)}')">＋ платёж</button><button class="btn sm mint" onclick="meSet('debts','${esc(d.id)}','done',1);meRender()">✓ закрыт</button>`}
+        <button class="xbtn" onclick="meDel('debts','${esc(d.id)}')">✕</button></div>`; };
+    return `<div><div class="sect-h"><h3>${dir === 'out' ? 'Я должен' : 'Мне должны'}</h3><span class="tag" style="color:${dir === 'out' ? 'var(--coral-dark)' : 'var(--mint-dark)'}">${mf(meOwe(dir))}</span></div>
+      ${ppl.length ? ppl.map(x => { const open = x.rs.filter(d => !d.done), done = x.rs.filter(d => d.done);
+        return `<div class="debt-card" style="margin-bottom:10px"><h4>${esc(x.p)}<span class="v${x.open ? '' : ' z'}" style="${dir === 'in' && x.open ? 'color:var(--mint-dark)' : ''}">${x.open ? mf(x.open) : 'закрыто'}</span></h4>
+          ${open.map(line).join('')}${done.length ? `<details style="margin-top:6px"><summary class="small">закрыто · ${done.length}</summary>${done.map(line).join('')}</details>` : ''}</div>`; }).join('')
+        : `<div class="card white small muted">${dir === 'out' ? 'Долгов нет.' : 'Тебе никто не должен — или ещё не записано.'}</div>`}</div>`; };
+  return `<div class="fin-form me-dform">
+      <label>Кто кому<select class="fi" id="md-dir"><option value="out">Я должен</option><option value="in">Мне должны</option></select></label>
+      <label>Человек<input class="fi" id="md-who" list="me-people" placeholder="Имя"></label>
+      <label>Сумма<input class="fi" id="md-a" type="number" step="any" placeholder="0"></label>
+      <label>Валюта<select class="fi" id="md-c"><option>UZS</option><option>USD</option></select></label>
+      <label>Когда взял/дал<input class="fi" id="md-d" type="date" value="${ME_TODAY}"></label>
+      <label>Срок вернуть<input class="fi" id="md-due" type="date"></label>
+      <label>За что<input class="fi" id="md-n" placeholder="заметка"></label>
+      <button class="btn pri" onclick="meAddDebt()">＋ Долг</button>
+    </div>
+    <div class="grid g2">${side('out')}${side('in')}</div>
+    <details style="margin-top:14px"><summary class="small">📋 Все долги таблицей — править суммы, даты, имена</summary>
+      <div class="tbl ftbl me sm" style="margin-top:8px"><table><thead><tr><th class="ns">Кто кому</th><th class="ns">Человек</th><th class="ns num">Сумма</th><th class="ns">Вал.</th><th class="ns num">Вернули</th><th class="ns">С</th><th class="ns">Срок</th><th class="ns">Заметка</th><th class="ns">Закрыт</th><th class="ns"></th></tr></thead><tbody>
+      ${M.debts.map(d => `<tr data-c="debts" data-id="${esc(d.id)}"><td style="width:120px"><select class="fi" data-f="dir"><option value="out"${d.dir === 'out' ? ' selected' : ''}>Я должен</option><option value="in"${d.dir === 'in' ? ' selected' : ''}>Мне должны</option></select></td>
+        <td><input class="fi" data-f="who" list="me-people" value="${esc(d.who)}"></td><td style="width:110px"><input class="fi mv" type="number" step="any" data-f="a" value="${esc(d.a)}"></td>
+        <td style="width:70px"><select class="fi" data-f="c">${['UZS','USD'].map(c => `<option${c === (d.c || 'UZS') ? ' selected' : ''}>${c}</option>`).join('')}</select></td>
+        <td style="width:110px"><input class="fi mv" type="number" step="any" data-f="paid" value="${d.paid == null ? '' : esc(d.paid)}" placeholder="0"></td>
+        <td style="width:136px"><input class="fi" type="date" data-f="d" value="${esc(d.d)}"></td><td style="width:136px"><input class="fi" type="date" data-f="due" value="${esc(d.due)}"></td>
+        <td><input class="fi" data-f="n" value="${esc(d.n)}"></td><td style="width:60px;text-align:center"><input type="checkbox" data-f="done"${d.done ? ' checked' : ''}></td>
+        <td style="width:34px"><button class="xbtn" onclick="meDel('debts','${esc(d.id)}')">✕</button></td></tr>`).join('') || '<tr><td colspan="10" class="muted" style="padding:12px">Пока пусто</td></tr>'}
+      </tbody></table></div></details>
+    <p class="small muted">Платёж по долгу не попадает в расходы месяца — это возврат, а не трата. Если хочешь видеть его в бюджете, добавь отдельной строкой сверху.</p>`;
+}
+
+/* 🗓 plan: income, fixed payments, category limits */
+function mePlanSum(){
+  const inc = num(M.plan.income) ? meV(M.plan.income, M.plan.c) : 0, fx = meSum(M.fixed.filter(f => f.on !== 0), f => meV(f.a, f.c));
+  const lim = meSum(M.cats.filter(c => c.kind === 'e'), c => num(c.limit) ? meV(c.limit, 'UZS') : 0);
+  return `<div class="grid g4">
+    <div class="stat pos"><div class="v">${inc ? mf(inc) : '—'}</div><div class="l">Ожидаемый доход в месяц</div></div>
+    <div class="stat"><div class="v">${mf(fx)}</div><div class="l">Обязательные платежи</div><div class="n">${M.fixed.filter(f => f.on !== 0).length} шт.</div></div>
+    <div class="stat"><div class="v">${mf(lim)}</div><div class="l">Лимиты по категориям</div><div class="n">сумма лимитов на переменные траты</div></div>
+    <div class="stat ${inc - fx - lim < 0 ? 'neg' : 'hl'}"><div class="v">${inc ? mf(inc - fx - lim) : '—'}</div><div class="l">Резерв на неожиданное и накопления</div><div class="n">доход − обязательные − лимиты</div></div></div>`;
+}
+function mePlanView(){
+  const avg = name => { const yms = [1,2,3].map(n => ymAdd(ME_YM, -n)); return meSum(M.tx.filter(t => t.t !== 'i' && t.cat === name && yms.some(y => (t.d || '').startsWith(y))), t => meV(t.a, t.c)) / 3; };
+  return `<div id="me-plan-sum" class="sect" style="margin-bottom:16px">${mePlanSum()}</div>
+    <div class="card white sect" style="margin-bottom:16px"><div class="sect-h" style="margin:0 0 8px"><h3>Ожидаемый доход в месяц</h3><span class="tag">зарплата, дивиденды, всё что приходит регулярно</span></div>
+      <div class="fin-bar" data-c="plan" data-id="plan" style="margin:0"><input class="fi mv" type="number" step="any" data-f="income" value="${M.plan.income == null ? '' : esc(M.plan.income)}" placeholder="сумма" style="max-width:200px;border-color:var(--line-2)">
+        <select class="fi" data-f="c" style="max-width:90px;border-color:var(--line-2)">${['UZS','USD'].map(c => `<option${c === (M.plan.c || 'UZS') ? ' selected' : ''}>${c}</option>`).join('')}</select></div></div>
+    <div class="sect" style="margin-bottom:16px"><div class="sect-h"><h3>Обязательные платежи каждый месяц</h3><button class="btn sm pri" onclick="meAddFixed()">＋ Платёж</button></div>
+      <div class="tbl ftbl me sm"><table><thead><tr><th class="ns">Название</th><th class="ns num">Сумма</th><th class="ns">Вал.</th><th class="ns">День месяца</th><th class="ns">Категория</th><th class="ns">Активен</th><th class="ns"></th></tr></thead><tbody>
+      ${M.fixed.map(f => `<tr data-c="fixed" data-id="${esc(f.id)}"><td><input class="fi" data-f="name" value="${esc(f.name)}" placeholder="Аренда, связь, кредит…"></td>
+        <td style="width:130px"><input class="fi mv" type="number" step="any" data-f="a" value="${f.a == null ? '' : esc(f.a)}" placeholder="0"></td>
+        <td style="width:70px"><select class="fi" data-f="c">${['UZS','USD'].map(c => `<option${c === (f.c || 'UZS') ? ' selected' : ''}>${c}</option>`).join('')}</select></td>
+        <td style="width:100px"><input class="fi" type="number" min="1" max="31" data-f="day" value="${f.day == null ? '' : esc(f.day)}" placeholder="—"></td>
+        <td style="width:180px"><select class="fi" data-f="cat">${meCatOpts(f.cat, 'e', '—')}</select></td>
+        <td style="width:70px;text-align:center"><input type="checkbox" data-f="on"${f.on !== 0 ? ' checked' : ''}></td>
+        <td style="width:34px"><button class="xbtn" onclick="meDel('fixed','${esc(f.id)}')">✕</button></td></tr>`).join('') || '<tr><td colspan="7" class="muted" style="padding:12px">Пока пусто — нажми «＋ Платёж»</td></tr>'}
+      </tbody></table></div><p class="small muted">Каждый месяц они появляются чек-листом на «📊 Месяц»; «Оплатил» записывает расход с этой суммой.</p></div>
+    <div class="sect"><div class="sect-h"><h3>Категории и лимиты на месяц</h3><span class="tag">лимит — в сумах</span></div>
+      <div class="tbl ftbl me sm"><table><thead><tr><th class="ns" style="width:60px">Иконка</th><th class="ns">Категория</th><th class="ns">Тип</th><th class="ns num">Лимит / мес, сум</th><th class="ns num">Среднее за 3 мес</th><th class="ns num">Операций</th><th class="ns"></th></tr></thead><tbody>
+      ${M.cats.map(c => { const n = M.tx.filter(t => t.cat === c.name).length;
+        return `<tr data-c="cats" data-id="${esc(c.name)}"><td><input class="fi" data-f="ic" value="${esc(c.ic)}" style="text-align:center"></td><td><input class="fi" data-f="name" value="${esc(c.name)}"></td>
+        <td style="width:110px"><select class="fi" data-f="kind"><option value="e"${c.kind !== 'i' ? ' selected' : ''}>расход</option><option value="i"${c.kind === 'i' ? ' selected' : ''}>доход</option></select></td>
+        <td style="width:150px"><input class="fi mv" type="number" step="any" data-f="limit" value="${c.limit == null ? '' : esc(c.limit)}" placeholder="—"${c.kind === 'i' ? ' disabled' : ''}></td>
+        <td class="num">${c.kind === 'i' ? '' : mf(avg(c.name))}</td><td class="num">${n}</td>
+        <td style="width:34px">${n ? '' : `<button class="xbtn" onclick="meDelCat(${esc(JSON.stringify(c.name))})">✕</button>`}</td></tr>`; }).join('')}
+      </tbody></table></div>
+      <div class="fin-bar" style="margin-top:10px"><input type="search" id="mc-name" placeholder="Новая категория"><button class="btn" onclick="meAddCat()">＋ Категория</button></div>
+      <p class="small muted">«Среднее за 3 мес» — подсказка, какой лимит ставить. Переименование категории меняет её во всех операциях.</p></div>`;
+}
+
+/* 📱 phone */
+function mePhoneView(){
+  if(!MSYNC) return '<div class="card white">Облако не подключено — нет адреса для телефона.</div>';
+  const url = MSYNC.url, key = MSYNC.add_key || '', kb = Math.round(JSON.stringify(meOut()).length / 1024);
+  const body = k => JSON.stringify({fin: 'add', ns: 'me', key: k, text: '50000 такси'});
+  return `<div class="card mint sect" style="margin-bottom:16px"><h4>Как это работает</h4><p class="small">Телефон отправляет одну запись на адрес ниже — она сразу попадает сюда как «📥 с телефона», на «📊 Месяц» появляется блок «разобрать»: проверяешь категорию, ставишь ⚡ если трата неожиданная, жмёшь ✓. Ключ телефона умеет <b>только добавлять</b> — прочитать твои финансы им нельзя.</p></div>
+    <div class="grid g2 sect">
+      <div class="card white"><h4>Адрес и ключ</h4>
+        <div class="small muted">URL (POST)</div><div class="me-code">${esc(url)}</div>
+        <div class="small muted">Ключ телефона (add-only)</div><div class="me-code" id="me-key">${key ? '••••••••••••' + esc(key.slice(-4)) : '—'}</div>
+        <div class="fin-bar"><button class="btn sm" onclick="document.getElementById('me-key').textContent=${esc(JSON.stringify(key))}">Показать</button><button class="btn sm" onclick="navigator.clipboard.writeText(${esc(JSON.stringify(key))});this.textContent='✓ скопировано'">Копировать ключ</button><button class="btn sm" onclick="navigator.clipboard.writeText(${esc(JSON.stringify(url))});this.textContent='✓ скопировано'">Копировать URL</button></div>
+        <div class="small muted" style="margin-top:8px">Тело запроса (JSON):</div><div class="me-code">${esc(body('КЛЮЧ'))}</div>
+        <table class="small" style="margin-top:6px"><tbody>
+          <tr><td class="mono">text</td><td>свободный текст: «45 000 обед», «$20 ChatGPT» или целиком SMS/пуш банка — сумму и валюту найду сам</td></tr>
+          <tr><td class="mono">amount, cur</td><td>или явно: сумма и UZS / USD</td></tr>
+          <tr><td class="mono">type</td><td><span class="mono">e</span> расход (по умолчанию) · <span class="mono">i</span> доход; «зачисление/пополнение» в тексте = доход</td></tr>
+          <tr><td class="mono">cat</td><td>категория (как здесь), можно не слать</td></tr>
+          <tr><td class="mono">unexpected</td><td><span class="mono">true</span> — сразу пометить ⚡</td></tr>
+          <tr><td class="mono">note, date</td><td>заметка; дата YYYY-MM-DD (по умолчанию сегодня, Ташкент)</td></tr></tbody></table></div>
+      <div class="card white"><h4>Готовые рецепты</h4>
+        <p class="small"><b>iPhone · Команды (Shortcuts) — «Трата» в один тап</b><br>1) Новая команда → «Запросить ввод» (текст, «Сколько и на что?»). 2) «Получить содержимое URL»: URL выше, Метод POST, Тело запроса JSON: <span class="mono">fin</span>=add, <span class="mono">ns</span>=me, <span class="mono">key</span>=ключ, <span class="mono">text</span>=Ввод. 3) «Показать результат». Вынеси на экран «Домой» или повесь на двойной тап по задней крышке / «Привет, Siri, трата».</p>
+        <p class="small"><b>iPhone · автоматически из SMS банка</b><br>Команды → Автоматизация → «Сообщение» → отправитель = банк (или «содержит UZS») → «Выполнять сразу» → то же «Получить содержимое URL», где <span class="mono">text</span> = «Входящее сообщение». Пуши Click/Payme iOS читать не даёт — только SMS.</p>
+        <p class="small"><b>Android · автоматически из уведомлений</b><br>MacroDroid / Tasker: триггер «Уведомление» от Click / Payme / Uzum / банка → действие HTTP-запрос POST на URL, тело JSON, <span class="mono">text</span> = текст уведомления. Ручной ввод — виджет приложения HTTP Shortcuts.</p>
+        <p class="small"><b>Проверка с компьютера</b></p><div class="me-code">curl -L -H "Content-Type: text/plain" -d '${esc(body('КЛЮЧ'))}' "${esc(url)}"</div>
+        <p class="small muted">Google отвечает через редирект — приложения следуют ему сами; в curl нужен <span class="mono">-L</span>. Ответ: <span class="mono">{"ok":true,"added":{…}}</span>.</p></div>
+    </div>
+    <p class="small muted">Хранилище: ${kb} КБ из ~450 доступных (Google Script Properties) — это тысячи операций; когда подойдёт к 350 КБ, переедем в Google Таблицу.</p>`;
+}
+
+/* render + actions */
+function renderMe(){
+  document.body.classList.toggle('me-hide', !!MU.hide);
+  const nIn = meInbox().length;
+  document.getElementById('v-me').innerHTML = `${meQuick()}
+    <div class="fin-tabs">
+      ${[['month','📊 Месяц'],['tx','💸 Операции'],['debts','🤝 Долги'],['plan','🗓 План и лимиты'],['phone','📱 Телефон']].map(([k, t]) => `<button class="btn${me.tab === k ? ' on' : ''}" onclick="me.tab='${k}';meRender()">${t}${k === 'month' && nIn ? ` <span class="pill warn">📥 ${nIn}</span>` : ''}</button>`).join('')}
+      <span style="flex:1"></span>
+      <span class="saved-flash" id="me-saved">✓ сохранено</span><span class="pill ${meSync[1]}" id="me-sync">${meSync[0]}</span>
+      <button class="btn sm${MU.disp === 'UZS' ? ' on' : ''}" onclick="MU.disp='UZS';meUi();meRender();meBadge()">сум</button><button class="btn sm${MU.disp === 'USD' ? ' on' : ''}" onclick="MU.disp='USD';meUi();meRender();meBadge()">$</button>
+      <button class="btn sm${MU.hide ? ' on' : ''}" title="Скрыть суммы, если показываешь экран" onclick="MU.hide=!MU.hide;meUi();meRender();meBadge()">${MU.hide ? '🙈' : '👁'}</button>
+    </div>
+    <datalist id="me-people">${mePeople().map(p => `<option value="${esc(p)}">`).join('')}</datalist>
+    <div id="me-pane">${me.tab === 'tx' ? meTxView() : me.tab === 'debts' ? meDebtsView() : me.tab === 'plan' ? mePlanView() : me.tab === 'phone' ? mePhoneView() : meMonthView()}</div>
+    <p class="small muted" style="margin-top:14px">Только твои личные деньги — отдельно от «Финансы W2W». ${MSYNC ? `Правки сохраняются в облако и видны на всех устройствах · версия ${M.rev || 0}${M.synced ? ' от ' + esc(String(M.synced).slice(0,16).replace('T',' ')) + ' UTC' : ''}` : 'Правки сохраняются только в этом браузере'} · курс ${meRate ? '1 $ = ' + meRate.toLocaleString('ru-RU') + ' сум (' + esc(meRateSrc) + ')' : 'неизвестен — суммы в $ не пересчитываются'}.
+      <button class="btn sm" onclick="meExport()">⬇ JSON</button> <label class="btn sm" style="cursor:pointer">⬆ Импорт<input type="file" accept="application/json,.json" hidden onchange="meImport(this.files[0])"></label></p>`;
+  meQuickBind();
+}
+function meRender(){ const y = window.scrollY; renderMe(); window.scrollTo(0, y); meBadge(); }
+function meLight(){ const k = document.getElementById('me-kpi'); if(k) k.innerHTML = meKpis(); const t = document.getElementById('me-tx-tot'); if(t) t.innerHTML = meTxTot(); const p = document.getElementById('me-plan-sum'); if(p) p.innerHTML = mePlanSum(); }
+document.getElementById('v-me').addEventListener('change', e => {
+  const el = e.target; if(!el.dataset || !el.dataset.f) return; const row = el.closest('[data-c]'); if(!row) return;
+  let v = el.type === 'checkbox' ? (el.checked ? 1 : 0) : el.value;
+  if(['a','paid','day','limit','income'].includes(el.dataset.f)) v = v === '' ? null : +v;
+  meSet(row.dataset.c, row.dataset.id, el.dataset.f, v); meLight();
+});
+function meSet(c, id, f, v){
+  if(c === 'cats'){ const k = meCatOf(id); if(!k) return; if(f === 'name'){ meRenameCat(id, v); return; } k[f] = v; M.cu = Date.now(); meSave(); if(f === 'kind') meRender(); return; }
+  if(c === 'plan'){ M.plan[f] = v; M.pu = Date.now(); meSave(); return; }
+  const r = (M[c] || []).find(x => x.id === id); if(!r) return; r[f] = v; r.u = Date.now();
+  if(c === 'debts' && (f === 'paid' || f === 'a') && num(r.a) > 0 && num(r.paid) >= num(r.a)) r.done = 1;
+  if(c === 'tx' && f === 'inbox' && !v) delete r.inbox;
+  meSave();
+}
+function meInboxOk(id){ const t = M.tx.find(x => x.id === id); if(!t) return; const g = k => document.getElementById(`mi-${k}-${id}`);
+  t.t = g('t').value; t.cat = g('c').value; t.x = t.t === 'e' && g('x').checked ? 1 : 0; delete t.inbox; t.u = Date.now(); meSave(); meRender(); }
+function meFixPaid(fid){ const f = M.fixed.find(x => x.id === fid); if(!f) return;
+  const d = me.ym === ME_YM ? ME_TODAY : `${me.ym}-${String(Math.min(num(f.day) || 1, 28)).padStart(2,'0')}`;
+  M.tx.unshift({id: meId(), d, t: 'e', a: num(f.a), c: f.c || 'UZS', cat: f.cat || '', x: 0, n: f.name, fx: f.id, src: 'plan', u: Date.now()}); meSave(); meRender(); }
+function meAddDebt(){ const g = id => document.getElementById(id).value; const who = g('md-who').trim(), a = g('md-a');
+  if(!who || !a){ alert('Нужно имя и сумма'); return; }
+  M.debts.unshift({id: meId(), dir: g('md-dir'), who, a: +a, c: g('md-c'), paid: null, d: g('md-d'), due: g('md-due'), n: g('md-n').trim(), done: 0, u: Date.now()}); meSave(); meRender(); }
+function mePay(id){ const d = M.debts.find(x => x.id === id); if(!d) return; const left = restD(d);
+  const v = prompt(`Сколько вернули сейчас (${d.c || 'UZS'})? Остаток ${d.c === 'USD' ? '$' + left : Math.round(left).toLocaleString('ru-RU') + ' сум'}`, left); if(v == null || v === '' || isNaN(meNum(v))) return;
+  const add = meNum(v); d.paid = num(d.paid) + add; if(num(d.paid) >= num(d.a)) d.done = 1;
+  d.n = (d.n ? d.n + ' · ' : '') + `платёж ${add.toLocaleString('ru-RU')} ${ME_TODAY.slice(5).split('-').reverse().join('.')}`; d.u = Date.now(); meSave(); meRender(); }
+function meAddFixed(){ M.fixed.push({id: meId(), name: '', a: null, c: 'UZS', day: null, cat: '', on: 1, u: Date.now()}); meSave(); meRender();
+  const r = document.querySelectorAll('[data-c="fixed"] input[data-f="name"]'); if(r.length) r[r.length-1].focus(); }
+function meAddCat(){ const el = document.getElementById('mc-name'), n = el.value.trim(); if(!n || meCatOf(n)) return; M.cats.push({name: n, ic: '•', kind: 'e', limit: null}); M.cu = Date.now(); meSave(); meRender(); }
+function meDelCat(name){ M.cats = M.cats.filter(c => c.name !== name); M.cu = Date.now(); meSave(); meRender(); }
+function meRenameCat(old, nv){ nv = String(nv || '').trim(); if(!nv || nv === old || meCatOf(nv)){ meRender(); return; }
+  meCatOf(old).name = nv; [...M.tx, ...M.fixed].forEach(r => { if(r.cat === old){ r.cat = nv; r.u = Date.now(); } }); M.cu = Date.now(); meSave(); meRender(); }
+function meDel(c, id){ const r = (M[c] || []).find(x => x.id === id); if(!r) return;
+  const what = c === 'tx' ? `${r.n || r.cat || 'запись'} ${meFmt(meV(r.a, r.c))}` : c === 'debts' ? `долг ${r.who || ''}` : `платёж «${r.name || ''}»`;
+  if(!confirm(`Удалить ${what}?`)) return; M[c] = M[c].filter(x => x.id !== id); M.deleted.push(id); meSave(); meRender(); }
+function meExport(){ const blob = new Blob([JSON.stringify(Object.assign({exported: new Date().toISOString()}, meOut()), null, 2)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'jos-my-finance-' + ME_TODAY + '.json'; a.click(); }
+function meCsv(){ const rows = [['date','type','amount','currency','category','unexpected','note','source'], ...meTxFiltered().map(t => [t.d, t.t === 'i' ? 'income' : 'expense', t.a, t.c || 'UZS', t.cat || '', t.x ? 1 : 0, t.n || '', t.src || ''])];
+  const csv = '﻿' + rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(';')).join('\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv;charset=utf-8'})); a.download = 'jos-my-operations-' + ME_TODAY + '.csv'; a.click(); }
+function meImport(file){ if(!file) return; const rd = new FileReader(); rd.onload = () => { try{ const o = JSON.parse(rd.result); if(!Array.isArray(o.tx)) throw new Error('нет tx');
+    if(!confirm(`Заменить ВСЕ мои финансы (на всех устройствах) на файл: ${o.tx.length} операций, ${(o.debts || []).length} долгов?`)) return;
+    M = Object.assign(meNorm({tx: o.tx, debts: o.debts, fixed: o.fixed, cats: o.cats, plan: o.plan, deleted: o.deleted || []}), {cu: Date.now(), pu: Date.now(), rev: M.rev, replace: true}); meSave(); meRender(); }catch(e){ alert('Не тот файл: ' + e.message); } }; rd.readAsText(file); }
+
 /* ---------- app ---------- */
 const JOS = {
   go(v){ document.querySelectorAll('.nav[data-v]').forEach(n=>n.classList.toggle('on', n.dataset.v===v)); document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on', x.id==='v-'+v));
-    const titles = {today:['Сегодня','план дня, дедлайны, задачи советников'], strategy:['Стратегия','Q4 2026 – Q4 2027 · база, модель, допущения'], advisors:['Советники','Chief of Staff · HR · Маркетинг · Финансы'], brain:['Company Brain','второй мозг W2W — то, что продаём'], w2w:['W2W','клиенты, оффер, команда'], sales:['Продажи','Jay CRM · лиды Telegram @ceo_w2w'], instagram:['Instagram','@javohir_w2w · AI-блог и его агенты'], finance:['Финансы','расходы и долги W2W · копия Notion, правится здесь'], agents:['Agents House','все агенты на сервере']};
+    const titles = {today:['Сегодня','план дня, дедлайны, задачи советников'], strategy:['Стратегия','Q4 2026 – Q4 2027 · база, модель, допущения'], advisors:['Советники','Chief of Staff · HR · Маркетинг · Финансы'], brain:['Company Brain','второй мозг W2W — то, что продаём'], w2w:['W2W','клиенты, оффер, команда'], sales:['Продажи','Jay CRM · лиды Telegram @ceo_w2w'], instagram:['Instagram','@javohir_w2w · AI-блог и его агенты'], finance:['Финансы W2W','расходы и долги W2W · копия Notion, правится здесь'], me:['Мои финансы','личные деньги: расходы, неожиданные траты, план, долги · с телефона'], agents:['Agents House','все агенты на сервере']};
     document.getElementById('top-title').textContent = titles[v][0]; document.getElementById('top-sub').textContent = titles[v][1];
     if(v === 'finance') finPull();
+    if(v === 'me') mePull();
     const fr = document.querySelector('#v-'+v+' iframe.panel'); if(fr && !fr.src) fr.src = panelUrl(fr.dataset.page);
     document.body.classList.remove('menu'); location.hash = v; window.scrollTo(0,0); this.applyEdit(); },
   toggleEdit(){ document.body.classList.toggle('editing'); document.getElementById('btn-edit').classList.toggle('on', document.body.classList.contains('editing')); this.applyEdit(); },
@@ -981,8 +1439,8 @@ document.getElementById('lnk-strategy').href = L.strategy_page; document.getElem
 document.getElementById('foot-built').textContent = 'собрано ' + D.built; document.getElementById('foot-src').textContent = 'стратегия ' + S.meta.generated + ' · мозг ' + BR.snapshot + ' · агенты ' + AG.checked;
 document.getElementById('cnt-today').textContent = allTasks().filter(t=>!E.done[t.id]).length;
 document.getElementById('cnt-brain').textContent = BR.totals.clients; document.getElementById('cnt-w2w').textContent = S.installed_base.accounts.length + ' акк.'; document.getElementById('cnt-agents').textContent = AG.agents.filter(a=>a.state==='running').length + ' live';
-renderToday(); renderStrategy(); renderAdvisors(); renderBrain(); renderW2W(); renderFinance(); renderAgents(); finPull();
-const VIEWS = ['today','strategy','advisors','brain','w2w','sales','instagram','finance','agents'];
+renderToday(); renderStrategy(); renderAdvisors(); renderBrain(); renderW2W(); renderFinance(); renderMe(); renderAgents(); finPull(); mePull(); meBadge();
+const VIEWS = ['today','strategy','advisors','brain','w2w','sales','instagram','finance','me','agents'];
 const h = (location.hash||'').slice(1); if(VIEWS.includes(h)) JOS.go(h); else JOS.applyEdit();
 window.addEventListener('hashchange', () => { const v = (location.hash||'').slice(1); if(VIEWS.includes(v) && !document.getElementById('v-'+v).classList.contains('on')) JOS.go(v); });
 </script>
