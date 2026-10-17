@@ -30,7 +30,9 @@ button{font:inherit}
 
 /* ===== layout ===== */
 .app{display:grid;grid-template-columns:236px minmax(0,1fr);min-height:100vh}
-.side{position:sticky;top:0;height:100vh;border-right:1px solid var(--line);background:#fbfbfc;display:flex;flex-direction:column;padding:18px 14px;gap:4px}
+.side{position:sticky;top:0;height:100vh;border-right:1px solid var(--line);background:#fbfbfc;display:flex;flex-direction:column;padding:18px 14px;gap:4px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
+.side>*{flex-shrink:0}
+.side::-webkit-scrollbar{width:6px}.side::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:6px}.side::-webkit-scrollbar-track{background:transparent}
 .brand{display:flex;align-items:center;gap:10px;padding:4px 8px 16px}
 .brand svg{width:34px;height:34px;flex:none}
 .brand .wm b{display:block;font-family:var(--head);font-weight:800;font-size:17px;color:var(--ink);line-height:1}
