@@ -484,7 +484,7 @@ function renderToday(){
   </div>
 
   <div class="grid g4 sect">
-    <a class="card mint" href="#me" onclick="JOS.go('me');return false"><h4>👛 Мои финансы →</h4><p class="small">${(() => { const m = meMonth(ME_YM), n = meInbox().length; return `${ymRu(ME_YM)}: расходы <b>${mf(m.exp)}</b>, из них ⚡ неожиданные <b>${mf(m.unexp)}</b>. Я должен <b>${mf(meOwe('out'))}</b>, мне должны <b>${mf(meOwe('in'))}</b>.${n ? ` <b>📥 ${n} с телефона ждут разбора.</b>` : ''}`; })()}</p></a>
+    <a class="card mint" href="#me" onclick="JOS.go('me');return false"><h4>👛 Мои финансы →</h4><p class="small" id="me-today">${meTodayTxt()}</p></a>
     <a class="card mint" href="#finance" onclick="JOS.go('finance');return false"><h4>💰 Финансы W2W →</h4><p class="small">Открыто (Not paid + In progress): <b>${money(finOpen())}</b>. Расходы из Notion, правятся как в Notion — статус, суммы, платежи.</p></a>
     <a class="card mint" href="#sales" onclick="JOS.go('sales');return false"><h4>📇 Продажи · CRM →</h4><p class="small">Лиды из Telegram @ceo_w2w: сколько ждут ответа, воронка, медиана ответа. Обновляется с сервера несколько раз в день.</p></a>
     <a class="card mint" href="#instagram" onclick="JOS.go('instagram');return false"><h4>📷 Instagram →</h4><p class="small">Подписчики, просмотры постов, AI-карусели 19:00, DM-бот «+», статус агентов.</p></a>
@@ -997,8 +997,8 @@ function finReset(){ if(!confirm('Выбросить ВСЕ правки фин�
    localStorage at once, cloud ~1 s later, row-level merge by r.u on conflict, deletions win.
    Amounts keep their own currency (UZS/USD) and are shown in the chosen one at the CBU rate (cbu.uz). */
 const MKEY = 'jos7-me', MUI = 'jos7-me-ui', MSYNC = D.mesync && D.mesync.url ? D.mesync : null;
-const ME_CATS = [['Продукты','🛒'],['Кафе и доставка','🍽'],['Транспорт и такси','🚕'],['Дом и коммуналка','🏠'],['Связь и подписки','📱'],['Здоровье','💊'],['Одежда','👕'],['Семья','👨‍👩‍👧'],['Подарки','🎁'],['Развлечения','🎉'],['Обучение','📚'],['Поездки','✈️'],['Прочее','📦'],['Доход','💰','i'],['Прочий доход','➕','i']]
-  .map(([name, ic, k]) => ({name, ic, kind: k || 'e', limit: null}));
+const ME_CATS = [['Продукты','🛒'],['Кафе и доставка','🍽'],['Транспорт и такси','🚕'],['Дом и коммуналка','🏠'],['Связь и подписки','📱'],['Здоровье','💊'],['Одежда','👕'],['Семья','👨‍👩‍👧'],['Подарки','🎁'],['Развлечения','🎉'],['Обучение','📚'],['Поездки','✈️'],['Наличные','💵'],['Прочее','📦'],['Переводы','🔁','e',1],['Доход','💰','i'],['Прочий доход','➕','i'],['Переводы входящие','🔁','i',1]]
+  .map(([name, ic, k, tr]) => Object.assign({name, ic, kind: k || 'e', limit: null}, tr ? {tr: 1} : {}));
 const ME_GUESS = [[/такси|taxi|yandex go|uber|mytaxi|метро|metro|бензин|заправ|benzin|parking|парков/i,'Транспорт и такси'],[/korzinka|makro|havas|baraka|магазин|продукт|supermarket|market/i,'Продукты'],[/кафе|cafe|ресторан|restoran|кофе|coffee|evos|kfc|bellissimo|wolt|express24|eats|доставк|oqtepa|lavash|burger|pizza/i,'Кафе и доставка'],[/netflix|spotify|chatgpt|openai|claude|anthropic|icloud|apple|google|youtube|подписк|beeline|ucell|uzmobile|mobiuz|uztelecom|интернет|internet/i,'Связь и подписки'],[/аптек|apteka|врач|клиник|klinika|анализ|стомат/i,'Здоровье'],[/коммунал|свет|газ|вода|электр|аренд|ijara|kvartira|квартир/i,'Дом и коммуналка'],[/зарплат|дивиденд|salary/i,'Доход']];
 const meGuess = s => { for(const [re, c] of ME_GUESS) if(re.test(s || '')) return c; return ''; };
 // same parser as the Apps Script (JOS-Tasks-Setup/Code.gs parseMoney_) — keep both in sync
@@ -1021,8 +1021,9 @@ const ME_TODAY = isoOf(new Date()), ME_YM = ymOf(new Date());
 const MONTHS_RU = ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
 const ymRu = ym => { const [y, m] = ym.split('-'); return MONTHS_RU[+m-1] + ' ' + y; };
 const ymAdd = (ym, n) => { const [y, m] = ym.split('-').map(Number); return ymOf(new Date(y, m-1+n, 1)); };
-const meBlank = () => ({tx: [], debts: [], fixed: [], cats: clone(ME_CATS), plan: {income: null, c: 'UZS'}, deleted: [], cu: 0, pu: 0});
-function meNorm(o){ const b = meBlank(); Object.keys(b).forEach(k => { if(o[k] == null) o[k] = b[k]; }); return o; }
+const meBlank = () => ({tx: [], debts: [], fixed: [], cats: clone(ME_CATS), plan: {income: null, c: 'UZS'}, cards: {}, deleted: [], cu: 0, pu: 0});
+function meNorm(o){ const b = meBlank(); Object.keys(b).forEach(k => { if(o[k] == null) o[k] = b[k]; });
+  ME_CATS.filter(c => c.tr || c.name === 'Наличные').forEach(c => { if(!o.cats.some(x => x.name === c.name)) o.cats.push(clone(c)); }); return o; }
 let M; try{ M = JSON.parse(localStorage.getItem(MKEY) || 'null'); }catch(e){ M = null; }
 M = meNorm(M && Array.isArray(M.tx) ? M : {}); if(M.rev == null) M.rev = 0;
 let MU = {disp: 'UZS', hide: false}; try{ Object.assign(MU, JSON.parse(localStorage.getItem(MUI) || '{}')); }catch(e){}
@@ -1041,7 +1042,8 @@ const meSum = (arr, f) => arr.reduce((s, x) => s + f(x), 0);
 /* cloud sync (same protocol as finance; ns 'me') */
 let meTimer = null, meBusy = false, mePending = false, meSync = MSYNC ? ['⏳ облако…','grey'] : ['облако не подключено — только этот браузер','grey'];
 const meStore = () => { try{ localStorage.setItem(MKEY, JSON.stringify(M)); }catch(e){} };
-const meOut = () => ({tx: M.tx, debts: M.debts, fixed: M.fixed, cats: M.cats, plan: M.plan, deleted: M.deleted, cu: M.cu || 0, pu: M.pu || 0});
+const ME_LOCAL = ['rev','dirty','ver','synced','replace'];
+const meOut = () => { const o = {}; Object.keys(M).forEach(k => { if(!ME_LOCAL.includes(k)) o[k] = M[k]; }); o.cu = M.cu || 0; o.pu = M.pu || 0; return o; };
 function meSave(){ M.dirty = true; M.ver = (M.ver || 0) + 1;
   try{ localStorage.setItem(MKEY, JSON.stringify(M)); }catch(e){ alert('Не удалось сохранить в браузере: ' + e.message); }
   const f = document.getElementById('me-saved'); if(f){ f.classList.add('on'); clearTimeout(f._t); f._t = setTimeout(() => f.classList.remove('on'), 1200); }
@@ -1055,7 +1057,8 @@ function meMerge(srv, loc){
     (loc[k] || []).forEach(r => { const s = map.get(r.id); if(!s || (r.u || 0) >= (s.u || 0)) map.set(r.id, r); });
     const li = (loc[k] || []).map(r => r.id), ids = [...li, ...(srv[k] || []).map(r => r.id).filter(id => !li.includes(id))];
     return ids.filter(id => !del.includes(id)).map(id => map.get(id)); };
-  return {tx: arr('tx'), debts: arr('debts'), fixed: arr('fixed'), deleted: del,
+  const cards = Object.assign({}, srv.cards || {}); Object.entries(loc.cards || {}).forEach(([k, v]) => { if(!cards[k] || (v.at || '') > (cards[k].at || '')) cards[k] = v; });
+  return {...srv, ...loc, cards, tx: arr('tx'), debts: arr('debts'), fixed: arr('fixed'), deleted: del,
     cats: (loc.cu || 0) >= (srv.cu || 0) ? loc.cats : srv.cats, cu: Math.max(loc.cu || 0, srv.cu || 0),
     plan: (loc.pu || 0) >= (srv.pu || 0) ? loc.plan : srv.plan, pu: Math.max(loc.pu || 0, srv.pu || 0)};
 }
@@ -1097,22 +1100,27 @@ fetch('https://cbu.uz/ru/arkhiv-kursov-valyut/json/USD/').then(r => r.json()).th
 
 /* numbers */
 function meMonth(ym){
-  const T = M.tx.filter(t => (t.d || '').startsWith(ym)), ex = T.filter(t => t.t !== 'i'), inc = T.filter(t => t.t === 'i'), xs = ex.filter(t => t.x);
+  const T = M.tx.filter(t => (t.d || '').startsWith(ym)), tr = T.filter(meTr), ex = T.filter(t => t.t !== 'i' && !meTr(t)), inc = T.filter(t => t.t === 'i' && !meTr(t)), xs = ex.filter(t => t.x);
   const fixed = M.fixed.filter(f => f.on !== 0 && num(f.a) > 0), fixedDue = fixed.filter(f => !T.some(t => t.fx === f.id));
   const debtsDue = M.debts.filter(d => d.dir === 'out' && !d.done && d.due && d.due.slice(0,7) <= ym && restD(d) > 0);
   const v = t => meV(t.a, t.c);
   return {T, ex, inc, xs, exp: meSum(ex, v), income: meSum(inc, v), unexp: meSum(xs, v), fixed, fixedDue,
+    trOut: meSum(tr.filter(t => t.t !== 'i'), v), trIn: meSum(tr.filter(t => t.t === 'i'), v), trN: tr.length,
     fixedSum: meSum(fixedDue, f => meV(f.a, f.c)), debtsDue, debtsSum: meSum(debtsDue, d => meV(restD(d), d.c))};
 }
 const meOwe = dir => meSum(M.debts.filter(d => d.dir === dir), d => meV(restD(d), d.c));
 const meInbox = () => M.tx.filter(t => t.inbox);
+const meTr = t => !!(meCatOf(t.cat) || {}).tr;
 const mePeople = () => [...new Set(M.debts.map(d => (d.who || '').trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
 const meCatOf = name => M.cats.find(c => c.name === name);
-function meBadge(){ const el = document.getElementById('cnt-me'); if(!el) return; const n = meInbox().length; el.textContent = MU.hide ? '•••' : (n ? '📥' + n + ' · ' : '') + mfk(meMonth(ME_YM).exp); }
+function meTodayTxt(){ const m = meMonth(ME_YM), n = meInbox().length, cards = Object.values(M.cards || {});
+  return `${ymRu(ME_YM)}: расходы <b>${mf(m.exp)}</b>, из них ⚡ неожиданные <b>${mf(m.unexp)}</b>.${cards.length ? ` На картах <b>${mf(meSum(cards, c => meV(c.bal, c.c || 'UZS')))}</b>.` : ''} Я должен <b>${mf(meOwe('out'))}</b>, мне должны <b>${mf(meOwe('in'))}</b>.${n ? ` <b>📥 ${n} ждут разбора.</b>` : ''}`; }
+function meBadge(){ const el = document.getElementById('cnt-me'); if(!el) return; const n = meInbox().length; el.textContent = MU.hide ? '•••' : (n ? '📥' + n + ' · ' : '') + mfk(meMonth(ME_YM).exp);
+  const td = document.getElementById('me-today'); if(td) td.innerHTML = meTodayTxt(); }
 function meCatOpts(cur, kind, empty){ const list = M.cats.filter(c => !kind || c.kind === kind), names = list.map(c => c.name);
   return `<option value="">${empty || '— категория'}</option>` + list.map(c => `<option value="${esc(c.name)}"${c.name === cur ? ' selected' : ''}>${c.ic || ''} ${esc(c.name)}</option>`).join('')
     + (cur && !names.includes(cur) ? `<option value="${esc(cur)}" selected>${esc(cur)}</option>` : ''); }
-const meSrc = t => t.src === 'phone' ? '<span class="pill blue">📱</span>' : t.src === 'plan' ? '<span class="pill lav">план</span>' : '';
+const meSrc = t => t.src === 'humo' ? `<span class="pill mint" title="@HUMOcardbot${t.card ? ' · карта *' + esc(t.card) : ''}${t.tm ? ' · ' + esc(t.tm) : ''}">💳${t.card ? ' ' + esc(t.card) : ''}</span>` : t.src === 'phone' ? '<span class="pill blue">📱</span>' : t.src === 'plan' ? '<span class="pill lav">план</span>' : '';
 
 /* quick add — on top of every sub-tab */
 function meQuick(){ return `<div class="me-quick">
@@ -1152,7 +1160,7 @@ function meKpis(){
   const free = base - m.exp - (live ? m.fixedSum + m.debtsSum : 0), owe = meOwe('out'), owed = meOwe('in');
   return `<div class="grid g5">
     <div class="stat pos"><div class="v">${mf(m.income)}</div><div class="l">Доход</div><div class="n">${plan ? 'план ' + mf(plan) : 'план не задан → «🗓 План»'}</div></div>
-    <div class="stat"><div class="v">${mf(m.exp)}</div><div class="l">Расходы</div><div class="n">${m.ex.length} операций${plan ? ' · ' + Math.round(m.exp / plan * 100) + '% плана дохода' : ''}</div></div>
+    <div class="stat"><div class="v">${mf(m.exp)}</div><div class="l">Расходы</div><div class="n">${m.ex.length} операций${plan ? ' · ' + Math.round(m.exp / plan * 100) + '% плана дохода' : ''}${m.trN ? `<br>🔁 переводы не считаются: −${mf(m.trOut)} / +${mf(m.trIn)}` : ''}</div></div>
     <div class="stat neg"><div class="v">${mf(m.unexp)}</div><div class="l">⚡ Неожиданные</div><div class="n">${m.xs.length} шт · ${m.exp ? Math.round(m.unexp / m.exp * 100) : 0}% расходов</div></div>
     <div class="stat ${free < 0 ? 'neg' : 'pos'}"><div class="v">${base || m.exp ? mf(free) : '—'}</div><div class="l">${live ? 'Свободно до конца месяца' : 'Итог месяца'}</div><div class="n">${live ? 'доход (план или факт) − расходы − ещё не оплаченные обязательные и долги со сроком' : 'доход − расходы'}</div></div>
     <a class="stat" href="#me" onclick="me.tab='debts';meRender();return false" style="text-decoration:none"><div class="v" style="color:var(--coral-dark)">${mf(owe)}</div><div class="l">Я должен</div><div class="n">мне должны ${mf(owed)}</div></a>
@@ -1202,9 +1210,13 @@ function meMonthView(){
   const xs = m.xs.slice().sort((a, b) => meV(b.a, b.c) - meV(a.a, a.c)).slice(0, 6);
   const xCard = `<div class="card white"><div class="sect-h" style="margin:0 0 4px"><h3 style="font-size:14px">⚡ Крупные неожиданные</h3></div>
     ${xs.length ? xs.map(t => `<div class="me-line"><span class="grow">${esc(t.n || t.cat || '—')} <span class="small muted">${dateRu(t.d)} · ${esc(t.cat || 'без категории')}</span></span><b class="x-on">${mfo(t.a, t.c)}</b></div>`).join('') : '<p class="small muted">Нет. Отмечай ⚡ при вводе, если трату не планировал — так видно, куда утекают деньги.</p>'}</div>`;
+  const cardsArr = Object.entries(M.cards || {}).sort((a, b) => (b[1].at || '').localeCompare(a[1].at || ''));
+  const cardsCard = cardsArr.length ? `<div class="card white" style="margin-bottom:12px"><div class="sect-h" style="margin:0 0 4px"><h3 style="font-size:14px">💳 Баланс карт</h3><span class="tag">@HUMOcardbot</span></div>
+    ${cardsArr.map(([k, c]) => `<div class="me-line"><span class="grow">HUMO *${esc(k)} <span class="small muted">на ${esc(String(c.at).replace('T', ' ').slice(5).replace('-', '.'))}</span></span><b>${mfo(c.bal, c.c || 'UZS')}</b></div>`).join('')}
+    <div class="me-line"><span class="grow small muted">всего</span><b>${mf(meSum(cardsArr, ([, c]) => meV(c.bal, c.c || 'UZS')))}</b></div></div>` : '';
   return `<div class="fin-bar"><button class="btn sm" onclick="me.ym=ymAdd(me.ym,-1);meRender()">‹</button><b style="text-transform:capitalize;min-width:120px;text-align:center">${ymRu(ym)}</b><button class="btn sm" onclick="me.ym=ymAdd(me.ym,1);meRender()">›</button>${ym !== ME_YM ? '<button class="btn sm" onclick="me.ym=ME_YM;meRender()">текущий</button>' : ''}</div>
     <div id="me-kpi" class="sect" style="margin-bottom:16px">${meKpis()}</div>
-    <div class="me-cols"><div>${catTbl}${chart}</div><div>${inboxCard}${fixedCard}${debtCard}${xCard}</div></div>`;
+    <div class="me-cols"><div>${catTbl}${chart}</div><div>${inboxCard}${cardsCard}${fixedCard}${debtCard}${xCard}</div></div>`;
 }
 
 /* 💸 operations */
@@ -1322,7 +1334,10 @@ function mePhoneView(){
   if(!MSYNC) return '<div class="card white">Облако не подключено — нет адреса для телефона.</div>';
   const url = MSYNC.url, key = MSYNC.add_key || '', kb = Math.round(JSON.stringify(meOut()).length / 1024);
   const body = k => JSON.stringify({fin: 'add', ns: 'me', key: k, text: '50000 такси'});
-  return `<div class="card mint sect" style="margin-bottom:16px"><h4>Как это работает</h4><p class="small">Телефон отправляет одну запись на адрес ниже — она сразу попадает сюда как «📥 с телефона», на «📊 Месяц» появляется блок «разобрать»: проверяешь категорию, ставишь ⚡ если трата неожиданная, жмёшь ✓. Ключ телефона умеет <b>только добавлять</b> — прочитать твои финансы им нельзя.</p></div>
+  const humo = M.tx.filter(t => t.src === 'humo'), hl = humo.reduce((a, t) => (t.d + (t.tm || '')) > a ? t.d + (t.tm || '') : a, '');
+  return `<div class="card white sect" style="margin-bottom:16px"><h4>💳 Подключено: Telegram-бот HUMO (@HUMOcardbot)</h4><p class="small">Сервер каждые 10 минут забирает новые сообщения бота из твоего Telegram и записывает операции сюда: оплаты и Payme-операции — расходы, пополнения — доходы, «Отмена операций карты» убирает отменённую оплату, P2P-переводы — в «🔁 Переводы» (не считаются, пока не перенесёшь в категорию). Неизвестные магазины (Payme / Click «OPLATA») приходят в «📥 разобрать». Баланс карт — на «📊 Месяц».</p>
+      <p class="small muted">Сейчас: ${humo.length} операций из бота${hl ? ', последняя ' + esc(dateRu(hl.slice(0,10))) + ' ' + esc(hl.slice(10)) : ''}. Код: 🖥 сервер <span class="mono">C:\\Users\\user\\Dev\\jay-finance-relay\\relay.py</span>, задача <span class="mono">\\Jay\\finance-relay</span>.</p></div>
+    <div class="card mint sect" style="margin-bottom:16px"><h4>Ручной ввод с телефона и другие источники</h4><p class="small">Телефон отправляет одну запись на адрес ниже — она сразу попадает сюда как «📥 с телефона», на «📊 Месяц» появляется блок «разобрать»: проверяешь категорию, ставишь ⚡ если трата неожиданная, жмёшь ✓. Ключ телефона умеет <b>только добавлять</b> — прочитать твои финансы им нельзя.</p></div>
     <div class="grid g2 sect">
       <div class="card white"><h4>Адрес и ключ</h4>
         <div class="small muted">URL (POST)</div><div class="me-code">${esc(url)}</div>
