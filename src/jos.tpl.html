@@ -352,6 +352,7 @@ footer{padding:18px 28px;border-top:1px solid var(--line);color:var(--muted);fon
   <div class="nav" data-v="w2w"><span class="ic">🏢</span>W2W<span class="cnt" id="cnt-w2w"></span></div>
   <div class="nav" data-v="sales"><span class="ic">📇</span>Продажи<span class="cnt">CRM</span></div>
   <div class="nav" data-v="instagram"><span class="ic">📷</span>Instagram<span class="cnt">IG</span></div>
+  <div class="nav" data-v="auto"><span class="ic">⚡</span>Автоматизации<span class="cnt">DM</span></div>
   <div class="nav" data-v="finance"><span class="ic">💰</span>Финансы W2W<span class="cnt" id="cnt-finance"></span></div>
   <div class="nav" data-v="me"><span class="ic">👛</span>Мои финансы<span class="cnt" id="cnt-me"></span></div>
   <div class="nav" data-v="agents"><span class="ic">🤖</span>Agents House<span class="cnt" id="cnt-agents"></span></div>
@@ -383,6 +384,7 @@ footer{padding:18px 28px;border-top:1px solid var(--line);color:var(--muted);fon
     <section class="view" id="v-w2w"></section>
     <section class="view" id="v-sales"><iframe class="panel" data-page="sales" title="Продажи · CRM" loading="lazy"></iframe><p class="small muted panel-foot"><a data-open="sales" target="_blank">Открыть отдельной страницей ↗</a></p></section>
     <section class="view" id="v-instagram"><iframe class="panel" data-page="instagram" title="Instagram" loading="lazy"></iframe><p class="small muted panel-foot"><a data-open="instagram" target="_blank">Открыть отдельной страницей ↗</a></p></section>
+    <section class="view" id="v-auto"><iframe class="panel" data-page="auto" title="Автоматизации" loading="lazy"></iframe><p class="small muted panel-foot"><a data-open="auto" target="_blank">Открыть отдельной страницей ↗</a></p></section>
     <section class="view" id="v-finance"></section>
     <section class="view" id="v-me"></section>
     <section class="view" id="v-agents"></section>
@@ -1455,7 +1457,7 @@ document.getElementById('foot-built').textContent = 'собрано ' + D.built;
 document.getElementById('cnt-today').textContent = allTasks().filter(t=>!E.done[t.id]).length;
 document.getElementById('cnt-brain').textContent = BR.totals.clients; document.getElementById('cnt-w2w').textContent = S.installed_base.accounts.length + ' акк.'; document.getElementById('cnt-agents').textContent = AG.agents.filter(a=>a.state==='running').length + ' live';
 renderToday(); renderStrategy(); renderAdvisors(); renderBrain(); renderW2W(); renderFinance(); renderMe(); renderAgents(); finPull(); mePull(); meBadge();
-const VIEWS = ['today','strategy','advisors','brain','w2w','sales','instagram','finance','me','agents'];
+const VIEWS = ['today','strategy','advisors','brain','w2w','sales','instagram','auto','finance','me','agents'];
 const h = (location.hash||'').slice(1); if(VIEWS.includes(h)) JOS.go(h); else JOS.applyEdit();
 window.addEventListener('hashchange', () => { const v = (location.hash||'').slice(1); if(VIEWS.includes(v) && !document.getElementById('v-'+v).classList.contains('on')) JOS.go(v); });
 </script>

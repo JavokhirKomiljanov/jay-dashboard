@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jay OS — Автоматизации</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/*__CSS__*/
+/* ---- «🤖 Автоматизации» (ManyChat-style comment → DM builder) ---- */
+body{background:var(--bg)}
+body.embedded .wrap{padding:0}
+.au-head{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap;margin:0 0 18px}
+.au-head .sp{flex:1}
+.au-head p{margin:4px 0 0;max-width:640px}
+.au-kpi{display:grid;grid-template-columns:1.5fr repeat(3,minmax(0,1fr));gap:12px;margin:0 0 22px}
+@media(max-width:900px){.au-kpi{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.au-kpi .stat .v{font-size:22px}
+.seg{display:inline-flex;border:1px solid var(--line-2);border-radius:11px;overflow:hidden;background:#fff}
+.seg button{border:0;background:transparent;padding:7px 13px;font-size:12.5px;font-weight:700;color:var(--body);cursor:pointer;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button.on{background:var(--ink);color:#fff}
+.seg button.on.live{background:var(--coral-dark)}
+.seg button.on.test{background:var(--blue)}
+.mode-note{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.45}
+.testers{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.chip{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1px solid var(--line-2);border-radius:999px;padding:2px 4px 2px 10px;font-size:12px;color:var(--ink);font-weight:500}
+.chip button{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:13px;line-height:1;padding:0 4px}
+.chip button:hover{color:var(--coral-dark)}
+.chip.k{background:var(--mint-tint);border-color:var(--mint-light);font-family:var(--mono);font-size:12px}
+.ci{border:1px dashed var(--line-2);border-radius:999px;padding:3px 10px;font:inherit;font-size:12px;min-width:120px;outline:none;background:#fff}
+.ci:focus{border-color:var(--mint-dark);border-style:solid}
+.warnbox{border-radius:14px;padding:12px 16px;margin:0 0 18px;font-size:13px;line-height:1.5}
+.warnbox.bad{background:#fff7f4;border:1px solid #ffc4b0;color:#8a3517}
+.warnbox.warn{background:#fff6e6;border:1px solid #ffd58a;color:#7a4a00}
+.warnbox.ok{background:var(--mint-tint);border:1px solid var(--mint-light);color:#0b5c49}
+.warnbox b{color:inherit}
+.flows{display:flex;flex-direction:column;gap:10px}
+.flow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.flow.off{background:var(--card)}
+.flow.off .fname{color:var(--muted)}
+.fname{font:800 15px var(--head);color:var(--ink);letter-spacing:-.01em}
+.fline{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px;font-size:12px;color:var(--body)}
+.fline .arrow{color:var(--faint)}
+.fstats{display:flex;gap:14px;margin-top:8px;font-size:11.5px;color:var(--muted)}
+.fstats b{font-family:var(--mono);font-size:12.5px}
+.facts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:720px){.flow{grid-template-columns:auto minmax(0,1fr)}.facts{grid-column:1/-1;justify-content:flex-start}}
+.sw{position:relative;width:42px;height:24px;flex:none;cursor:pointer}
+.sw input{opacity:0;width:0;height:0;position:absolute}
+.sw span{position:absolute;inset:0;background:var(--line-2);border-radius:999px;transition:.15s}
+.sw span:before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.15s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.sw input:checked+span{background:var(--mint-dark)}
+.sw input:checked+span:before{transform:translateX(18px)}
+.empty{border:1.5px dashed var(--line-2);border-radius:var(--r);padding:26px;text-align:center;color:var(--muted)}
+.tpls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px;text-align:left}
+@media(max-width:800px){.tpls{grid-template-columns:1fr}}
+.tpl{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer}
+.tpl:hover{border-color:var(--mint-dark);background:var(--mint-tint)}
+.tpl b{display:block;margin-bottom:4px}
+/* editor */
+.ed{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:20px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;margin:0 0 24px}
+@media(max-width:980px){.ed{grid-template-columns:1fr}}
+.ed-top{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 14px}
+.ed-top input{flex:1;min-width:200px;font:800 18px var(--head);color:var(--ink);border:1px solid transparent;background:transparent;border-radius:10px;padding:6px 8px;outline:none}
+.ed-top input:focus,.ed-top input:hover{border-color:var(--line-2);background:#fff}
+.step{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px;position:relative}
+.step+.conn{height:22px;margin-left:34px;border-left:2px dashed var(--line-2)}
+.step h4{display:flex;align-items:center;gap:10px;font-size:14px;margin:0 0 12px}
+.step h4 .n{width:26px;height:26px;border-radius:9px;display:grid;place-items:center;font:800 12px var(--mono);color:#fff;background:var(--ink);flex:none}
+.step h4 .n.t{background:var(--lavender)}
+.step h4 .n.r{background:var(--blue)}
+.step h4 .n.d{background:var(--mint-dark)}
+.step h4 .sp{flex:1}
+.step .lab{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:12px 0 6px}
+.step .lab:first-of-type{margin-top:0}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opt{border:1px solid var(--line-2);background:#fff;border-radius:12px;padding:8px 12px;cursor:pointer;font-size:12.5px;font-weight:600;color:var(--body);text-align:left;max-width:260px}
+.opt small{display:block;font-weight:400;color:var(--muted);font-size:11px;margin-top:2px}
+.opt.on{border-color:var(--mint-dark);background:var(--mint-tint);color:var(--ink)}
+.opt[disabled]{opacity:.45;cursor:not-allowed}
+.posts{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin-top:10px}
+.post{position:relative;border:2px solid transparent;border-radius:12px;overflow:hidden;cursor:pointer;background:var(--card-2);aspect-ratio:9/14;display:flex;flex-direction:column;justify-content:flex-end}
+.post img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.post .meta{position:relative;background:linear-gradient(transparent,rgba(0,0,0,.75));color:#fff;font-size:10px;padding:16px 6px 5px;line-height:1.3}
+.post .meta .cap{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.post.on{border-color:var(--mint-dark);box-shadow:0 0 0 3px var(--mint-tint-2)}
+.post .ck{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.9);display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--mint-dark)}
+.post .noimg{position:absolute;inset:0;display:grid;place-items:center;font-size:24px;color:var(--faint)}
+.inp{width:100%;font:inherit;font-size:13px;color:var(--ink);border:1px solid var(--line-2);background:#fff;border-radius:10px;padding:8px 10px;outline:none}
+.inp:focus{border-color:var(--mint-dark)}
+textarea.inp{min-height:120px;resize:vertical;line-height:1.45}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.vars{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.vars button{border:1px solid var(--line-2);background:#fff;border-radius:8px;font:600 11px var(--mono);padding:3px 8px;cursor:pointer;color:var(--body)}
+.reply-line{display:flex;gap:6px;align-items:center;margin-bottom:6px}
+.reply-line .inp{flex:1}
+.xbtn2{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:16px;padding:2px 6px}
+.xbtn2:hover{color:var(--coral-dark)}
+.errs{background:#fff7f4;border:1px solid #ffc4b0;color:#8a3517;border-radius:12px;padding:10px 14px;font-size:12.5px;margin-top:14px}
+.ed-foot{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:16px}
+/* phone preview */
+.phone{background:#fff;border:1px solid var(--line);border-radius:28px;padding:14px;position:sticky;top:12px;align-self:start}
+.phone .ph{display:flex;align-items:center;gap:8px;padding:4px 4px 12px;border-bottom:1px solid var(--line);margin-bottom:12px}
+.phone .av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#f9ce34,#ee2a7b,#6228d7);flex:none}
+.phone .ph b{font-size:13px}
+.phone .ph span{font-size:11px;color:var(--muted);display:block}
+.cmt{font-size:12px;color:var(--body);padding:8px 10px;background:var(--card);border-radius:12px;margin-bottom:8px}
+.cmt b{font-size:12px}
+.cmt .rp{margin:6px 0 0 14px;padding-left:8px;border-left:2px solid var(--line-2)}
+.bub{background:#3797f0;color:#fff;border-radius:18px 18px 4px 18px;padding:9px 13px;font-size:13px;line-height:1.4;white-space:pre-wrap;word-break:break-word;margin-left:24px}
+.bub a{color:#fff;text-decoration:underline}
+.phone .hint{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.45}
+/* tester / log */
+.tester{display:grid;grid-template-columns:minmax(0,1fr) 220px auto;gap:8px;align-items:center}
+@media(max-width:720px){.tester{grid-template-columns:1fr}}
+.tres{margin-top:10px;font-size:13px}
+table.lg{width:100%;border-collapse:collapse;font-size:12.5px}
+table.lg th{text-align:left;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:9px 10px;border-bottom:1px solid var(--line);font-weight:700;white-space:nowrap}
+table.lg td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+table.lg tr:last-child td{border-bottom:0}
+.s-sent{background:var(--mint-tint);border-color:var(--mint-light);color:#0b5c49}
+.s-failed,.s-unknown{background:#fff7f4;border-color:#ffc4b0;color:#b4401b}
+.s-dry{background:#f3f4f6;color:var(--body)}
+.s-retry,.s-sending{background:#fff6e6;border-color:#ffd58a;color:#b36b00}
+.s-expired{background:#f3eeff;border-color:#dccfff;color:#6b45d6}
+.tabs2{display:flex;gap:6px;margin:0 0 10px}
+.tabs2 button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600;color:var(--body);cursor:pointer}
+.tabs2 button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.howto{columns:2;column-gap:28px;font-size:12.5px;line-height:1.55}
+@media(max-width:800px){.howto{columns:1}}
+.howto p{margin:0 0 10px;break-inside:avoid}
+footer.au-foot{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between;font-size:11px;color:var(--muted);padding:18px 0 0;border-top:1px solid var(--line);margin-top:26px}
+.saved-flash2{font-size:12px;color:var(--mint-dark);font-weight:600;opacity:0;transition:.2s}
+.saved-flash2.on{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap"><div id="root"></div></div>
+<script>
+const D = /*__DATA__*/{};
+if (window.self !== window.top) document.body.classList.add('embedded');
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const clone = o => JSON.parse(JSON.stringify(o));
+const nowIso = () => new Date().toISOString().replace(/\.\d+Z$/, '+00:00');
+const dmy = iso => { const t = Date.parse(iso||''); if(isNaN(t)) return '—'; const d = new Date(t), p = n => String(n).padStart(2,'0'); return `${p(d.getDate())}.${p(d.getMonth()+1)} ${p(d.getHours())}:${p(d.getMinutes())}`; };
+const ago = iso => { const t = Date.parse(iso||''); if(isNaN(t)) return 'никогда'; const m = (Date.now()-t)/60000; return m < 1.5 ? 'только что' : m < 90 ? Math.round(m)+' мин назад' : m < 48*60 ? Math.round(m/60)+' ч назад' : Math.round(m/1440)+' дн назад'; };
+const fmt = n => n == null ? '—' : Number(n).toLocaleString('ru-RU');
+const uid = () => 'a' + Date.now().toString(36) + Math.random().toString(36).slice(2,5);
+const DEF = D.defaults || {dm: "Salom, {username}! 👋 Va'da qilingan havola:\n{link}\n\nSavol bo'lsa, shu yerga yozing.", replies: ["Direktga yubordim ✅"]};
+const ACC = D.account || 'javohir_w2w';
+
+/* ---------- state: localStorage first, cloud (JOS Tasks bridge ns 'dm') ~1 s later ---------- */
+const KEY = 'jos7-auto', SKEY = 'jos7-auto-stats', SYNC = D.sync && D.sync.url ? D.sync : null;
+const blank = () => ({v:1, settings:{mode:'dry', mode_since:null, testers:[], su:0}, autos:[], deleted:[]});
+let A; try{ A = JSON.parse(localStorage.getItem(KEY) || 'null'); }catch(e){ A = null; }
+if(!A || !Array.isArray(A.autos)) A = Object.assign(blank(), {rev:0});
+A.settings = Object.assign(blank().settings, A.settings || {}); A.deleted = A.deleted || [];
+let S; try{ S = JSON.parse(localStorage.getItem(SKEY) || 'null'); }catch(e){ S = null; }
+const LOCAL = ['rev','dirty','ver','synced'];
+const out = () => { const o = {}; Object.keys(A).forEach(k => { if(!LOCAL.includes(k)) o[k] = A[k]; }); return o; };
+const store = () => { try{ localStorage.setItem(KEY, JSON.stringify(A)); }catch(e){} };
+let syncState = SYNC ? ['⏳ облако…','grey'] : ['облако не подключено — правки только в этом браузере','warn'], timer = null, busy = false;
+function setSync(t, c){ syncState = [t, c]; const el = document.getElementById('au-sync'); if(el){ el.textContent = t; el.className = 'pill ' + c; } }
+function save(){ A.dirty = true; A.ver = (A.ver||0) + 1; store();
+  const f = document.getElementById('au-saved'); if(f){ f.classList.add('on'); clearTimeout(f._t); f._t = setTimeout(() => f.classList.remove('on'), 1200); }
+  if(SYNC){ clearTimeout(timer); setSync('⏳ сохраняю…','warn'); timer = setTimeout(push, 900); } }
+async function api(body){ const r = await fetch(SYNC.url, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(Object.assign({secret: SYNC.secret}, body))}); if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }
+function merge(srv, loc){
+  const del = [...new Set([...(srv.deleted||[]), ...(loc.deleted||[])])], map = new Map();
+  (srv.autos||[]).forEach(a => map.set(a.id, a));
+  (loc.autos||[]).forEach(a => { const s = map.get(a.id); if(!s || (a.u||0) >= (s.u||0)) map.set(a.id, a); });
+  const li = (loc.autos||[]).map(a => a.id), ids = [...li, ...(srv.autos||[]).map(a => a.id).filter(id => !li.includes(id))];
+  const ss = srv.settings || {}, ls = loc.settings || {};
+  return {v:1, autos: ids.filter(id => !del.includes(id)).map(id => map.get(id)), deleted: del, settings: (ls.su||0) >= (ss.su||0) ? ls : ss};
+}
+async function push(){
+  if(!SYNC || !A.dirty) return; if(busy){ clearTimeout(timer); timer = setTimeout(push, 900); return; }
+  busy = true; const v0 = A.ver; let rerender = false;
+  try{
+    let res = await api({fin:'put', ns:'dm', rev: A.rev||0, state: out()});
+    if(!res.ok && res.error === 'conflict'){ const st = merge(res.state || {}, out()); res = await api({fin:'put', ns:'dm', rev: res.rev, state: st}); if(res.ok){ Object.assign(A, st); rerender = true; } }
+    if(!res.ok) throw new Error(res.error || 'ошибка');
+    A.rev = res.rev; A.synced = res.at; if(A.ver === v0) A.dirty = false; store();
+    setSync(A.dirty ? '⏳ сохраняю…' : '☁ сохранено · сервер подхватит ≤ 1 мин', A.dirty ? 'warn' : 'mint');
+  }catch(e){ setSync('⚠ нет связи — сохранено в браузере, отправлю позже', 'bad'); }
+  busy = false; if(rerender) safeRender(); if(A.dirty && syncState[1] !== 'bad'){ clearTimeout(timer); timer = setTimeout(push, 900); }
+}
+async function pull(){
+  if(!SYNC || busy) return;
+  try{
+    const res = await api({fin:'get', ns:'dm'}); if(!res.ok) throw new Error(res.error);
+    if(!res.state){ if(A.autos.length || A.settings.su){ A.dirty = true; A.ver = (A.ver||0)+1; store(); return push(); } setSync('☁ облако пустое — создай первую автоматизацию','mint'); return; }
+    if(A.dirty) return push();
+    if(res.rev !== A.rev){ Object.assign(A, res.state); A.rev = res.rev; A.synced = res.at; store(); safeRender(); }
+    setSync('☁ синхронизировано', 'mint');
+  }catch(e){ setSync('⚠ облако недоступно — работаю в браузере', 'bad'); }
+}
+async function pullStats(){
+  if(!SYNC) return;
+  try{ const res = await api({fin:'get', ns:'dms'}); if(res.ok && res.state){ const changed = !S || S.at !== res.state.at; S = res.state; try{ localStorage.setItem(SKEY, JSON.stringify(S)); }catch(e){} if(changed) safeRender(); } }catch(e){}
+}
+
+/* ---------- matching: same rules as ig_dm.py match() ---------- */
+const normT = t => String(t||'').normalize('NFKC').replace(/[ʻ’‘`ʼ]/g,"'").toLowerCase().replace(/\s+/g,' ').trim();
+const wordsOf = t => new Set(normT(t).match(/[\p{L}\p{N}_'+]+/gu) || []);
+const scopeOf = a => a.reels === 'next' ? ((S && S.per && S.per[a.id] && S.per[a.id].next) || []) : (a.reels || 'all');
+function matchAuto(text, sc){
+  const t = normT(text), ws = wordsOf(text), strip = x => x.replace(/[^\p{L}\p{N}_'+]+/gu, '');
+  for(const a of A.autos){
+    if(!a.active) continue;
+    if(!(String(a.link||'').startsWith('http') || /http/.test(a.dm_text||''))) continue;
+    const scope = scopeOf(a);
+    if(scope !== 'all' && !(sc && scope.includes(sc))) continue;
+    if(a.match === 'any'){ if(scope === 'all') continue; return a; }
+    for(const kw of a.keywords || []){ const k = normT(kw); if(!k) continue;
+      if(a.match === 'exact'){ if(strip(t) === strip(k)) return a; }
+      else if((k.includes(' ') && t.includes(k)) || ws.has(k) || (k === '+' && t.replace(/^[ !.]+|[ !.]+$/g,'') === '+')) return a; }
+  }
+  return null;
+}
+
+/* ---------- helpers ---------- */
+const media = () => (S && S.media) || [];
+const mediaBy = sc => media().find(m => m.sc === sc);
+const ST = {sent:'отправлено', dry:'dry: не отправлено', test:'тест', failed:'ошибка', unknown:'неизвестно (не повторяем)', retry:'повтор', sending:'отправляется', expired:'старше 7 дней', nomatch:'без слова'};
+const stPill = s => `<span class="pill s-${esc(s)}">${esc(ST[s] || s)}</span>`;
+function scopeText(a){
+  if(a.reels === 'all') return 'под <b>любым постом</b>';
+  if(a.reels === 'next'){ const n = scopeOf(a); return n.length ? `под <b>следующим постом</b> → <a href="https://www.instagram.com/reel/${esc(n[0])}/" target="_blank">${esc(n[0])}</a>` : 'под <b>следующим постом</b> <span class="muted">(ещё не вышел)</span>'; }
+  const L = a.reels || []; return `под ${L.length === 1 ? 'постом' : L.length + ' постами'} ${L.slice(0,3).map(sc => `<a href="https://www.instagram.com/reel/${esc(sc)}/" target="_blank">${esc((mediaBy(sc)||{}).cap ? mediaBy(sc).cap.slice(0,28)+'…' : sc)}</a>`).join(', ')}${L.length>3?' …':''}`;
+}
+function flowStats(a){ const p = (S && S.per && S.per[a.id]) || {};
+  return `<div class="fstats"><span>DM отправлено <b>${fmt(p.sent||0)}</b></span><span>за 7 дн <b>${fmt(p.sent7||0)}</b></span>${p.dry ? `<span>dry <b>${fmt(p.dry)}</b></span>` : ''}${(p.failed||0)+(p.unknown||0) ? `<span style="color:var(--coral-dark)">ошибки <b>${fmt((p.failed||0)+(p.unknown||0))}</b></span>` : ''}<span>последний ${p.last ? dmy(p.last) : '—'}</span></div>`; }
+
+/* ---------- views ---------- */
+const ui = {edit: null, err: [], log: 'hits', test: '', testSc: ''};
+let ED = null;   // automation being edited (a copy)
+
+function header(){
+  return `<div class="au-head"><div><div class="eyebrow">Instagram · @${esc(ACC)}</div><h2 class="h2">🤖 Автоматизации</h2>
+    <p class="small">Комментарий с кодовым словом → ответ под комментарием + сообщение в Direct со ссылкой. Как ManyChat, только своё: правишь здесь, сервер (ig-dm) подхватывает за минуту, работает 24/7.</p></div>
+    <div class="sp"></div><div class="row"><span class="saved-flash2" id="au-saved">✓ сохранено</span><span class="pill ${syncState[1]}" id="au-sync">${esc(syncState[0])}</span>
+    <button class="btn pri" onclick="openEd()">＋ Новая автоматизация</button></div></div>`;
+}
+function serverBox(){
+  if(!SYNC) return `<div class="warnbox warn">Облако не подключено: автоматизации сохраняются только в этом браузере и до сервера не доходят. Нужен <b>dm-sync.json</b> при сборке.</div>`;
+  if(!S) return `<div class="warnbox warn"><b>Сервер ещё не отчитался.</b> Как только ig-dm на сервере получит облако, здесь появятся посты, журнал и статистика (обычно ≤ 5 мин).</div>`;
+  const parts = [], age = (Date.now() - Date.parse(S.at||0)) / 60000;
+  if(age > 30) parts.push(`<div class="warnbox bad"><b>Сервер молчит ${ago(S.at)}.</b> Задача \\Jay\\ig-dm-bot на сервере, похоже, остановлена или нет интернета — автоматизации сейчас не работают.</div>`);
+  if(S.error && Date.parse(S.error_at||0) > Date.parse(S.cycle_at||0)) parts.push(`<div class="warnbox warn">Последний цикл с ошибкой (${dmy(S.error_at)}): <span class="mono">${esc(S.error)}</span>. Обычно это сеть — следующий цикл повторит.</div>`);
+  const comm = media().reduce((s, m) => s + (m.n||0), 0), seen = S.seen7;
+  if(comm > 0 && seen === 0) parts.push(`<div class="warnbox bad"><b>Instagram API не отдаёт комментарии</b> (под постами ${fmt(comm)} комм., бот видит 0). Пока так — автоматизации не сработают. Нужно: приложение Meta «Jay OS Content Engine» → режим <b>Live</b> + в Instagram «Разрешить доступ к сообщениям»; если не поможет — App Review (тексты готовы в ig-dm/APP-REVIEW.md). До этого держи ManyChat включённым.</div>`);
+  else if(S.blind && S.blind.length) parts.push(`<div class="warnbox warn">На постах ${S.blind.map(esc).join(', ')} бот не увидел комментарии, хотя они есть — для них держи ManyChat.</div>`);
+  return parts.join('');
+}
+function kpis(){
+  const st = A.settings, m = st.mode || 'dry', p = (S && S.per) || {};
+  const sent7 = Object.values(p).reduce((s, x) => s + (x.sent7||0), 0), sentAll = Object.values(p).reduce((s, x) => s + (x.sent||0), 0);
+  const on = A.autos.filter(a => a.active).length;
+  const note = {dry: 'Только журнал: бот находит комментарии, но <b>ничего не отправляет</b>. Безопасно проверять.', test: 'Отправляет <b>только тестерам</b> ниже — для проверки на своих аккаунтах.', live: '<b>Боевой режим:</b> DM получает каждый, кто написал кодовое слово.'}[m];
+  return `<div class="au-kpi">
+    <div class="stat"><div class="l" style="margin-bottom:8px">Режим отправки</div><div class="seg">${['dry','test','live'].map(x => `<button class="${x===m?'on '+x:''}" onclick="setMode('${x}')">${{dry:'Dry',test:'Тест',live:'Live'}[x]}</button>`).join('')}</div>
+      <div class="mode-note">${note}${st.mode_since ? ` С ${dmy(st.mode_since)}.` : ''}</div>
+      ${m === 'test' || (st.testers||[]).length ? `<div class="testers"><span class="small muted">Тестеры:</span>${(st.testers||[]).map((u,i) => `<span class="chip">@${esc(u)}<button title="убрать" onclick="delTester(${i})">×</button></span>`).join('')}<input class="ci" placeholder="+ @username, Enter" onkeydown="if(event.key==='Enter'){addTester(this.value);this.value=''}"></div>` : ''}</div>
+    <div class="stat"><div class="v">${on}<small>/ ${A.autos.length}</small></div><div class="l">Автоматизаций включено</div><div class="n">выключенные не работают</div></div>
+    <div class="stat pos"><div class="v">${fmt(sent7)}</div><div class="l">DM отправлено за 7 дней</div><div class="n">всего ${fmt(sentAll)}</div></div>
+    <div class="stat"><div class="v" style="font-size:16px">${S ? ago(S.cycle_at) : '—'}</div><div class="l">Сервер проверял комментарии</div><div class="n">${S ? `каждые ${Math.round((S.poll_s||75))} с · отчёт ${ago(S.at)}` : 'ждём первый отчёт'}</div></div>
+  </div>`;
+}
+const TPL = [
+  {k:'plus', t:'«+» → ссылка в Direct', d:'Классика из reels: «напиши + в комментариях — пришлю ссылку». Сработает под следующим постом.',
+   a:{name:'«+» → ссылка', keywords:['+','plus','плюс'], match:'word', reels:'next', public_replies: DEF.replies.slice(), dm_text: DEF.dm, link:''}},
+  {k:'any', t:'Любой комментарий под постом', d:'Каждый, кто прокомментировал выбранный пост, получает сообщение. Только для конкретных постов.',
+   a:{name:'Любой комментарий → DM', keywords:[], match:'any', reels:[], public_replies:[DEF.replies[0]], dm_text: DEF.dm, link:''}},
+  {k:'word', t:'Своё кодовое слово', d:'Например «GUIDE» или «AI» — под любым постом или выбранными.',
+   a:{name:'Кодовое слово', keywords:[], match:'word', reels:'all', public_replies:[DEF.replies[0]], dm_text: DEF.dm, link:''}},
+];
+function flows(){
+  if(!A.autos.length) return `<div class="empty"><b style="color:var(--ink);font-size:15px">Автоматизаций пока нет</b><br>Начни с шаблона — всё можно поменять перед сохранением.
+    <div class="tpls">${TPL.map(t => `<div class="tpl" onclick="openEd(null,'${t.k}')"><b>${esc(t.t)}</b><span class="small">${esc(t.d)}</span></div>`).join('')}</div></div>`;
+  return `<div class="flows">${A.autos.map(a => `<div class="flow ${a.active?'':'off'}">
+    <label class="sw" title="${a.active?'Выключить':'Включить'}"><input type="checkbox" ${a.active?'checked':''} onchange="toggle('${esc(a.id)}', this.checked)"><span></span></label>
+    <div><div class="fname">${esc(a.name || 'Без названия')}</div>
+      <div class="fline">💬 Комментарий ${scopeText(a)} <span class="arrow">·</span> ${a.match === 'any' ? '<span class="chip k">любой текст</span>' : (a.keywords||[]).map(k => `<span class="chip k" style="padding-right:10px">${esc(k)}</span>`).join('') || '<span class="pill warn">нет слов</span>'}
+        <span class="arrow">→</span> ${(a.public_replies||[]).length ? `↩ ответ под комментарием${a.public_replies.length>1?' ×'+a.public_replies.length:''} <span class="arrow">→</span>` : ''} ✉️ Direct ${a.link ? `<a href="${esc(a.link)}" target="_blank">${esc(a.link.replace(/^https?:\/\//,'').slice(0,34))}</a>` : '<span class="pill warn">нет ссылки — не сработает</span>'}</div>
+      ${flowStats(a)}</div>
+    <div class="facts"><button class="btn" onclick="openEd('${esc(a.id)}')">✏️ Изменить</button><button class="btn" title="Дублировать" onclick="dup('${esc(a.id)}')">⧉</button><button class="btn" title="Удалить" onclick="del('${esc(a.id)}')">🗑</button></div>
+  </div>`).join('')}</div>`;
+}
+function postPicker(){
+  const M = media(), sel = Array.isArray(ED.reels) ? ED.reels : [];
+  const extra = sel.filter(sc => !M.some(m => m.sc === sc));
+  return `${M.length ? `<div class="posts">${M.map(m => `<div class="post ${sel.includes(m.sc)?'on':''}" onclick="pickPost('${esc(m.sc)}')" title="${esc(m.cap)}">
+      ${m.img ? `<img src="${esc(m.img)}" alt="" loading="lazy" onerror="this.remove()">` : ''}<div class="noimg">${m.img ? '' : '🎞'}</div>${sel.includes(m.sc) ? '<div class="ck">✓</div>' : ''}
+      <div class="meta"><div class="cap">${esc(m.cap || m.sc)}</div>${dmy(m.at)} · 💬 ${fmt(m.n)}</div></div>`).join('')}</div>` : `<p class="small muted">Посты появятся, когда сервер пришлёт первый отчёт. Пока можно вставить ссылку.</p>`}
+    <div class="row" style="margin-top:10px"><input class="inp" style="flex:1" id="ed-url" placeholder="или вставь ссылку на reel / пост: https://www.instagram.com/reel/…" onkeydown="if(event.key==='Enter')addUrl()"><button class="btn" onclick="addUrl()">Добавить</button></div>
+    ${extra.length ? `<div class="testers">${extra.map(sc => `<span class="chip">${esc(sc)}<button onclick="pickPost('${esc(sc)}')">×</button></span>`).join('')}</div>` : ''}`;
+}
+function editor(){
+  if(!ED) return '';
+  const a = ED, any = a.match === 'any', rp = a.public_replies || [];
+  const errs = ui.err.length ? `<div class="errs">${ui.err.map(e => '• ' + esc(e)).join('<br>')}</div>` : '';
+  const dm = (a.dm_text || '').replace(/\{username\}/g, 'ali_test').replace(/\{link\}/g, a.link || '{link}');
+  const kwShow = any ? 'любой текст' : (a.keywords||[])[0] || '+';
+  return `<div class="ed" id="ed"><div>
+    <div class="ed-top"><input value="${esc(a.name)}" placeholder="Название автоматизации" oninput="ED.name=this.value"><label class="row small" style="gap:6px"><label class="sw"><input type="checkbox" ${a.active?'checked':''} onchange="ED.active=this.checked"><span></span></label> включить сразу</label></div>
+    <div class="step"><h4><span class="n t">1</span>Когда кто-то комментирует</h4>
+      <span class="lab">Где</span>
+      <div class="opts">
+        <button class="opt ${Array.isArray(a.reels)?'on':''}" onclick="setScope('list')">Выбранные посты<small>отметь ниже один или несколько</small></button>
+        <button class="opt ${a.reels==='next'?'on':''}" onclick="setScope('next')">Следующий пост<small>первый, что выйдет после ${ED._new ? 'сохранения' : dmy(a.created)}</small></button>
+        <button class="opt ${a.reels==='all'?'on':''}" ${any?'disabled title="«любой комментарий» под всеми постами отправлял бы DM всем подряд"':''} onclick="setScope('all')">Любой пост<small>все посты за последние 10 дней</small></button>
+      </div>
+      ${Array.isArray(a.reels) ? postPicker() : ''}
+      <span class="lab">Что написали</span>
+      <div class="opts">
+        <button class="opt ${a.match==='word'?'on':''}" onclick="setMatch('word')">Содержит слово<small>«менга plus керак» → сработает на plus</small></button>
+        <button class="opt ${a.match==='exact'?'on':''}" onclick="setMatch('exact')">Только это слово<small>комментарий целиком = слово</small></button>
+        <button class="opt ${any?'on':''}" ${a.reels==='all'?'disabled title="сначала выбери конкретные посты или «следующий пост»"':''} onclick="setMatch('any')">Любой комментарий<small>без кодового слова</small></button>
+      </div>
+      ${any ? '' : `<div class="testers" style="margin-top:10px">${(a.keywords||[]).map((k,i) => `<span class="chip k">${esc(k)}<button onclick="ED.keywords.splice(${i},1);render()">×</button></span>`).join('')}
+        <input class="ci" id="ed-kw" placeholder="+ слово, Enter" onkeydown="if(event.key==='Enter'||event.key===','){event.preventDefault();addKw(this.value)}" onblur="if(this.value.trim())addKw(this.value)"></div>
+        <div class="small muted" style="margin-top:6px">Регистр и апострофы не важны: «Plus», «PLUS», «plus!» — одно и то же. Добавь варианты: plus, плюс, +.</div>`}
+    </div><div class="conn"></div>
+    <div class="step"><h4><span class="n r">2</span>Ответить под комментарием<span class="sp"></span><label class="sw" title="вкл/выкл"><input type="checkbox" ${rp.length?'checked':''} onchange="ED.public_replies=this.checked?[DEF.replies[0]]:[];render()"><span></span></label></h4>
+      ${rp.length ? `${rp.map((r,i) => `<div class="reply-line"><input class="inp" value="${esc(r)}" oninput="ED.public_replies[${i}]=this.value"><button class="xbtn2" title="убрать" onclick="ED.public_replies.splice(${i},1);render()">×</button></div>`).join('')}
+        <button class="btn sm" onclick="ED.public_replies.push('');render()">＋ вариант</button><div class="small muted" style="margin-top:6px">Варианты чередуются — так ответы не выглядят как спам для Instagram.</div>` : `<div class="small muted">Выключено: человек получит только сообщение в Direct.</div>`}
+    </div><div class="conn"></div>
+    <div class="step"><h4><span class="n d">3</span>Отправить в Direct</h4>
+      <span class="lab">Ссылка</span><input class="inp" value="${esc(a.link)}" placeholder="https://t.me/… или https://w2w.uz/…" oninput="ED.link=this.value.trim();prev()">
+      <span class="lab">Текст сообщения</span><textarea class="inp" id="ed-dm" oninput="ED.dm_text=this.value;prev()">${esc(a.dm_text)}</textarea>
+      <div class="vars"><button onclick="ins('{username}')">{username}</button><button onclick="ins('{link}')">{link}</button><span class="small muted" style="margin-left:6px" id="ed-cnt">${(a.dm_text||'').length} / 1000</span></div>
+      <div class="small muted" style="margin-top:6px">{username} — ник человека, {link} — ссылка выше. Одно сообщение на комментарий: дальше переписка открывается, только если человек ответит.</div>
+    </div>
+    ${errs}
+    <div class="ed-foot"><button class="btn pri" onclick="saveEd()">💾 Сохранить</button><button class="btn" onclick="closeEd()">Отмена</button><span class="sp" style="flex:1"></span>${ED._new ? '' : `<span class="small muted">создана ${dmy(a.created)}${a.on_at ? ' · включена ' + dmy(a.on_at) : ''}</span>`}</div>
+  </div>
+  <div class="phone"><div class="ph"><div class="av"></div><div><b>${esc(ACC)}</b><span>предпросмотр</span></div></div>
+    <div class="cmt"><b>ali_test</b> ${esc(kwShow)}${rp[0] ? `<div class="rp"><b>${esc(ACC)}</b> ${esc(rp[0].replace(/\{username\}/g,'ali_test'))}</div>` : ''}</div>
+    <div style="font-size:11px;color:var(--muted);text-align:center;margin:10px 0 8px">Direct · ali_test</div>
+    <div class="bub" id="ed-prev">${esc(dm).replace(/(https?:\/\/[^\s<]+)/g, '<a>$1</a>')}</div>
+    <div class="hint">Срабатывает только на комментарии, написанные <b>после включения</b> — старым комментаторам (их обслужил ManyChat) повторно не пишет.</div>
+  </div></div>`;
+}
+function tester(){
+  const M = media();
+  return `<div class="sect"><div class="sect-h"><h3>🧪 Проверить комментарий</h3><span class="tag">та же логика, что на сервере</span></div>
+    <div class="card"><div class="tester"><input class="inp" placeholder="Напиши комментарий как подписчик, напр. «Plus»" value="${esc(ui.test)}" oninput="ui.test=this.value;runTest()">
+      <select class="inp" onchange="ui.testSc=this.value;runTest()"><option value="">— под каким постом —</option>${M.map(m => `<option value="${esc(m.sc)}" ${ui.testSc===m.sc?'selected':''}>${dmy(m.at)} · ${esc((m.cap||m.sc).slice(0,30))}</option>`).join('')}</select>
+      <span class="small muted">учитывает только включённые</span></div><div class="tres" id="tres"></div></div></div>`;
+}
+function runTest(){
+  const el = document.getElementById('tres'); if(!el) return; if(!ui.test.trim()){ el.innerHTML = ''; return; }
+  const a = matchAuto(ui.test, ui.testSc || (media()[0]||{}).sc);
+  el.innerHTML = a ? `✅ Сработает <b>${esc(a.name)}</b> → ${(a.public_replies||[]).length ? 'ответ под комментарием + ' : ''}DM со ссылкой ${esc(a.link)}${A.settings.mode !== 'live' ? ` <span class="pill warn">но режим ${esc(A.settings.mode)} — реально ${A.settings.mode==='test'?'только тестерам':'не отправится'}</span>` : ''}`
+    : `⚪ Ни одна включённая автоматизация не сработает${ui.testSc ? '' : ' (проверено для последнего поста)'}.`;
+}
+function logView(){
+  if(!S) return '';
+  const rows = ui.log === 'hits' ? (S.recent||[]) : (S.unmatched||[]), nameOf = id => (A.autos.find(a => a.id === id) || {}).name || id || '—';
+  return `<div class="sect"><div class="sect-h"><h3>📜 Журнал</h3><span class="tag">обновлён ${ago(S.at)}</span></div>
+    <div class="tabs2"><button class="${ui.log==='hits'?'on':''}" onclick="ui.log='hits';render()">Сработало (${(S.recent||[]).length})</button><button class="${ui.log==='other'?'on':''}" onclick="ui.log='other';render()">Без кодового слова (${(S.unmatched||[]).length})</button></div>
+    ${ui.log === 'other' ? '<p class="small muted" style="margin:0 0 8px">Что пишут люди, но автоматизация не сработала — ищи здесь новые слова для ключей.</p>' : ''}
+    ${rows.length ? `<div class="tbl"><table class="lg"><thead><tr><th>Когда</th><th>Кто</th><th>Пост</th>${ui.log==='hits'?'<th>Автоматизация</th><th>Статус</th>':''}<th>Комментарий</th></tr></thead><tbody>
+      ${rows.map(r => `<tr><td class="mono" style="white-space:nowrap">${dmy(r.at)}</td><td><a href="https://www.instagram.com/${esc(r.user)}/" target="_blank">@${esc(r.user)}</a></td><td><a href="https://www.instagram.com/reel/${esc(r.sc)}/" target="_blank" class="mono">${esc(r.sc)}</a></td>
+        ${ui.log==='hits' ? `<td>${esc(nameOf(r.auto))}</td><td>${stPill(r.status)}${r.error ? `<div class="small" style="color:var(--coral-dark);margin-top:3px">${esc(r.error)}</div>` : ''}</td>` : ''}<td class="small">${esc(r.text)}</td></tr>`).join('')}
+    </tbody></table></div>` : '<div class="empty" style="padding:16px">Пока пусто.</div>'}</div>`;
+}
+function howto(){
+  return `<div class="sect"><div class="sect-h"><h3>Как это работает</h3></div><div class="card white howto">
+    <p><b>Цикл.</b> Сервер (задача \\Jay\\ig-dm-bot) каждые ~75 с смотрит комментарии под постами за 10 дней. Правки отсюда он забирает из облака раз в минуту; журнал и цифры присылает сюда раз в 5 минут.</p>
+    <p><b>Безопасность.</b> Один комментарий — максимум одно сообщение, никогда дважды. Пишет только на комментарии, сделанные после включения автоматизации и после смены режима. Свои комментарии и комментарии старше 7 дней пропускает (правило Meta).</p>
+    <p><b>Ограничения Instagram.</b> Ответ в Direct на комментарий — одно сообщение; продолжить переписку можно, только если человек ответит. Кнопок и карточек в этом сообщении нет — только текст со ссылкой.</p>
+    <p><b>Режимы.</b> Dry — проверка без отправки; Тест — только аккаунтам-тестерам; Live — всем. Начинай с Dry → посмотри журнал → Тест на своём втором аккаунте → Live.</p>
+    <p><b>Telegram.</b> То же из бота: <span class="mono">/dm</span> (список, вкл/выкл, режим) — изменения сразу видны здесь.</p>
+    <p><b>Если что-то не так.</b> Красная плашка вверху скажет, что сломалось: сервер молчит, API не видит комментарии или ошибка отправки. В журнале у каждой ошибки есть текст от Meta.</p>
+  </div></div>`;
+}
+function render(){
+  const y = window.scrollY;
+  document.getElementById('root').innerHTML = header() + serverBox() + kpis() + editor()
+    + `<div class="sect"><div class="sect-h"><h3>Мои автоматизации</h3><span class="tag">${A.autos.length} шт.${A.synced ? ' · облако ' + dmy(A.synced) : ''}</span></div>${flows()}</div>`
+    + tester() + logView() + howto()
+    + `<footer class="au-foot"><span>Хранилище: JOS Tasks bridge (ns dm / dms) · исполнитель: ig-dm на сервере · собрано ${esc(D.built||'')}</span><span>Копия в Obsidian: Brand/Social/Instagram — DM-автоматизации.md</span></footer>`;
+  window.scrollTo(0, y); runTest(); post();
+}
+function safeRender(){ const a = document.activeElement; if(a && /INPUT|TEXTAREA|SELECT/.test(a.tagName) && a.closest('#ed, .tester, .testers')){ return; } render(); }
+
+/* ---------- actions ---------- */
+function setMode(m){
+  if(m === A.settings.mode) return;
+  if(m === 'live' && !confirm('Включить LIVE? С этого момента каждый, кто напишет кодовое слово под постом, получит DM.')) return;
+  A.settings = Object.assign({}, A.settings, {mode: m, mode_since: nowIso(), su: Date.now()}); save(); render();
+}
+function addTester(v){ v = String(v||'').trim().replace(/^@/, ''); if(!v) return; const t = (A.settings.testers||[]).filter(x => x.toLowerCase() !== v.toLowerCase()); t.push(v); A.settings = Object.assign({}, A.settings, {testers: t, su: Date.now()}); save(); render(); }
+function delTester(i){ const t = (A.settings.testers||[]).slice(); t.splice(i,1); A.settings = Object.assign({}, A.settings, {testers: t, su: Date.now()}); save(); render(); }
+function toggle(id, on){ const a = A.autos.find(x => x.id === id); if(!a) return;
+  if(on && !(a.link||'').startsWith('http')){ alert('Сначала добавь ссылку — без неё автоматизация не сработает.'); render(); return; }
+  a.active = on; if(on) a.on_at = nowIso(); a.u = Date.now(); save(); render(); }
+function del(id){ const a = A.autos.find(x => x.id === id); if(!a || !confirm(`Удалить «${a.name}»? Статистика по ней останется в журнале сервера.`)) return;
+  A.autos = A.autos.filter(x => x.id !== id); A.deleted = [...new Set([...(A.deleted||[]), id])]; save(); render(); }
+function dup(id){ const a = A.autos.find(x => x.id === id); if(!a) return; const b = Object.assign(clone(a), {id: uid(), name: a.name + ' (копия)', active: false, created: nowIso(), on_at: null, u: Date.now()});
+  A.autos.splice(A.autos.indexOf(a)+1, 0, b); save(); render(); }
+function openEd(id, tpl){
+  if(id){ ED = clone(A.autos.find(x => x.id === id)); }
+  else { const t = (TPL.find(x => x.k === tpl) || TPL[0]).a; ED = Object.assign(clone(t), {id: uid(), active: true, _new: true}); }
+  ui.err = []; render(); const e = document.getElementById('ed'); if(e) e.scrollIntoView({behavior:'smooth', block:'start'});
+}
+function closeEd(){ ED = null; ui.err = []; render(); }
+function setScope(s){ ED.reels = s === 'list' ? (Array.isArray(ED.reels) ? ED.reels : []) : s; if(s === 'all' && ED.match === 'any') ED.match = 'word'; render(); }
+function setMatch(m){ if(m === 'any' && ED.reels === 'all') return; ED.match = m; render(); }
+function pickPost(sc){ const L = Array.isArray(ED.reels) ? ED.reels : []; ED.reels = L.includes(sc) ? L.filter(x => x !== sc) : [...L, sc]; render(); }
+function addUrl(){ const el = document.getElementById('ed-url'), v = (el && el.value || '').trim(); const m = v.match(/instagram\.com\/(?:reel|p|tv)\/([A-Za-z0-9_-]+)/); const sc = m ? m[1] : (/^[A-Za-z0-9_-]{6,}$/.test(v) ? v : '');
+  if(!sc){ alert('Не похоже на ссылку Instagram: нужна вида https://www.instagram.com/reel/XXXX/'); return; } const L = Array.isArray(ED.reels) ? ED.reels : []; if(!L.includes(sc)) ED.reels = [...L, sc]; render(); }
+function addKw(v){ v = String(v||'').replace(/,/g,' ').trim(); if(!v) return; ED.keywords = ED.keywords || []; if(!ED.keywords.some(k => normT(k) === normT(v))) ED.keywords.push(v); render(); const i = document.getElementById('ed-kw'); if(i) i.focus(); }
+function ins(t){ const ta = document.getElementById('ed-dm'); if(!ta) return; const s = ta.selectionStart || ta.value.length; ta.value = ta.value.slice(0, s) + t + ta.value.slice(ta.selectionEnd || s); ED.dm_text = ta.value; ta.focus(); ta.selectionStart = ta.selectionEnd = s + t.length; prev(); }
+function prev(){ const p = document.getElementById('ed-prev'), c = document.getElementById('ed-cnt'); if(!p) return;
+  const dm = (ED.dm_text || '').replace(/\{username\}/g, 'ali_test').replace(/\{link\}/g, ED.link || '{link}');
+  p.innerHTML = esc(dm).replace(/(https?:\/\/[^\s<]+)/g, '<a>$1</a>'); if(c){ c.textContent = (ED.dm_text||'').length + ' / 1000'; c.style.color = (ED.dm_text||'').length > 1000 ? 'var(--coral-dark)' : ''; } }
+function saveEd(){
+  const a = ED, e = [];
+  const kw = document.getElementById('ed-kw'); if(kw && kw.value.trim()) { addKw(kw.value); }
+  a.name = (a.name || '').trim(); a.public_replies = (a.public_replies || []).map(s => s.trim()).filter(Boolean);
+  if(!a.name) e.push('Дай название — его видно в списке и в Telegram /dm.');
+  if(Array.isArray(a.reels) && !a.reels.length) e.push('Выбери хотя бы один пост (или «Следующий пост» / «Любой пост»).');
+  if(a.match !== 'any' && !(a.keywords||[]).length) e.push('Добавь хотя бы одно кодовое слово.');
+  if(a.match === 'any' && a.reels === 'all') e.push('«Любой комментарий» работает только для выбранных постов или следующего поста.');
+  if(!/^https?:\/\/\S+\.\S+/.test(a.link || '')) e.push('Нужна ссылка, начинается с https:// — без неё сервер автоматизацию не запустит.');
+  if(!(a.dm_text||'').trim()) e.push('Пустой текст сообщения.');
+  else if(!/\{link\}|https?:\/\//.test(a.dm_text)) e.push('В тексте нет {link} — человек не получит ссылку.');
+  if((a.dm_text||'').length > 1000) e.push('Текст длиннее 1000 символов — Instagram его не примет.');
+  const clash = A.autos.find(x => x.id !== a.id && x.active && a.active && x.match !== 'any' && a.match !== 'any' && (x.keywords||[]).some(k => (a.keywords||[]).some(j => normT(j) === normT(k))) && (x.reels === 'all' || a.reels === 'all' || x.reels === a.reels || (Array.isArray(x.reels) && Array.isArray(a.reels) && x.reels.some(s => a.reels.includes(s)))));
+  if(clash) e.push(`Слова пересекаются с включённой «${clash.name}» на тех же постах — сработает та, что выше в списке. Убери слово или выключи одну.`);
+  ui.err = e; if(e.length){ render(); return; }
+  const old = A.autos.find(x => x.id === a.id), now = nowIso();
+  const rec = {id: a.id, name: a.name, active: !!a.active, keywords: a.match === 'any' ? [] : a.keywords, match: a.match, reels: a.reels,
+    link: a.link, dm_text: a.dm_text, public_replies: a.public_replies, created: (old && old.created) || now,
+    on_at: a.active ? ((old && old.active && old.on_at) || now) : (old && old.on_at) || null, u: Date.now()};
+  if(old) A.autos[A.autos.indexOf(old)] = rec; else A.autos.unshift(rec);
+  ED = null; ui.err = []; save(); render();
+}
+
+function post(){ try{ parent.postMessage({jos:'h', page: D.page || 'auto', h: document.documentElement.scrollHeight}, '*'); }catch(e){} }
+render();
+if(SYNC){
+  pull(); pullStats();
+  document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible'){ pull(); pullStats(); } });
+  window.addEventListener('online', () => { A.dirty ? push() : pull(); });
+  setInterval(() => { if(document.visibilityState === 'visible'){ pull(); pullStats(); } }, 45000);
+}
+window.addEventListener('load', post); window.addEventListener('resize', post); new ResizeObserver(post).observe(document.body);
+</script>
+</body>
+</html>
