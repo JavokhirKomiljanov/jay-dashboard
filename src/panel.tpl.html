@@ -319,8 +319,91 @@ function renderIG(){
   return G.generated;
 }
 
+/* ============ MARKETING (all channels) ============ */
+function renderMarketing(){
+  const M = D.mkt, C = M.channels, T = M.tasks, li = C.linkedin, tg = C.telegram, th = C.threads, yt = C.youtube;
+  document.title = 'Jay OS — Маркетинг';
+  document.getElementById('pt').textContent = 'Маркетинг · все каналы';
+  const st = (ok, err) => ok ? '<span class="pill mint">работает</span>' : err ? `<span class="pill warn" title="${esc(err)}">нужен доступ</span>` : '<span class="pill grey">не подключён</span>';
+  const task = (name, label) => { const x = T[name]; return `<tr><td><b>${label}</b></td><td>${x?taskPill(x.state):'<span class="pill grey">нет задачи</span>'}</td><td class="mono">${x?dmy(x.last):'—'}${x&&x.rc&&x.state!=='Running'?` <span class="pill bad" title="код ${x.rc}">ошибка</span>`:''}</td><td class="mono">${x&&x.next?dmy(x.next):'—'}</td></tr>`; };
+  const posts = (arr, n=3) => arr.length ? `<ul class="clean small">${arr.slice(0,n).map(p=>`<li>${dmy(p.at).slice(0,5)} · ${p.url?`<a href="${esc(p.url)}" target="_blank">${esc(p.title)}</a>`:esc(p.title)}</li>`).join('')}</ul>` : '<p class="small muted">пока ничего не опубликовано</p>';
+  const open = (u, l='Открыть ↗') => u ? `<a class="btn sm" href="${esc(u)}" target="_blank">${l}</a>` : '<span class="small muted">адрес не указан</span>';
+  const vis = v => v==='carousel' ? '<span class="pill lav">карусель PDF</span>' : v==='image' ? '<span class="pill blue">картинка</span>' : '<span class="pill bad">нет визуала</span>';
+  const lang = l => l==='ru' ? '<span class="pill">RU</span>' : l==='en' ? '<span class="pill">EN</span>' : '';
+  const xcell = v => !v ? '<span class="muted">—</span>' : v.status==='ok' ? (v.url?`<a href="${esc(v.url)}" target="_blank">✓ открыть</a>`:'✓') : `<span class="pill bad" title="${esc(v.error||'')}">ошибка ${v.attempts||''}</span>`;
+  const next = name => T[name]&&T[name].next ? dmy(T[name].next) : '—';
+  const nextLi = (li.queue[0]||{}).slot;
+  document.getElementById('root').innerHTML = `
+  <div class="eyebrow">Отдел маркетинга · проверено ${dmy(M.checked_at)}</div>
+  <h2 class="h2">Все каналы <span class="hl">в одном месте</span></h2>
+  <p class="lead">Instagram публикует AI-карусель каждый день в 19:00; в 19:30 она же уходит в Telegram-канал (узбекский пост + слайды), в Threads и в YouTube Shorts (слайд-шоу). LinkedIn идёт своим расписанием: черновики RU/EN в 06:00, публикация вт/ср/чт 17:30, у каждого поста есть картинка или PDF-карусель.</p>
+
+  ${M.todo.length ? `<div class="card" style="background:#fff6e6;border-color:#ffd58a;margin:0 0 18px"><h4>Что нужно от Jay (${M.todo.length})</h4><ul class="small" style="margin:6px 0 0 16px">${M.todo.map(t=>`<li style="margin:4px 0">${esc(t.text)}${t.detail?` <span class="muted mono" style="font-size:11px">· ${esc(t.detail)}</span>`:''}</li>`).join('')}</ul></div>` : ''}
+
+  <div class="grid g5 sect">
+    <div class="stat hl"><div class="v">${fmt(C.instagram.followers)}</div><div class="l">Instagram подписчиков</div><div class="n">${C.instagram.followers_delta!=null?(C.instagram.followers_delta>=0?'+':'')+fmt(C.instagram.followers_delta)+' с начала учёта':''}</div></div>
+    <div class="stat"><div class="v">${fmt(tg.members)}</div><div class="l">Telegram-канал</div><div class="n">${tg.posts.length} кросспостов</div></div>
+    <div class="stat"><div class="v">${fmt(li.posts_30d)}</div><div class="l">LinkedIn постов за 30 дн</div><div class="n">очередь ${li.queue.length} · ${li.langs.join('/')||'—'}</div></div>
+    <div class="stat ${th.ok?'':'neg'}"><div class="v">${th.ok?fmt(th.followers):'—'}</div><div class="l">Threads подписчиков</div><div class="n">${th.ok?th.posts.length+' постов':'не подключён'}</div></div>
+    <div class="stat ${yt.ok?'':'neg'}"><div class="v">${yt.ok?fmt(yt.subscribers):'—'}</div><div class="l">YouTube подписчиков</div><div class="n">${yt.ok?fmt(yt.videos)+' видео · '+fmt(yt.views)+' просмотров':'не подключён'}</div></div>
+  </div>
+
+  <div class="grid g3 sect">
+    <div class="card white"><div class="sect-h"><h4>💼 LinkedIn</h4>${li.token_days_left!=null&&li.token_days_left<10?'<span class="pill bad">токен истекает</span>':st(true)}</div>
+      <p class="small">RU и EN по очереди: вт карусель · ср текст + картинка · чт карусель-кейс, 17:30. Следующий: <b>${nextLi?dmy(nextLi):'—'}</b>${li.visuals_missing.length?` · <span class="pill bad">без визуала: ${li.visuals_missing.length}</span>`:''}</p>
+      <p class="small muted">Токен LinkedIn: ещё ${li.token_days_left!=null?li.token_days_left+' дн':'—'} (создан ${esc(li.token_created||'—')})</p>
+      ${posts(li.published.map(p=>({at:p.slot,title:(p.lang?p.lang.toUpperCase()+' · ':'')+(p.topic||p.preview),url:p.url})))}
+      <div class="chip-row" style="margin-top:10px">${open(li.url,'Профиль ↗')}</div></div>
+    <div class="card white"><div class="sect-h"><h4>✈️ Telegram-канал</h4>${st(tg.ok, tg.error)}</div>
+      <p class="small">${esc(tg.title||'@Jay_It_ai')} · <b>${fmt(tg.members)}</b> подписчиков. Каждый день 19:30 — пост на узбекском из сегодняшней карусели (все слайды альбомом). ${tg.can_post===false?'<span class="pill bad">бот не может постить</span>':''}</p>
+      <p class="small muted">Следующий кросспост: ${next('marketing-crosspost')}</p>
+      ${posts(tg.posts)}
+      <div class="chip-row" style="margin-top:10px">${open(tg.url,'Канал ↗')}</div></div>
+    <div class="card white"><div class="sect-h"><h4>🧵 Threads</h4>${st(th.ok, th.error)}</div>
+      <p class="small">${th.ok?`@${esc(th.username)} · ${th.followers!=null?fmt(th.followers)+' подписчиков':'подписчики — Meta не отдаёт без threads_manage_insights'}. Карусель уходит целиком + текст первого слайда и вопрос.`:'Карусели будут уходить сюда автоматически, как только появится токен Threads (шаг в списке выше).'}</p>
+      ${th.token_age_days!=null?`<p class="small muted">Токен: ${th.token_age_days} дн, обновляется сам</p>`:''}
+      ${posts(th.posts)}
+      <div class="chip-row" style="margin-top:10px">${open(th.url,'Профиль ↗')}</div></div>
+    <div class="card white"><div class="sect-h"><h4>▶️ YouTube Shorts</h4>${st(yt.ok, yt.error)}</div>
+      <p class="small">${yt.ok?`${esc(yt.channel)} · ${fmt(yt.subscribers)} подписчиков · ${fmt(yt.videos)} видео · ${fmt(yt.views)} просмотров.`:'Каждая Instagram-карусель станет Shorts (вертикальное слайд-шоу ~25 с, узбекское название и описание). Нужна одноразовая авторизация Google (шаг в списке выше).'} Лимит YouTube: ≤ ${M.crosspost.config.yt_max||2} загрузки за запуск.</p>
+      ${posts(yt.posts)}
+      <div class="chip-row" style="margin-top:10px">${open(yt.url,'Канал ↗')}</div></div>
+    <div class="card white"><div class="sect-h"><h4>🔍 Google</h4><span class="pill grey">только поиск</span></div>
+      <p class="small">Search Console и Google Business Profile не подключены — показывать нечего. Пока: как Jay выглядит в поиске и YouTube как часть Google.</p>
+      <p class="small muted">Чтобы здесь появились клики и запросы из поиска, нужен Search Console для личного сайта (адрес ниже).</p>
+      <div class="chip-row" style="margin-top:10px">${open(C.google.search_url,'Поиск по имени ↗')}</div></div>
+    <div class="card white"><div class="sect-h"><h4>🌐 Личный сайт</h4>${C.website.url?st(true):'<span class="pill warn">адрес не указан</span>'}</div>
+      <p class="small">${C.website.url?`<a href="${esc(C.website.url)}" target="_blank">${esc(C.website.url)}</a>`:'Укажи адрес личного сайта — он появится здесь, и к нему подключим Search Console.'}</p>
+      <p class="small muted">Связанные страницы: <a href="https://javokhirkomiljanov.github.io/meet/" target="_blank">запись на встречу /meet</a> · <a href="https://w2w.uz" target="_blank">w2w.uz</a></p>
+      <div class="chip-row" style="margin-top:10px">${open(C.website.url)}</div></div>
+  </div>
+
+  <div class="sect"><div class="sect-h"><h3>Кросспост: Instagram → Telegram · Threads · YouTube</h3><span class="tag">одна строка = одна AI-карусель · «—» ещё не отправлено</span></div>
+    <div class="tbl"><table><thead><tr><th>Дата</th><th>Карусель (Instagram)</th><th>Telegram</th><th>Threads</th><th>YouTube</th></tr></thead><tbody>
+      ${M.crosspost.rows.map(r=>`<tr><td class="mono">${dmy(r.at).slice(0,5)}</td><td class="small"><a href="${esc(r.ig)}" target="_blank">${esc(r.title)}</a></td><td>${xcell(r.tg)}</td><td>${xcell(r.threads)}</td><td>${xcell(r.yt)}</td></tr>`).join('')||'<tr><td colspan="5" class="muted">каруселей ещё нет</td></tr>'}
+    </tbody></table></div>
+    <p class="small muted" style="margin-top:8px">Telegram получает только карусель текущего дня (чтобы не заспамить канал старыми), Threads и YouTube добирают прошлые по ${M.crosspost.config.threads_max||2}–${M.crosspost.config.yt_max||2} за запуск.</p></div>
+
+  <div class="grid g2 sect">
+    <div class="card white"><div class="sect-h"><h3>LinkedIn — очередь</h3><span class="tag">черновики с сервера</span></div>
+      <div class="tbl" style="border:0"><table style="min-width:0"><thead><tr><th>Дата</th><th>Язык</th><th>Формат</th><th>Визуал</th><th>Тема</th></tr></thead><tbody>
+        ${li.queue.map(d=>`<tr><td class="mono">${dmy(d.slot).slice(0,5)}</td><td>${lang(d.lang)}</td><td class="small">${esc(d.format||'')}</td><td>${vis(d.visual)}</td><td class="small" title="${esc(d.preview||'')}">${esc(d.topic||d.preview||'')}${d.status==='blocked'?' <span class="pill bad">заблокирован фактчеком</span>':''}</td></tr>`).join('')||'<tr><td colspan="5" class="muted">очередь пуста — драфтер 06:00 должен заполнить</td></tr>'}
+      </tbody></table></div></div>
+    <div class="card white"><div class="sect-h"><h3>Агенты</h3><span class="tag">сервер</span></div>
+      <div class="tbl" style="border:0"><table style="min-width:0"><thead><tr><th>Агент</th><th>Статус</th><th>Последний</th><th>Следующий</th></tr></thead><tbody>
+        ${task('jay-linkedin-drafter','LinkedIn: черновики RU/EN, 06:00')}
+        ${task('jay-linkedin-daily','LinkedIn: публикация вт/ср/чт 17:30')}
+        ${task('ig-carousel-daily','Instagram: AI-карусель 19:00')}
+        ${task('marketing-crosspost','Кросспост → TG · Threads · YouTube 19:30')}
+      </tbody></table></div>
+      <details style="margin-top:10px"><summary class="small">Логи (последние строки)</summary><pre class="small mono" style="white-space:pre-wrap;font-size:11px;max-height:260px;overflow:auto">${esc([...M.crosspost.log, ...li.log].join('\n'))||'—'}</pre></details></div>
+  </div>`;
+  document.getElementById('foot').innerHTML = `<span>Источник: сервер — jay-channel-publisher, jay-marketing, ig-pipeline · Telegram/Threads/YouTube API ${dmy(M.checked_at)}</span><span>Копия в Obsidian: Brand/Social/Маркетинг — каналы.md</span>`;
+  return M.generated;
+}
+
 function post(){ try{ parent.postMessage({jos:'h', page:D.page, h:document.documentElement.scrollHeight}, '*'); }catch(e){} }
-const gen = D.page === 'sales' ? renderSales() : renderIG();
+const gen = D.page === 'sales' ? renderSales() : D.page === 'marketing' ? renderMarketing() : renderIG();
 document.getElementById('ps').textContent = 'обновлено ' + dmy(gen);
 const age = sinceH(gen);
 if (age != null && age > 26) { const s = document.getElementById('stale'); s.classList.add('on'); s.textContent = `Данные устарели: последнее обновление ${dmy(gen)} (${hm(age)} назад). Обновление идёт с ноутбука — он, видимо, был выключен.`; }

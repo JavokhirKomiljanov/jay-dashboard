@@ -252,6 +252,28 @@ ul.clean{list-style:none;margin:0;padding:0}ul.clean li{padding:6px 0;border-bot
 /* sales / instagram panels (separate encrypted pages, refreshed without rebuilding this one) */
 iframe.panel{width:100%;min-height:80vh;border:0;display:block;background:transparent}
 .panel-foot{margin:10px 0 0}
+/* 📅 calendar tab */
+.cal-link{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.cal-link .u{font:600 13px var(--mono);color:var(--ink);word-break:break-all}
+.cal-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.cal-day{margin-bottom:14px}
+.cal-day h4{margin:0 0 6px;font-size:13px;display:flex;gap:8px;align-items:center}
+.cal-day.today h4{color:var(--mint-dark)}
+.cal-ev{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line)}
+.cal-ev:last-child{border-bottom:0}
+.cal-ev .tm{font:600 11.5px var(--mono);color:var(--ink);width:92px;flex:none;padding-top:1px}
+.cal-ev .tm.all{color:var(--muted);font-weight:500}
+.cal-ev .t{flex:1;min-width:0;font-size:13px}
+.cal-ev .t .sub{font-size:11px;color:var(--muted);margin-top:2px}
+.cal-ev.past .t,.cal-ev.past .tm{opacity:.5}
+.cal-ev.now{background:var(--mint-tint);border-radius:8px;padding-left:6px;padding-right:6px}
+.cal-ev.free .t{color:var(--muted)}
+.cal-ev .bar{width:3px;align-self:stretch;border-radius:3px;flex:none;background:var(--mint)}
+.cal-ev .bar.work{background:#4a9cf0}.cal-ev .bar.task{background:#ffb648}
+.cal-ev input{margin-top:2px;accent-color:var(--mint-dark);width:16px;height:16px;flex:none}
+.cal-ev.done .t{text-decoration:line-through;color:var(--muted)}
+.cal-empty{font-size:12px;color:var(--faint);padding:4px 0 8px}
+@media(max-width:640px){.cal-ev .tm{width:74px}}
 
 /* mobile */
 /* ===== finance (Notion-like editable) ===== */
@@ -348,16 +370,19 @@ footer{padding:18px 28px;border-top:1px solid var(--line);color:var(--muted);fon
     <div class="wm"><b>Jay OS</b><span>WIN TO WIN</span></div>
   </div>
   <div class="nav on" data-v="today"><span class="ic">🏠</span>Сегодня<span class="cnt" id="cnt-today"></span></div>
+  <div class="nav" data-v="cal"><span class="ic">📅</span>Календарь<span class="cnt" id="cnt-cal"></span></div>
   <div class="nav" data-v="strategy"><span class="ic">🧭</span>Стратегия<span class="cnt">Q4'26–Q4'27</span></div>
   <div class="nav" data-v="advisors"><span class="ic">🧑‍💼</span>Советники<span class="cnt">4</span></div>
   <div class="nav" data-v="brain"><span class="ic">🧠</span>Company Brain<span class="cnt" id="cnt-brain"></span></div>
   <div class="nav" data-v="w2w"><span class="ic">🏢</span>W2W<span class="cnt" id="cnt-w2w"></span></div>
   <div class="nav" data-v="sales"><span class="ic">📇</span>Продажи<span class="cnt">CRM</span></div>
-  <div class="nav" data-v="instagram"><span class="ic">📷</span>Instagram<span class="cnt">IG</span></div>
-  <div class="nav" data-v="auto"><span class="ic">⚡</span>Автоматизации<span class="cnt">DM</span></div>
   <div class="nav" data-v="finance"><span class="ic">💰</span>Финансы W2W<span class="cnt" id="cnt-finance"></span></div>
   <div class="nav" data-v="me"><span class="ic">👛</span>Мои финансы<span class="cnt" id="cnt-me"></span></div>
   <div class="nav" data-v="agents"><span class="ic">🤖</span>Agents House<span class="cnt" id="cnt-agents"></span></div>
+  <div class="sec">📣 Отдел маркетинга</div>
+  <div class="nav" data-v="marketing"><span class="ic">📣</span>Маркетинг<span class="cnt">6 каналов</span></div>
+  <div class="nav" data-v="instagram"><span class="ic">📷</span>Instagram<span class="cnt">IG</span></div>
+  <div class="nav" data-v="auto"><span class="ic">⚡</span>Автоматизации<span class="cnt">DM</span></div>
   <div class="sec">Окна</div>
   <a class="nav ext" id="lnk-strategy" target="_blank"><span class="ic">📄</span>Полная стратегия ↗</a>
   <a class="nav ext" id="lnk-map" target="_blank"><span class="ic">🗺</span>Карта компании ↗</a>
@@ -380,11 +405,13 @@ footer{padding:18px 28px;border-top:1px solid var(--line);color:var(--muted);fon
 
   <div class="wrap">
     <section class="view on" id="v-today"></section>
+    <section class="view" id="v-cal"></section>
     <section class="view" id="v-strategy"></section>
     <section class="view" id="v-advisors"></section>
     <section class="view" id="v-brain"></section>
     <section class="view" id="v-w2w"></section>
     <section class="view" id="v-sales"><iframe class="panel" data-page="sales" title="Продажи · CRM" loading="lazy"></iframe><p class="small muted panel-foot"><a data-open="sales" target="_blank">Открыть отдельной страницей ↗</a></p></section>
+    <section class="view" id="v-marketing"><iframe class="panel" data-page="marketing" title="Маркетинг" loading="lazy"></iframe><p class="small muted panel-foot"><a data-open="marketing" target="_blank">Открыть отдельной страницей ↗</a></p></section>
     <section class="view" id="v-instagram"><iframe class="panel" data-page="instagram" title="Instagram" loading="lazy"></iframe><p class="small muted panel-foot"><a data-open="instagram" target="_blank">Открыть отдельной страницей ↗</a></p></section>
     <section class="view" id="v-auto"><iframe class="panel" data-page="auto" title="Автоматизации" loading="lazy"></iframe><p class="small muted panel-foot"><a data-open="auto" target="_blank">Открыть отдельной страницей ↗</a></p></section>
     <section class="view" id="v-finance"></section>
@@ -487,7 +514,8 @@ function renderToday(){
     <div class="week">${week.map(w=>`<div class="day ${w.i===dow?'today':''}"><h5>${w.n}</h5>${w.ev.map(e=>`<div class="ev ${e.cls}">${esc(e.txt)}</div>`).join('')}</div>`).join('')}</div>
   </div>
 
-  <div class="grid g4 sect">
+  <div class="grid g5 sect">
+    <a class="card mint" href="#marketing" onclick="JOS.go('marketing');return false"><h4>📣 Маркетинг →</h4><p class="small">Один отдел: LinkedIn (RU/EN, с картинками), Telegram-канал на узбекском, Threads, YouTube Shorts, Google, сайт. Что вышло, что в очереди, что сломано.</p></a>
     <a class="card mint" href="#me" onclick="JOS.go('me');return false"><h4>👛 Мои финансы →</h4><p class="small" id="me-today">${meTodayTxt()}</p></a>
     <a class="card mint" href="#finance" onclick="JOS.go('finance');return false"><h4>💰 Финансы W2W →</h4><p class="small">Открыто (Not paid + In progress): <b>${money(finOpen())}</b>. Расходы из Notion, правятся как в Notion — статус, суммы, платежи.</p></a>
     <a class="card mint" href="#sales" onclick="JOS.go('sales');return false"><h4>📇 Продажи · CRM →</h4><p class="small">Лиды из Telegram @ceo_w2w: сколько ждут ответа, воронка, медиана ответа. Обновляется с сервера несколько раз в день.</p></a>
@@ -1428,13 +1456,112 @@ function meImport(file){ if(!file) return; const rd = new FileReader(); rd.onloa
     if(!confirm(`Заменить ВСЕ мои финансы (на всех устройствах) на файл: ${o.tx.length} операций, ${(o.debts || []).length} долгов?`)) return;
     M = Object.assign(meNorm({tx: o.tx, debts: o.debts, fixed: o.fixed, cats: o.cats, plan: o.plan, deleted: o.deleted || []}), {cu: Date.now(), pu: Date.now(), rev: M.rev, replace: true}); meSave(); meRender(); }catch(e){ alert('Не тот файл: ' + e.message); } }; rd.readAsText(file); }
 
+/* ---------- 📅 calendar: events of both Google calendars + Google Tasks, live (2026-10-19) ----------
+   Events = meet-booking Apps Script, POST {action:'agenda'} with D.calsync.agenda_secret (personal + work calendar).
+   Tasks = JOS Tasks bridge {tasks:'list'|'set'} via finApi (FIN_SECRET). Last answer is cached in localStorage["jos7-cal"]
+   so the tab opens instantly and offline; refreshed on open, every 5 min while open and on ↻. Ticking a task writes to Google Tasks. */
+const CS = D.calsync || {}, CTZ = 'Asia/Tashkent', CKEY = 'jos7-cal', CUKEY = 'jos7-cal-ui';
+const MEET_URL = CS.meet_url || 'https://javokhirkomiljanov.github.io/meet/';
+let CD; try{ CD = JSON.parse(localStorage.getItem(CKEY) || 'null'); }catch(e){ CD = null; }
+CD = CD || {events: null, tasks: null, lists: [], at: null};
+let CU; try{ CU = JSON.parse(localStorage.getItem(CUKEY) || 'null'); }catch(e){ CU = null; }
+CU = Object.assign({range: 7, personal: 1, work: 1, task: 1, free: 0}, CU || {});
+let calBusy = false, calSync = ['', 'grey'], calErr = [];
+const calHasEv = () => !!(CS.agenda_url && CS.agenda_secret), calHasTasks = () => !!FSYNC;
+const tzDay = t => new Date(t).toLocaleDateString('sv-SE', {timeZone: CTZ});
+const tzHM = t => new Date(t).toLocaleTimeString('ru-RU', {timeZone: CTZ, hour: '2-digit', minute: '2-digit'});
+const dayAdd = (k, n) => { const d = new Date(k + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+const dayName = k => new Date(k + 'T12:00:00Z').toLocaleDateString('ru-RU', {timeZone: 'UTC', weekday: 'long', day: 'numeric', month: 'long'});
+const evDay = e => e.allDay ? e.start.slice(0, 10) : tzDay(e.start);
+const evOn = (e, k) => e.allDay ? (e.start.slice(0, 10) <= k && k < (e.end || e.start).slice(0, 10)) || e.start.slice(0, 10) === k : evDay(e) === k;
+function calUi(){ try{ localStorage.setItem(CUKEY, JSON.stringify(CU)); }catch(e){} }
+function calStatus(t, c){ calSync = [t, c]; const el = document.getElementById('cal-sync'); if(el){ el.textContent = t; el.className = 'pill ' + c; } }
+async function calPull(){
+  if(calBusy || (!calHasEv() && !calHasTasks())) return; calBusy = true; calStatus('⏳ обновляю…', 'warn');
+  const post = (url, body) => fetch(url, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(body)}).then(r => { if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+  const [ev, tk] = await Promise.allSettled([
+    calHasEv() ? post(CS.agenda_url, {action: 'agenda', secret: CS.agenda_secret, days: 14}) : Promise.resolve(null),
+    calHasTasks() ? finApi({tasks: 'list', days_done: 7}) : Promise.resolve(null)]);
+  calErr = [];
+  if(ev.status === 'fulfilled' && ev.value){ if(ev.value.ok){ CD.events = ev.value.events; (ev.value.errors || []).forEach(x => calErr.push('календарь ' + x)); } else calErr.push('календарь: ' + ev.value.error); }
+  else if(ev.status === 'rejected') calErr.push('календарь: нет связи');
+  if(tk.status === 'fulfilled' && tk.value){ if(tk.value.ok){ CD.tasks = tk.value.items; CD.lists = tk.value.lists; } else calErr.push('задачи: ' + tk.value.error); }
+  else if(tk.status === 'rejected') calErr.push('задачи: нет связи');
+  CD.at = new Date().toISOString(); try{ localStorage.setItem(CKEY, JSON.stringify(CD)); }catch(e){}
+  calBusy = false; calStatus(calErr.length ? '⚠ ' + calErr.join(' · ') : '✓ обновлено ' + tzHM(Date.now()), calErr.length ? 'bad' : 'mint');
+  calSafeRender(); calBadge();
+}
+function calSafeRender(){ if(document.getElementById('v-cal').classList.contains('on')){ const y = window.scrollY; renderCal(); window.scrollTo(0, y); } else renderCal(); }
+async function calTick(list, id, done){
+  const t = (CD.tasks || []).find(x => x.id === id); if(!t) return; const was = t.status;
+  t.status = done ? 'completed' : 'needsAction'; calSafeRender(); calBadge();
+  try{ const r = await finApi({tasks: 'set', list, id, done}); if(!r.ok) throw new Error(r.error); Object.assign(t, r.item); try{ localStorage.setItem(CKEY, JSON.stringify(CD)); }catch(e){} calStatus('✓ задача ' + (done ? 'закрыта' : 'открыта') + ' в Google Tasks', 'mint'); }
+  catch(e){ t.status = was; calSafeRender(); calBadge(); calStatus('⚠ не удалось сохранить галочку: ' + e.message, 'bad'); }
+}
+function calCopy(){ const done = () => calStatus('📋 ссылка скопирована', 'mint');
+  if(navigator.clipboard) navigator.clipboard.writeText(MEET_URL).then(done, () => prompt('Скопируй ссылку:', MEET_URL)); else prompt('Скопируй ссылку:', MEET_URL); }
+const calEvents = () => (CD.events || []).filter(e => !e.declined && (CU.free || !e.free) && CU[e.cal]);
+const calOpen = () => (CD.tasks || []).filter(t => t.status !== 'completed');
+function calBadge(){ const k = tzDay(Date.now()); const el = document.getElementById('cnt-cal'); if(!el) return;
+  const n = (CD.events || []).filter(e => !e.declined && !e.free && evOn(e, k)).length + calOpen().filter(t => t.due && t.due <= k).length;
+  el.textContent = CD.at ? n : ''; }
+function calEvRow(e, now){
+  const s = Date.parse(e.start), en = Date.parse(e.end), past = !e.allDay && en < now, cur = !e.allDay && s <= now && now < en;
+  const tm = e.allDay ? '<div class="tm all">весь день</div>' : `<div class="tm">${tzHM(e.start)}–${tzHM(e.end)}</div>`;
+  const sub = [e.cal === 'work' ? '💼 рабочий' : '👤 личный', e.loc ? '📍 ' + esc(e.loc) : '', e.meet ? `<a href="${esc(e.meet)}" target="_blank">🎥 Meet</a>` : '', e.link ? `<a href="${esc(e.link)}" target="_blank">открыть в Google ↗</a>` : ''].filter(Boolean).join(' · ');
+  return `<div class="cal-ev${past ? ' past' : ''}${cur ? ' now' : ''}${e.free ? ' free' : ''}"><div class="bar ${e.cal}"></div>${tm}<div class="t">${cur ? '<span class="pill mint">сейчас</span> ' : ''}${esc(e.title)}<div class="sub">${sub}</div></div></div>`;
+}
+function calTaskRow(t, k){
+  const list = (CD.lists || []).find(l => l.id === t.list), done = t.status === 'completed', late = !done && t.due && t.due < k;
+  const sub = [list ? '✅ ' + esc(list.title) : '✅ задача', late ? `<span style="color:var(--coral-dark);font-weight:600">просрочено с ${dateRu(t.due)}</span>` : '', t.notes ? esc(t.notes.replace(/\s+/g, ' ').slice(0, 120)) : ''].filter(Boolean).join(' · ');
+  return `<label class="cal-ev${done ? ' done' : ''}"><div class="bar task"></div><input type="checkbox" ${done ? 'checked' : ''} onchange="calTick('${esc(t.list)}','${esc(t.id)}',this.checked)"><div class="t">${esc(t.title)}<div class="sub">${sub}</div></div></label>`;
+}
+function renderCal(){
+  const k0 = tzDay(Date.now()), now = Date.now(), ev = calEvents(), open = calOpen(), all = CD.tasks || [];
+  const over = CU.task ? open.filter(t => t.due && t.due < k0).sort((a, b) => a.due < b.due ? -1 : 1) : [];
+  const evToday = ev.filter(e => evOn(e, k0) && !e.free), left = evToday.filter(e => e.allDay || Date.parse(e.end) > now);
+  const tToday = open.filter(t => t.due === k0);
+  const days = [];
+  for(let i = 0; i < CU.range; i++){ const k = dayAdd(k0, i);
+    const de = ev.filter(e => evOn(e, k)).sort((a, b) => (b.allDay - a.allDay) || (a.start < b.start ? -1 : 1));
+    const dt = CU.task ? all.filter(t => t.due === k && (t.status !== 'completed' || t.completed)) : [];
+    days.push(`<div class="card white cal-day${i === 0 ? ' today' : ''}"><h4>${esc(dayName(k))}${i === 0 ? ' <span class="pill mint">сегодня</span>' : i === 1 ? ' <span class="pill grey">завтра</span>' : ''}</h4>
+      ${de.length || dt.length ? de.map(e => calEvRow(e, now)).join('') + dt.map(t => calTaskRow(t, k0)).join('') : '<div class="cal-empty">свободно</div>'}</div>`); }
+  const nodue = CU.task ? open.filter(t => !t.due) : [];
+  const conn = [!calHasEv() ? 'встречи не подключены (нет ключа календаря)' : '', !calHasTasks() ? 'задачи не подключены' : ''].filter(Boolean);
+  const btn = (on, lbl, js) => `<button class="btn sm${on ? ' on' : ''}" onclick="${js};calUi();renderCal()">${lbl}</button>`;
+  document.getElementById('v-cal').innerHTML = `
+  <div class="card mint cal-link"><b>🔗 Запись ко мне на встречу:</b><a class="u" href="${esc(MEET_URL)}" target="_blank">${esc(MEET_URL.replace(/^https?:\/\//, '').replace(/\/$/, ''))}</a>
+    <button class="btn sm" onclick="calCopy()">📋 Скопировать</button><a class="btn sm" href="${esc(MEET_URL)}" target="_blank">Открыть ↗</a>
+    <span class="small muted">клиент сам выбирает 30/45/60 мин, онлайн или офлайн; свободные слоты берутся из этого же календаря</span></div>
+  ${conn.length ? `<div class="card soft small" style="margin-bottom:14px">⚙️ ${conn.join(' · ')}</div>` : ''}
+  <div class="cal-bar">
+    ${[[1, 'Сегодня'], [3, '3 дня'], [7, 'Неделя'], [14, '2 недели']].map(([n, l]) => btn(CU.range === n, l, `CU.range=${n}`)).join('')}
+    <span style="width:8px"></span>
+    ${btn(CU.personal, '👤 Личный', 'CU.personal=CU.personal?0:1')}${btn(CU.work, '💼 Рабочий', 'CU.work=CU.work?0:1')}${btn(CU.task, '✅ Задачи', 'CU.task=CU.task?0:1')}${btn(CU.free, '🕌 Намаз и «свободен»', 'CU.free=CU.free?0:1')}
+    <span style="flex:1"></span><span class="pill ${calSync[1]}" id="cal-sync">${esc(calSync[0] || (CD.at ? 'данные от ' + tzHM(CD.at) : 'ещё не загружено'))}</span>
+    <button class="btn sm" onclick="calPull()">↻ Обновить</button></div>
+  <div class="grid g3 sect">
+    <div class="stat hl"><div class="v">${left.length}<small>из ${evToday.length}</small></div><div class="l">встреч сегодня ещё впереди</div><div class="n">${left[0] ? (left[0].allDay ? 'весь день · ' : 'ближайшая ' + tzHM(left[0].start) + ' · ') + esc(left[0].title.slice(0, 40)) : 'больше встреч сегодня нет'}</div></div>
+    <div class="stat"><div class="v">${tToday.length}</div><div class="l">задач на сегодня</div><div class="n">${open.length} открытых всего · Google Tasks</div></div>
+    <div class="stat ${over.length ? 'neg' : 'pos'}"><div class="v">${over.length}</div><div class="l">просрочено</div><div class="n">${over.length ? 'самая старая — ' + dateRu(over[0].due) : 'всё в срок'}</div></div>
+  </div>
+  ${over.length ? `<div class="card white cal-day sect"><h4>⏰ Просрочено <span class="pill bad">${over.length}</span></h4>${over.map(t => calTaskRow(t, k0)).join('')}</div>` : ''}
+  ${days.join('')}
+  ${nodue.length ? `<details class="card white cal-day"><summary style="cursor:pointer;font-weight:600;font-size:13px">Задачи без даты · ${nodue.length}</summary>${nodue.map(t => calTaskRow(t, k0)).join('')}</details>` : ''}
+  <p class="small muted" style="margin-top:14px">Встречи: личный календарь + javokhir.k@alliancevs.io · отклонённые скрыты. Задачи: все списки Google Tasks (вкл. «JOS»), галочка здесь = галочка в Google.
+    Обновляется при открытии вкладки и каждые 5 минут. Копия в Obsidian: <span class="mono">Jay/Calendar/Календарь.md</span> (3 раза в день).</p>`;
+}
+setInterval(() => { if(!document.hidden && document.getElementById('v-cal').classList.contains('on')) calPull(); }, 5 * 60 * 1000);
+
 /* ---------- app ---------- */
 const JOS = {
   go(v){ document.querySelectorAll('.nav[data-v]').forEach(n=>n.classList.toggle('on', n.dataset.v===v)); document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on', x.id==='v-'+v));
-    const titles = {today:['Сегодня','план дня, дедлайны, задачи советников'], strategy:['Стратегия','Q4 2026 – Q4 2027 · база, модель, допущения'], advisors:['Советники','Chief of Staff · HR · Маркетинг · Финансы'], brain:['Company Brain','второй мозг W2W — то, что продаём'], w2w:['W2W','клиенты, оффер, команда'], sales:['Продажи','Jay CRM · лиды Telegram @ceo_w2w'], instagram:['Instagram','@javohir_w2w · AI-блог и его агенты'], finance:['Финансы W2W','расходы и долги W2W · копия Notion, правится здесь'], me:['Мои финансы','личные деньги: расходы, неожиданные траты, план, долги · с телефона'], agents:['Agents House','все агенты на сервере']};
+    const titles = {today:['Сегодня','план дня, дедлайны, задачи советников'], cal:['Календарь','встречи из личного и рабочего календаря + задачи Google Tasks'], strategy:['Стратегия','Q4 2026 – Q4 2027 · база, модель, допущения'], advisors:['Советники','Chief of Staff · HR · Маркетинг · Финансы'], brain:['Company Brain','второй мозг W2W — то, что продаём'], w2w:['W2W','клиенты, оффер, команда'], sales:['Продажи','Jay CRM · лиды Telegram @ceo_w2w'], instagram:['Instagram','@javohir_w2w · AI-блог и его агенты'], marketing:['Маркетинг','LinkedIn · Telegram · Threads · YouTube · Google · сайт — один отдел'], auto:['Автоматизации','Instagram: комментарий → ссылка в директ'], finance:['Финансы W2W','расходы и долги W2W · копия Notion, правится здесь'], me:['Мои финансы','личные деньги: расходы, неожиданные траты, план, долги · с телефона'], agents:['Agents House','все агенты на сервере']};
     document.getElementById('top-title').textContent = titles[v][0]; document.getElementById('top-sub').textContent = titles[v][1];
     if(v === 'finance') finPull();
     if(v === 'me') mePull();
+    if(v === 'cal') calPull();
     const fr = document.querySelector('#v-'+v+' iframe.panel'); if(fr && !fr.src) fr.src = panelUrl(fr.dataset.page);
     document.body.classList.remove('menu'); location.hash = v; window.scrollTo(0,0); this.applyEdit(); },
   toggleEdit(){ document.body.classList.toggle('editing'); document.getElementById('btn-edit').classList.toggle('on', document.body.classList.contains('editing')); this.applyEdit(); },
@@ -1458,8 +1585,8 @@ document.getElementById('lnk-strategy').href = L.strategy_page; document.getElem
 document.getElementById('foot-built').textContent = 'собрано ' + D.built; document.getElementById('foot-src').textContent = 'стратегия ' + S.meta.generated + ' · мозг ' + BR.snapshot + ' · агенты ' + AG.checked;
 document.getElementById('cnt-today').textContent = allTasks().filter(t=>!E.done[t.id]).length;
 document.getElementById('cnt-brain').textContent = BR.totals.clients; document.getElementById('cnt-w2w').textContent = S.installed_base.accounts.length + ' акк.'; document.getElementById('cnt-agents').textContent = AG.agents.filter(a=>a.state==='running').length + ' live';
-renderToday(); renderStrategy(); renderAdvisors(); renderBrain(); renderW2W(); renderFinance(); renderMe(); renderAgents(); finPull(); mePull(); meBadge();
-const VIEWS = ['today','strategy','advisors','brain','w2w','sales','instagram','auto','finance','me','agents'];
+renderToday(); renderStrategy(); renderAdvisors(); renderBrain(); renderW2W(); renderFinance(); renderMe(); renderAgents(); finPull(); mePull(); meBadge(); renderCal(); calBadge(); calPull();
+const VIEWS = ['today','cal','strategy','advisors','brain','w2w','sales','marketing','instagram','auto','finance','me','agents'];
 const h = (location.hash||'').slice(1); if(VIEWS.includes(h)) JOS.go(h); else JOS.applyEdit();
 window.addEventListener('hashchange', () => { const v = (location.hash||'').slice(1); if(VIEWS.includes(v) && !document.getElementById('v-'+v).classList.contains('on')) JOS.go(v); });
 </script>
