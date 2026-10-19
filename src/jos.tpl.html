@@ -1558,7 +1558,8 @@ setInterval(() => { if(!document.hidden && document.getElementById('v-cal').clas
 const JOS = {
   go(v){ document.querySelectorAll('.nav[data-v]').forEach(n=>n.classList.toggle('on', n.dataset.v===v)); document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on', x.id==='v-'+v));
     const titles = {today:['Сегодня','план дня, дедлайны, задачи советников'], cal:['Календарь','встречи из личного и рабочего календаря + задачи Google Tasks'], strategy:['Стратегия','Q4 2026 – Q4 2027 · база, модель, допущения'], advisors:['Советники','Chief of Staff · HR · Маркетинг · Финансы'], brain:['Company Brain','второй мозг W2W — то, что продаём'], w2w:['W2W','клиенты, оффер, команда'], sales:['Продажи','Jay CRM · лиды Telegram @ceo_w2w'], instagram:['Instagram','@javohir_w2w · AI-блог и его агенты'], marketing:['Маркетинг','LinkedIn · Telegram · Threads · YouTube · Google · сайт — один отдел'], auto:['Автоматизации','Instagram: комментарий → ссылка в директ'], finance:['Финансы W2W','расходы и долги W2W · копия Notion, правится здесь'], me:['Мои финансы','личные деньги: расходы, неожиданные траты, план, долги · с телефона'], agents:['Agents House','все агенты на сервере']};
-    document.getElementById('top-title').textContent = titles[v][0]; document.getElementById('top-sub').textContent = titles[v][1];
+    const nav = document.querySelector(`.nav[data-v="${v}"]`), tt = titles[v] || [nav ? nav.textContent.replace(/\d.*$/, '').trim() : v, ''];  // a tab without a title must still load
+    document.getElementById('top-title').textContent = tt[0]; document.getElementById('top-sub').textContent = tt[1];
     if(v === 'finance') finPull();
     if(v === 'me') mePull();
     if(v === 'cal') calPull();
