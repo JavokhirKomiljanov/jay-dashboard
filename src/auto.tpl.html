@@ -210,7 +210,7 @@ function matchAuto(text, sc){
   const t = normT(text), ws = wordsOf(text), strip = x => x.replace(/[^\p{L}\p{N}_'+]+/gu, '');
   for(const a of A.autos){
     if(!a.active) continue;
-    if(!(String(a.link||'').startsWith('http') || /http/.test(a.dm_text||''))) continue;
+    if(!hasLink(a)) continue;
     const scope = scopeOf(a);
     if(scope !== 'all' && !(sc && scope.includes(sc))) continue;
     if(a.match === 'any'){ if(scope === 'all') continue; return a; }
@@ -269,13 +269,19 @@ function kpis(){
     <div class="stat"><div class="v" style="font-size:16px">${S ? ago(S.cycle_at) : '—'}</div><div class="l">Сервер проверял комментарии</div><div class="n">${S ? `каждые ${Math.round((S.poll_s||75))} с · отчёт ${ago(S.at)}` : 'ждём первый отчёт'}</div></div>
   </div>`;
 }
+const OPEN_DEF = "Salom! Bu yerda ekanligingizdan juda xursandman, qiziqish bildirganingiz uchun katta rahmat 😊\n\nQuyidagi tugmani bosing, men sizga havolani hozir yuboraman ✨";
+const GATE_DEF = "Oz qoldi! Bu havola aynan obunachilarim uchun ✨\n\nMenga obuna bo‘lganingizdan so‘ng, darhol ishga kirishishingiz uchun sizga havolani yuboraman! 🎉";
+const FU_DEF = "Agar qiziqayotgan bo‘lsangiz, yuqoridagi havolani bosishni unutmang ⬆️ O‘ylaymanki, bu sizga juda yoqadi ❤️";
+const linkOf = a => a.link_url || a.link || ((String(a.link_text||'') + ' ' + String(a.dm_text||'')).match(/https?:\/\/\S+/) || [''])[0];
+const hasLink = a => /^https?:\/\//.test(linkOf(a));
+function asFlow(a){ if(!a.open_text && !a.link_text && !a.link_url && (a.dm_text || a.link)){ a.link_text = String(a.dm_text||'').replace(/\{link\}/g, a.link||''); a.link_url = a.link || ''; } return a; }
 const TPL = [
-  {k:'plus', t:'«+» → ссылка в Direct', d:'Классика из reels: «напиши + в комментариях — пришлю ссылку». Сработает под следующим постом.',
-   a:{name:'«+» → ссылка', keywords:['+','plus','плюс'], match:'word', reels:'next', public_replies: DEF.replies.slice(), dm_text: DEF.dm, link:''}},
+  {k:'plus', t:'«+» → кнопка → ссылка (как в ManyChat)', d:'Ответ под комментарием, сообщение с кнопкой, проверка подписки, ссылка. Под выбранным reel.',
+   a:{name:'«+» → ссылка', keywords:['+','plus','плюс'], match:'word', reels:[], public_replies: DEF.replies.slice(), open_text: OPEN_DEF, open_button:'Follow', gate_text: GATE_DEF, gate_button:'Following', link_text:'', link_url:'', link_button:'', followup_text:''}},
   {k:'any', t:'Любой комментарий под постом', d:'Каждый, кто прокомментировал выбранный пост, получает сообщение. Только для конкретных постов.',
-   a:{name:'Любой комментарий → DM', keywords:[], match:'any', reels:[], public_replies:[DEF.replies[0]], dm_text: DEF.dm, link:''}},
-  {k:'word', t:'Своё кодовое слово', d:'Например «GUIDE» или «AI» — под любым постом или выбранными.',
-   a:{name:'Кодовое слово', keywords:[], match:'word', reels:'all', public_replies:[DEF.replies[0]], dm_text: DEF.dm, link:''}},
+   a:{name:'Любой комментарий → DM', keywords:[], match:'any', reels:[], public_replies:[DEF.replies[0]], open_text: OPEN_DEF, open_button:'Menga yuboring👇', gate_text:'', gate_button:'Following', link_text:'', link_url:'', link_button:'', followup_text:''}},
+  {k:'word', t:'Сразу ссылка, без кнопки', d:'Ссылка приходит прямо ответом на комментарий. Самый короткий путь.',
+   a:{name:'Кодовое слово → ссылка', keywords:[], match:'word', reels:[], public_replies:[DEF.replies[0]], open_text:'', open_button:'', gate_text:'', gate_button:'', link_text:'', link_url:'', link_button:'', followup_text:''}},
 ];
 function flows(){
   if(!A.autos.length) return `<div class="empty"><b style="color:var(--ink);font-size:15px">Автоматизаций пока нет</b><br>Начни с шаблона — всё можно поменять перед сохранением.
@@ -284,7 +290,7 @@ function flows(){
     <label class="sw" title="${a.active?'Выключить':'Включить'}"><input type="checkbox" ${a.active?'checked':''} onchange="toggle('${esc(a.id)}', this.checked)"><span></span></label>
     <div><div class="fname">${esc(a.name || 'Без названия')}</div>
       <div class="fline">💬 Комментарий ${scopeText(a)} <span class="arrow">·</span> ${a.match === 'any' ? '<span class="chip k">любой текст</span>' : (a.keywords||[]).map(k => `<span class="chip k" style="padding-right:10px">${esc(k)}</span>`).join('') || '<span class="pill warn">нет слов</span>'}
-        <span class="arrow">→</span> ${(a.public_replies||[]).length ? `↩ ответ под комментарием${a.public_replies.length>1?' ×'+a.public_replies.length:''} <span class="arrow">→</span>` : ''} ✉️ Direct ${a.link ? `<a href="${esc(a.link)}" target="_blank">${esc(a.link.replace(/^https?:\/\//,'').slice(0,34))}</a>` : '<span class="pill warn">нет ссылки — не сработает</span>'}</div>
+        <span class="arrow">→</span> ${(a.public_replies||[]).length ? `↩ ответ под комментарием${a.public_replies.length>1?' ×'+a.public_replies.length:''} <span class="arrow">→</span>` : ''} ${a.open_text ? `✉️ сообщение с кнопкой «${esc(a.open_button||'')}» <span class="arrow">→</span> ` : ''}${a.gate_text ? '🔒 проверка подписки <span class="arrow">→</span> ' : ''}🔗 ${hasLink(a) ? `<a href="${esc(linkOf(a))}" target="_blank">${esc(linkOf(a).replace(/^https?:\/\//,'').slice(0,34))}</a>${a.link_button ? ` (кнопка «${esc(a.link_button)}»)` : ''}` : '<span class="pill warn">нет ссылки — не сработает</span>'}${a.followup_text ? ' <span class="arrow">→</span> ⏰ напоминание' : ''}</div>
       ${flowStats(a)}</div>
     <div class="facts"><button class="btn" onclick="openEd('${esc(a.id)}')">✏️ Изменить</button><button class="btn" title="Дублировать" onclick="dup('${esc(a.id)}')">⧉</button><button class="btn" title="Удалить" onclick="del('${esc(a.id)}')">🗑</button></div>
   </div>`).join('')}</div>`;
@@ -302,7 +308,6 @@ function editor(){
   if(!ED) return '';
   const a = ED, any = a.match === 'any', rp = a.public_replies || [];
   const errs = ui.err.length ? `<div class="errs">${ui.err.map(e => '• ' + esc(e)).join('<br>')}</div>` : '';
-  const dm = (a.dm_text || '').replace(/\{username\}/g, 'ali_test').replace(/\{link\}/g, a.link || '{link}');
   const kwShow = any ? 'любой текст' : (a.keywords||[])[0] || '+';
   return `<div class="ed" id="ed"><div>
     <div class="ed-top"><input value="${esc(a.name)}" placeholder="Название автоматизации" oninput="ED.name=this.value"><label class="row small" style="gap:6px"><label class="sw"><input type="checkbox" ${a.active?'checked':''} onchange="ED.active=this.checked"><span></span></label> включить сразу</label></div>
@@ -328,22 +333,51 @@ function editor(){
       ${rp.length ? `${rp.map((r,i) => `<div class="reply-line"><input class="inp" value="${esc(r)}" oninput="ED.public_replies[${i}]=this.value"><button class="xbtn2" title="убрать" onclick="ED.public_replies.splice(${i},1);render()">×</button></div>`).join('')}
         <button class="btn sm" onclick="ED.public_replies.push('');render()">＋ вариант</button><div class="small muted" style="margin-top:6px">Варианты чередуются — так ответы не выглядят как спам для Instagram.</div>` : `<div class="small muted">Выключено: человек получит только сообщение в Direct.</div>`}
     </div><div class="conn"></div>
-    <div class="step"><h4><span class="n d">3</span>Отправить в Direct</h4>
-      <span class="lab">Ссылка</span><input class="inp" value="${esc(a.link)}" placeholder="https://t.me/… или https://w2w.uz/…" oninput="ED.link=this.value.trim();prev()">
-      <span class="lab">Текст сообщения</span><textarea class="inp" id="ed-dm" oninput="ED.dm_text=this.value;prev()">${esc(a.dm_text)}</textarea>
-      <div class="vars"><button onclick="ins('{username}')">{username}</button><button onclick="ins('{link}')">{link}</button><span class="small muted" style="margin-left:6px" id="ed-cnt">${(a.dm_text||'').length} / 1000</span></div>
-      <div class="small muted" style="margin-top:6px">{username} — ник человека, {link} — ссылка выше. Одно сообщение на комментарий: дальше переписка открывается, только если человек ответит.</div>
+    <div class="step"><h4><span class="n d">3</span>Первое сообщение с кнопкой<span class="sp"></span><label class="sw"><input type="checkbox" ${a.open_text?'checked':''} onchange="ED.open_text=this.checked?OPEN_DEF:'';ED.open_button=this.checked?(ED.open_button||'Follow'):'';if(!this.checked){ED.gate_text='';ED.followup_text='';}render()"><span></span></label></h4>
+      ${a.open_text ? `<textarea class="inp" oninput="ED.open_text=this.value;pv()">${esc(a.open_text)}</textarea>
+        <span class="lab">Кнопка</span><input class="inp" maxlength="20" value="${esc(a.open_button)}" placeholder="Follow" oninput="ED.open_button=this.value;pv()">
+        <div class="small muted" style="margin-top:6px">Как в ManyChat: человек жмёт кнопку → бот проверяет подписку → присылает ссылку. Кнопка до 20 символов.</div>`
+      : `<div class="small muted">Выключено: ссылка придёт сразу ответом на комментарий (без кнопки и без проверки подписки).</div>`}
+    </div><div class="conn"></div>
+    <div class="step"><h4><span class="n">4</span>Сначала подпишись<span class="sp"></span><label class="sw" title="${a.open_text?'':'нужен шаг 3: проверка идёт после нажатия кнопки'}"><input type="checkbox" ${a.gate_text?'checked':''} ${a.open_text?'':'disabled'} onchange="ED.gate_text=this.checked?GATE_DEF:'';ED.gate_button=this.checked?(ED.gate_button||'Following'):'';render()"><span></span></label></h4>
+      ${a.gate_text ? `<textarea class="inp" oninput="ED.gate_text=this.value;pv()">${esc(a.gate_text)}</textarea>
+        <span class="lab">Кнопка</span><input class="inp" maxlength="20" value="${esc(a.gate_button||'Following')}" oninput="ED.gate_button=this.value;pv()">
+        <div class="small muted" style="margin-top:6px">Если человек не подписан на @${esc(ACC)} — получит это сообщение; ссылка придёт после подписки и повторного нажатия.</div>`
+      : `<div class="small muted">${a.open_text ? 'Выключено: ссылка всем, кто нажал кнопку.' : 'Работает только вместе с шагом 3.'}</div>`}
+    </div><div class="conn"></div>
+    <div class="step"><h4><span class="n d">5</span>Сообщение со ссылкой</h4>
+      <span class="lab">Текст</span><textarea class="inp" style="min-height:80px" oninput="ED.link_text=this.value;pv()" placeholder="Например: Videoni shu havoladan ko’rishingiz mumkin (или просто ссылка)">${esc(a.link_text)}</textarea>
+      <span class="lab">Ссылка</span><input class="inp" value="${esc(a.link_url)}" placeholder="https://t.me/…" oninput="ED.link_url=this.value.trim();pv()">
+      <span class="lab">Кнопка со ссылкой (необязательно)</span><input class="inp" maxlength="20" value="${esc(a.link_button)}" placeholder="пусто = ссылка просто в тексте" oninput="ED.link_button=this.value;pv()">
+    </div><div class="conn"></div>
+    <div class="step"><h4><span class="n r">6</span>Напоминание через 1 час<span class="sp"></span><label class="sw" title="${a.open_text?'':'нужен шаг 3: Instagram разрешает второе сообщение только после ответа человека'}"><input type="checkbox" ${a.followup_text?'checked':''} ${a.open_text?'':'disabled'} onchange="ED.followup_text=this.checked?FU_DEF:'';render()"><span></span></label></h4>
+      ${a.followup_text ? `<textarea class="inp" style="min-height:70px" oninput="ED.followup_text=this.value;pv()">${esc(a.followup_text)}</textarea>
+        <div class="small muted" style="margin-top:6px">Уходит через 60 мин после ссылки, если человек ничего не написал. (ManyChat шлёт его, если ссылку не открыли — открытия ссылки Instagram нам не показывает.)</div>`
+      : `<div class="small muted">Выключено.</div>`}
     </div>
     ${errs}
     <div class="ed-foot"><button class="btn pri" onclick="saveEd()">💾 Сохранить</button><button class="btn" onclick="closeEd()">Отмена</button><span class="sp" style="flex:1"></span>${ED._new ? '' : `<span class="small muted">создана ${dmy(a.created)}${a.on_at ? ' · включена ' + dmy(a.on_at) : ''}</span>`}</div>
   </div>
-  <div class="phone"><div class="ph"><div class="av"></div><div><b>${esc(ACC)}</b><span>предпросмотр</span></div></div>
-    <div class="cmt"><b>ali_test</b> ${esc(kwShow)}${rp[0] ? `<div class="rp"><b>${esc(ACC)}</b> ${esc(rp[0].replace(/\{username\}/g,'ali_test'))}</div>` : ''}</div>
-    <div style="font-size:11px;color:var(--muted);text-align:center;margin:10px 0 8px">Direct · ali_test</div>
-    <div class="bub" id="ed-prev">${esc(dm).replace(/(https?:\/\/[^\s<]+)/g, '<a>$1</a>')}</div>
-    <div class="hint">Срабатывает только на комментарии, написанные <b>после включения</b> — старым комментаторам (их обслужил ManyChat) повторно не пишет.</div>
-  </div></div>`;
+  <div class="phone" id="ed-phone">${phone(a)}</div></div>`;
 }
+function phone(a){
+  const u = 'ali_test', f = t => esc(String(t||'').replace(/\{username\}/g, u).replace(/\{link\}/g, linkOf(a))).replace(/(https?:\/\/[^\s<]+)/g, '<a>$1</a>');
+  const btn = t => t ? `<div style="margin:4px 0 0 24px;text-align:center;background:#fff;border:1px solid var(--line-2);border-radius:12px;padding:7px;font-size:12.5px;font-weight:600;color:#3797f0">${esc(t)}</div>` : '';
+  const me = t => `<div style="margin:8px 0 0 auto;width:max-content;max-width:80%;background:var(--card-2);border-radius:18px;padding:7px 12px;font-size:12.5px">${esc(t)}</div>`;
+  const kw = a.match === 'any' ? 'zo‘r video!' : (a.keywords||[])[0] || '+', rp = a.public_replies || [];
+  const lt = String(a.link_text||'').trim(), url = String(a.link_url||'').trim();
+  const body = lt && (!url || a.link_button || lt.includes(url)) ? lt : (lt ? lt + '\n\n' + url : (url || '{ссылка}'));
+  const linkBub = `<div class="bub" style="margin-top:8px">${f(body)}</div>${a.link_button && url ? btn('🔗 ' + a.link_button) : ''}`;
+  return `<div class="ph"><div class="av"></div><div><b>${esc(ACC)}</b><span>предпросмотр</span></div></div>
+    <div class="cmt"><b>${u}</b> ${esc(kw)}${rp[0] ? `<div class="rp"><b>${esc(ACC)}</b> ${esc(rp[0])}</div>` : ''}</div>
+    <div style="font-size:11px;color:var(--muted);text-align:center;margin:10px 0 8px">Direct · ${u}</div>
+    ${a.open_text ? `<div class="bub">${f(a.open_text)}</div>${btn(a.open_button||'Follow')}${me(a.open_button||'Follow')}
+      ${a.gate_text ? `<div style="font-size:10.5px;color:var(--muted);text-align:center;margin:8px 0 4px">если не подписан ↓</div><div class="bub">${f(a.gate_text)}</div>${btn(a.gate_button||'Following')}${me(a.gate_button||'Following')}` : ''}` : ''}
+    ${linkBub}
+    ${a.followup_text ? `<div style="font-size:10.5px;color:var(--muted);text-align:center;margin:8px 0 4px">через 1 час, если молчит ↓</div><div class="bub">${f(a.followup_text)}</div>` : ''}
+    <div class="hint">Срабатывает только на комментарии, написанные <b>после включения</b>. Один комментарий — один сценарий, без повторов.</div>`;
+}
+function pv(){ const p = document.getElementById('ed-phone'); if(p) p.innerHTML = phone(ED); }
 function tester(){
   const M = media();
   return `<div class="sect"><div class="sect-h"><h3>🧪 Проверить комментарий</h3><span class="tag">та же логика, что на сервере</span></div>
@@ -404,7 +438,8 @@ function del(id){ const a = A.autos.find(x => x.id === id); if(!a || !confirm(`�
 function dup(id){ const a = A.autos.find(x => x.id === id); if(!a) return; const b = Object.assign(clone(a), {id: uid(), name: a.name + ' (копия)', active: false, created: nowIso(), on_at: null, u: Date.now()});
   A.autos.splice(A.autos.indexOf(a)+1, 0, b); save(); render(); }
 function openEd(id, tpl){
-  if(id){ ED = clone(A.autos.find(x => x.id === id)); }
+  if(id){ ED = asFlow(clone(A.autos.find(x => x.id === id)));
+    ['open_text','open_button','gate_text','gate_button','link_text','link_url','link_button','followup_text'].forEach(k => { if(ED[k] == null) ED[k] = ''; }); }
   else { const t = (TPL.find(x => x.k === tpl) || TPL[0]).a; ED = Object.assign(clone(t), {id: uid(), active: true, _new: true}); }
   ui.err = []; render(); const e = document.getElementById('ed'); if(e) e.scrollIntoView({behavior:'smooth', block:'start'});
 }
@@ -415,10 +450,6 @@ function pickPost(sc){ const L = Array.isArray(ED.reels) ? ED.reels : []; ED.ree
 function addUrl(){ const el = document.getElementById('ed-url'), v = (el && el.value || '').trim(); const m = v.match(/instagram\.com\/(?:reel|p|tv)\/([A-Za-z0-9_-]+)/); const sc = m ? m[1] : (/^[A-Za-z0-9_-]{6,}$/.test(v) ? v : '');
   if(!sc){ alert('Не похоже на ссылку Instagram: нужна вида https://www.instagram.com/reel/XXXX/'); return; } const L = Array.isArray(ED.reels) ? ED.reels : []; if(!L.includes(sc)) ED.reels = [...L, sc]; render(); }
 function addKw(v){ v = String(v||'').replace(/,/g,' ').trim(); if(!v) return; ED.keywords = ED.keywords || []; if(!ED.keywords.some(k => normT(k) === normT(v))) ED.keywords.push(v); render(); const i = document.getElementById('ed-kw'); if(i) i.focus(); }
-function ins(t){ const ta = document.getElementById('ed-dm'); if(!ta) return; const s = ta.selectionStart || ta.value.length; ta.value = ta.value.slice(0, s) + t + ta.value.slice(ta.selectionEnd || s); ED.dm_text = ta.value; ta.focus(); ta.selectionStart = ta.selectionEnd = s + t.length; prev(); }
-function prev(){ const p = document.getElementById('ed-prev'), c = document.getElementById('ed-cnt'); if(!p) return;
-  const dm = (ED.dm_text || '').replace(/\{username\}/g, 'ali_test').replace(/\{link\}/g, ED.link || '{link}');
-  p.innerHTML = esc(dm).replace(/(https?:\/\/[^\s<]+)/g, '<a>$1</a>'); if(c){ c.textContent = (ED.dm_text||'').length + ' / 1000'; c.style.color = (ED.dm_text||'').length > 1000 ? 'var(--coral-dark)' : ''; } }
 function saveEd(){
   const a = ED, e = [];
   const kw = document.getElementById('ed-kw'); if(kw && kw.value.trim()) { addKw(kw.value); }
@@ -427,16 +458,21 @@ function saveEd(){
   if(Array.isArray(a.reels) && !a.reels.length) e.push('Выбери хотя бы один пост (или «Следующий пост» / «Любой пост»).');
   if(a.match !== 'any' && !(a.keywords||[]).length) e.push('Добавь хотя бы одно кодовое слово.');
   if(a.match === 'any' && a.reels === 'all') e.push('«Любой комментарий» работает только для выбранных постов или следующего поста.');
-  if(!/^https?:\/\/\S+\.\S+/.test(a.link || '')) e.push('Нужна ссылка, начинается с https:// — без неё сервер автоматизацию не запустит.');
-  if(!(a.dm_text||'').trim()) e.push('Пустой текст сообщения.');
-  else if(!/\{link\}|https?:\/\//.test(a.dm_text)) e.push('В тексте нет {link} — человек не получит ссылку.');
-  if((a.dm_text||'').length > 1000) e.push('Текст длиннее 1000 символов — Instagram его не примет.');
+  ['open_text','open_button','gate_text','gate_button','link_text','link_url','link_button','followup_text'].forEach(k => a[k] = String(a[k] || '').trim());
+  if(a.link_url && !/^https?:\/\/\S+\.\S+/.test(a.link_url)) e.push('Ссылка должна начинаться с https://');
+  if(!hasLink(a)) e.push('Нужна ссылка (поле «Ссылка» или https://… в тексте шага 5) — без неё сервер автоматизацию не запустит.');
+  if(a.link_button && !a.link_url) e.push('Для кнопки со ссылкой заполни поле «Ссылка».');
+  if(a.open_text && !a.open_button) e.push('У первого сообщения нет текста кнопки.');
+  [['open_text','Первое сообщение'],['gate_text','Сообщение «подпишись»'],['link_text','Сообщение со ссылкой'],['followup_text','Напоминание']].forEach(([k, n]) => { if(a[k].length > 640) e.push(n + ' длиннее 640 символов — Instagram не примет сообщение с кнопкой.'); });
   const clash = A.autos.find(x => x.id !== a.id && x.active && a.active && x.match !== 'any' && a.match !== 'any' && (x.keywords||[]).some(k => (a.keywords||[]).some(j => normT(j) === normT(k))) && (x.reels === 'all' || a.reels === 'all' || x.reels === a.reels || (Array.isArray(x.reels) && Array.isArray(a.reels) && x.reels.some(s => a.reels.includes(s)))));
   if(clash) e.push(`Слова пересекаются с включённой «${clash.name}» на тех же постах — сработает та, что выше в списке. Убери слово или выключи одну.`);
   ui.err = e; if(e.length){ render(); return; }
   const old = A.autos.find(x => x.id === a.id), now = nowIso();
   const rec = {id: a.id, name: a.name, active: !!a.active, keywords: a.match === 'any' ? [] : a.keywords, match: a.match, reels: a.reels,
-    link: a.link, dm_text: a.dm_text, public_replies: a.public_replies, created: (old && old.created) || now,
+    link: a.link_url || linkOf(a), dm_text: '', public_replies: a.public_replies,
+    open_text: a.open_text, open_button: a.open_text ? a.open_button : '', gate_text: a.open_text ? a.gate_text : '', gate_button: a.gate_text ? (a.gate_button || 'Following') : '',
+    link_text: a.link_text, link_url: a.link_url, link_button: a.link_url ? a.link_button : '', followup_text: a.open_text ? a.followup_text : '',
+    created: (old && old.created) || now,
     on_at: a.active ? ((old && old.active && old.on_at) || now) : (old && old.on_at) || null, u: Date.now()};
   if(old) A.autos[A.autos.indexOf(old)] = rec; else A.autos.unshift(rec);
   ED = null; ui.err = []; save(); render();
