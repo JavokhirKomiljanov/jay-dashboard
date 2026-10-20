@@ -99,7 +99,8 @@ function render(){
     <div class="lang"><button class="${lang === 'ru' ? 'on' : ''}" onclick="setLang('ru')">RU</button> <button class="${lang === 'uz' ? 'on' : ''}" onclick="setLang('uz')">UZ</button></div></div>
   <div class="hero"><p class="small muted" style="margin:0">${esc(t.title)}</p><h1>${esc(t.hi)}, ${esc(st.name)}!</h1>
     ${st.program ? `<p><b>${esc(t.prog)}:</b> ${esc(st.program)}</p>` : ''}
-    ${act.length ? `<div class="bar"><i style="width:${pct}%"></i></div><p class="small" style="margin:0"><b>${pct}%</b> ${esc(t.progress)} · ${done}/${act.length} ${esc(t.lessons)}</p>` : ''}
+    ${act.length && st.program ? `<div class="bar"><i style="width:${pct}%"></i></div><p class="small" style="margin:0"><b>${pct}%</b> ${esc(t.progress)} · ${done}/${act.length} ${esc(t.lessons)}</p>`
+      : act.length ? `<p class="small" style="margin:10px 0 0">${esc(t.lessons[0].toUpperCase() + t.lessons.slice(1))} ${esc(t.progress)}: <b>${done}</b></p>` : ''}
     ${next ? `<p class="small" style="margin-top:10px"><b>${esc(t.next)} (${dt(next.date)}):</b> ${esc(next.next)}</p>` : ''}</div>
   <div class="sec"><h2>${esc(t.tasks)}</h2><span>${(S.tasks || []).length}</span></div>
   ${(S.tasks || []).length ? S.tasks.map(task).join('') : `<p class="muted">${esc(t.notasks)}</p>`}

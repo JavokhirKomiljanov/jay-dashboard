@@ -62,6 +62,7 @@ const leMax = () => LD.rubric.length * 2;
 const leScore = sc => LD.rubric.reduce((s, c) => s + (+((sc || {})[c.id]) || 0), 0);
 const lePassOk = sc => leScore(sc) >= (+LD.pass.min || 0) && LD.rubric.every(c => !c.crit || (+((sc || {})[c.id]) || 0) > 0);
 const leWaiting = () => LD.subs.filter(s => !s.review && (leTask(s.tid) || {}).status !== 'done' && leStu(s.sid)).sort((a, b) => String(a.at).localeCompare(String(b.at)));
+const leHasProg = s => !!(s.program || s.pid);  // no program yet → show lesson count, never a fake 100%
 const leProg = s => { const L = (s.lessons || []).filter(l => l.status !== 'skip'); return L.length ? Math.round(100 * L.filter(l => l.status === 'done').length / L.length) : 0; };
 
 /* seed: data/jos/learn.json → D.learn (first run only, when both the browser and the cloud are empty) */
@@ -216,8 +217,9 @@ function leStudents(){
       <h4>${esc(s.name)} <span class="pill ${s.status === 'active' ? 'mint' : 'grey'}">${LE_SST[s.status] || s.status}</span>${w ? ` <span class="pill warn">📥 ${w}</span>` : ''}</h4>
       <p class="small">${esc(s.biz || '— бизнес не заполнен')}</p>
       <p class="small muted">${esc(s.program || 'программа не назначена')}</p>
-      <div class="me-bar" style="margin:8px 0 4px"><i style="width:${p}%"></i></div>
-      <p class="small"><b>${p}%</b> программы · ${L.filter(l => l.status === 'done').length}/${L.filter(l => l.status !== 'skip').length} уроков · открытых заданий: ${open}</p>
+      ${leHasProg(s) ? `<div class="me-bar" style="margin:8px 0 4px"><i style="width:${p}%"></i></div>
+      <p class="small"><b>${p}%</b> программы · ${L.filter(l => l.status === 'done').length}/${L.filter(l => l.status !== 'skip').length} уроков · открытых заданий: ${open}</p>`
+      : `<p class="small" style="margin-top:8px">Пройдено уроков: <b>${L.filter(l => l.status === 'done').length}</b> · программа не составлена · открытых заданий: ${open}</p>`}
       <p class="small muted">${nx ? 'Дальше: ' + esc(nx.n + '. ' + nx.title) : L.length ? 'все уроки пройдены' : 'уроков нет'}${last ? ' · встреча ' + leDate(last.date) : ''}</p></a>`; };
   return `<div class="grid g3">${act.map(card).join('')}
       <button class="card soft le-add" onclick="leStudentAdd()">＋ Новый ученик</button></div>
@@ -227,9 +229,9 @@ function leStudent(s){
   const L = s.lessons || [], T = LD.tasks.filter(t => t.sid === s.id), S = LD.sessions.filter(x => x.sid === s.id).sort((a, b) => String(b.date).localeCompare(a.date)), p = leProg(s);
   const W = leWaiting().filter(x => x.sid === s.id), url = s.key ? LPORTAL + '#k=' + s.key : '';
   return `<p><a href="#learn" onclick="le.sid=null;leRender();return false">← все ученики</a></p>
-  <div class="sect-h"><h3 class="h2" style="margin:0">${esc(s.name)}</h3><span class="tag">${p}% программы · старт ${leDate(s.start)}</span></div>
+  <div class="sect-h"><h3 class="h2" style="margin:0">${esc(s.name)}</h3><span class="tag">${leHasProg(s) ? p + '% программы · ' : ''}старт ${leDate(s.start)}</span></div>
   <div class="grid g4" style="margin-bottom:14px">
-    <div class="stat hl"><div class="v">${p}<small>%</small></div><div class="l">программы пройдено</div><div class="n">${L.filter(l => l.status === 'done').length} из ${L.filter(l => l.status !== 'skip').length} уроков</div></div>
+    <div class="stat hl"><div class="v">${leHasProg(s) ? p + '<small>%</small>' : L.filter(l => l.status === 'done').length}</div><div class="l">${leHasProg(s) ? 'программы пройдено' : 'уроков пройдено (программы нет)'}</div><div class="n">${L.filter(l => l.status === 'done').length} из ${L.filter(l => l.status !== 'skip').length} уроков</div></div>
     <div class="stat${W.length ? ' neg' : ''}"><div class="v">${W.length}</div><div class="l">ждут твоей проверки</div><div class="n">${W.length ? 'самая старая ' + leAge(W[0].at) : 'очередь пустая'}</div></div>
     <div class="stat"><div class="v">${T.filter(t => t.status !== 'done').length}</div><div class="l">открытых заданий</div><div class="n">принято ${T.filter(t => t.status === 'done').length}</div></div>
     <div class="stat"><div class="v">${S.length}</div><div class="l">встреч</div><div class="n">${S[0] ? 'последняя ' + leDate(S[0].date) : 'пока нет'}</div></div>
