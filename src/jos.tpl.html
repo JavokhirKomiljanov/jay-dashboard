@@ -373,6 +373,7 @@ footer{padding:18px 28px;border-top:1px solid var(--line);color:var(--muted);fon
   <div class="nav" data-v="cal"><span class="ic">📅</span>Календарь<span class="cnt" id="cnt-cal"></span></div>
   <div class="nav" data-v="files"><span class="ic">🗂</span>Файлы<span class="cnt">история</span></div>
   <div class="nav" data-v="learn"><span class="ic">🎓</span>Обучение<span class="cnt" id="cnt-learn"></span></div>
+  <div class="nav" data-v="claude"><span class="ic">🧠</span>Claude Pro<span class="cnt" id="cnt-claude"></span></div>
   <div class="nav" data-v="strategy"><span class="ic">🧭</span>Стратегия<span class="cnt">Q4'26–Q4'27</span></div>
   <div class="nav" data-v="advisors"><span class="ic">🧑‍💼</span>Советники<span class="cnt">4</span></div>
   <div class="nav" data-v="brain"><span class="ic">🧠</span>Company Brain<span class="cnt" id="cnt-brain"></span></div>
@@ -410,6 +411,7 @@ footer{padding:18px 28px;border-top:1px solid var(--line);color:var(--muted);fon
     <section class="view" id="v-cal"></section>
     <section class="view" id="v-files"><iframe class="panel" data-page="files" title="Файлы" loading="lazy"></iframe><p class="small muted panel-foot"><a data-open="files" target="_blank">Открыть отдельной страницей ↗</a></p></section>
     <section class="view" id="v-learn"></section>
+    <section class="view" id="v-claude"><iframe class="panel" data-page="claude" title="Claude Pro — моя программа" loading="lazy"></iframe><p class="small muted panel-foot"><a data-open="claude" target="_blank">Открыть отдельной страницей ↗</a></p></section>
     <section class="view" id="v-strategy"></section>
     <section class="view" id="v-advisors"></section>
     <section class="view" id="v-brain"></section>
@@ -1564,7 +1566,7 @@ setInterval(() => { if(!document.hidden && document.getElementById('v-cal').clas
 /* ---------- app ---------- */
 const JOS = {
   go(v){ document.querySelectorAll('.nav[data-v]').forEach(n=>n.classList.toggle('on', n.dataset.v===v)); document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on', x.id==='v-'+v));
-    const titles = {today:['Сегодня','план дня, дедлайны, задачи советников'], cal:['Календарь','встречи из личного и рабочего календаря + задачи Google Tasks'], files:['Файлы','история: что создано и где лежит — ноутбук и сервер, поиск по имени и пути'], strategy:['Стратегия','Q4 2026 – Q4 2027 · база, модель, допущения'], advisors:['Советники','Chief of Staff · HR · Маркетинг · Финансы'], brain:['Company Brain','второй мозг W2W — то, что продаём'], w2w:['W2W','клиенты, оффер, команда'], sales:['Продажи','Jay CRM · лиды Telegram @ceo_w2w'], instagram:['Instagram','@javohir_w2w · AI-блог и его агенты'], marketing:['Маркетинг','LinkedIn · Telegram · Threads · YouTube · Google · сайт — один отдел'], auto:['Автоматизации','Instagram: комментарий → ссылка в директ'], finance:['Финансы W2W','расходы и долги W2W · копия Notion, правится здесь'], learn:['Обучение','ученики, программы, задания и проверка ТЗ'], me:['Мои финансы','личные деньги: расходы, неожиданные траты, план, долги · с телефона'], agents:['Agents House','все агенты на сервере']};
+    const titles = {today:['Сегодня','план дня, дедлайны, задачи советников'], cal:['Календарь','встречи из личного и рабочего календаря + задачи Google Tasks'], files:['Файлы','история: что создано и где лежит — ноутбук и сервер, поиск по имени и пути'], strategy:['Стратегия','Q4 2026 – Q4 2027 · база, модель, допущения'], advisors:['Советники','Chief of Staff · HR · Маркетинг · Финансы'], brain:['Company Brain','второй мозг W2W — то, что продаём'], w2w:['W2W','клиенты, оффер, команда'], sales:['Продажи','Jay CRM · лиды Telegram @ceo_w2w'], instagram:['Instagram','@javohir_w2w · AI-блог и его агенты'], marketing:['Маркетинг','LinkedIn · Telegram · Threads · YouTube · Google · сайт — один отдел'], auto:['Автоматизации','Instagram: комментарий → ссылка в директ'], finance:['Финансы W2W','расходы и долги W2W · копия Notion, правится здесь'], learn:['Обучение','ученики, программы, задания и проверка ТЗ'], claude:['Claude Pro','моя программа: как устроен Claude Code — уровни, скилы, MCP, автоматизация, агенты'], me:['Мои финансы','личные деньги: расходы, неожиданные траты, план, долги · с телефона'], agents:['Agents House','все агенты на сервере']};
     const nav = document.querySelector(`.nav[data-v="${v}"]`), tt = titles[v] || [nav ? nav.textContent.replace(/\d.*$/, '').trim() : v, ''];  // a tab without a title must still load
     document.getElementById('top-title').textContent = tt[0]; document.getElementById('top-sub').textContent = tt[1];
     if(v === 'finance') finPull();
@@ -1595,7 +1597,8 @@ document.getElementById('foot-built').textContent = 'собрано ' + D.built;
 document.getElementById('cnt-today').textContent = allTasks().filter(t=>!E.done[t.id]).length;
 document.getElementById('cnt-brain').textContent = BR.totals.clients; document.getElementById('cnt-w2w').textContent = S.installed_base.accounts.length + ' акк.'; document.getElementById('cnt-agents').textContent = AG.agents.filter(a=>a.state==='running').length + ' live';
 renderToday(); renderStrategy(); renderAdvisors(); renderBrain(); renderW2W(); renderFinance(); renderMe(); renderAgents(); finPull(); mePull(); meBadge(); renderCal(); calBadge(); calPull(); renderLearn(); learnBadge(); learnPull();
-const VIEWS = ['today','cal','files','learn','strategy','advisors','brain','w2w','sales','marketing','instagram','auto','finance','me','agents'];
+(function claudeBadge(){ const f = () => { try { const s = JSON.parse(localStorage.getItem('jos-claude-learn-v1') || '{}'); document.getElementById('cnt-claude').textContent = s.total ? (s.doneN || 0) + '/' + s.total : ''; } catch (e) {} }; f(); window.addEventListener('storage', f); window.addEventListener('message', e => { if (e.data && e.data.jos === 'h' && e.data.page === 'claude') f(); }); })();
+const VIEWS = ['today','cal','files','learn','claude','strategy','advisors','brain','w2w','sales','marketing','instagram','auto','finance','me','agents'];
 const h = (location.hash||'').slice(1); if(VIEWS.includes(h)) JOS.go(h); else JOS.applyEdit();
 window.addEventListener('hashchange', () => { const v = (location.hash||'').slice(1); if(VIEWS.includes(v) && !document.getElementById('v-'+v).classList.contains('on')) JOS.go(v); });
 </script>

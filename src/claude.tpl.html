@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<title>Jay OS — Claude Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/*__CSS__*/
+/* ---- panel-only ---- */
+body{background:var(--bg)}
+body.embedded .wrap{padding:0}
+.ptop{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 18px}
+body.embedded .ptop h1{display:none}
+.ptop h1{font-size:20px;font-weight:800}
+.ptop .sp{flex:1}
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:0 0 16px}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:640px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.subtabs{display:flex;gap:6px;margin:0 0 18px;border-bottom:1px solid var(--line);padding-bottom:10px;flex-wrap:wrap}
+.subtabs button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font:600 13px var(--text);color:var(--body);cursor:pointer}
+.subtabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.prog{height:8px;border-radius:999px;background:var(--line);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--mint);border-radius:999px;transition:width .3s}
+.prog.lav i{background:var(--lavender)}
+/* method */
+.method{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media(max-width:900px){.method{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.method .m{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.method .m .n{font:800 22px var(--head);color:var(--mint-dark);line-height:1}
+.method .m h4{margin:8px 0 4px;font-size:14px}
+.method .m p{font-size:12.5px;margin:0;color:var(--body)}
+/* levels */
+.lvl{background:#fff;border:1px solid var(--line);border-radius:var(--r);margin:0 0 12px;overflow:hidden}
+.lvl.cur{border-color:var(--mint-dark);box-shadow:0 0 0 3px var(--mint-tint)}
+.lvl.done{border-color:var(--mint-light)}
+.lvl-h{display:grid;grid-template-columns:52px minmax(0,1fr) 170px 24px;gap:14px;align-items:center;padding:14px 18px;cursor:pointer;user-select:none}
+.lvl-h:hover{background:var(--card)}
+.lvl-h .no{font:800 22px var(--head);color:var(--ink);letter-spacing:-.03em}
+.lvl-h .no small{display:block;font:600 10px var(--text);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.lvl-h h3{font-size:16px;margin:0 0 2px}
+.lvl-h .goal{font-size:12.5px;color:var(--body)}
+.lvl-h .meta{text-align:right;font-size:11.5px;color:var(--muted)}
+.lvl-h .meta b{display:block;font:700 13px var(--mono);color:var(--ink)}
+.lvl-h .arr{color:var(--muted);transition:.2s}
+.lvl.open .lvl-h .arr{transform:rotate(90deg)}
+.lvl-b{display:none;border-top:1px solid var(--line);padding:16px 18px 18px}
+.lvl.open .lvl-b{display:block}
+.why{background:var(--mint-tint);border:1px solid var(--mint-light);border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.55;margin:0 0 14px}
+.why b{color:var(--mint-dark)}
+.les{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:12px;padding:12px 0;border-top:1px solid var(--line);align-items:start}
+.les:first-of-type{border-top:0}
+.les.done .lt{color:var(--muted);text-decoration:line-through}
+.les .cb{width:20px;height:20px;border:2px solid var(--line-2);border-radius:6px;cursor:pointer;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;background:#fff;flex:none}
+.les.done .cb{background:var(--mint);border-color:var(--mint)}
+.les.doing .cb{border-color:var(--gold);background:#fff6e6}
+.les .lt{font-weight:700;color:var(--ink);font-size:13.5px}
+.les .lt .id{font:600 11px var(--mono);color:var(--muted);margin-right:6px}
+.les .ld{font-size:12.5px;color:var(--body);margin:3px 0 6px;line-height:1.5}
+.les .row{display:grid;grid-template-columns:86px minmax(0,1fr);gap:8px;font-size:12.5px;line-height:1.5;margin:4px 0}
+.les .row .k{font:600 10.5px var(--text);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.les .row .v code,.les .ld code,.map td code,.gl code,.why code{font:500 11.5px var(--mono);background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 5px;color:var(--ink);word-break:break-all}
+.les .ops{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.les .ops .btn.sm{font-size:11px}
+.les .note{margin-top:6px;width:100%;border:1px dashed var(--line-2);border-radius:8px;padding:6px 9px;font:12.5px var(--text);color:var(--ink);background:#fff;min-height:28px;outline:none}
+.les .note:focus{border-color:var(--mint-dark);border-style:solid}
+.les .note:empty:before{content:'заметка · что понял / где застрял';color:var(--faint)}
+.les .min{font:600 11px var(--mono);color:var(--muted);white-space:nowrap}
+.exam{margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;align-items:start}
+.exam .cb{width:20px;height:20px;border:2px solid var(--line-2);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;background:#fff;margin-top:2px}
+.exam.done .cb{background:var(--lavender);border-color:var(--lavender)}
+.exam h5{margin:0 0 3px;font-size:13px;color:var(--ink)}
+.exam p{margin:0;font-size:12.5px;line-height:1.5}
+/* map */
+.map table{min-width:720px}
+.map td,.map th{vertical-align:top}
+.map td:first-child{white-space:nowrap;font-weight:600;color:var(--ink)}
+.layers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 14px}
+@media(max-width:900px){.layers{grid-template-columns:1fr}}
+.layer{border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;background:#fff;position:relative}
+.layer .t{font:800 14px var(--head);color:var(--ink);margin:0 0 6px}
+.layer ul{margin:0;padding-left:16px;font-size:12.5px;line-height:1.55}
+.layer.l1{background:#f3eeff;border-color:#dccfff}.layer.l2{background:#eaf4ff;border-color:#b9dbff}.layer.l3{background:var(--mint-tint);border-color:var(--mint-light)}
+.ars{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media(max-width:900px){.ars{grid-template-columns:1fr}}
+.ars .card h4{display:flex;justify-content:space-between;align-items:center}
+.ars .card h4 .pill{font-size:10px}
+.ars ul{margin:0;padding-left:14px;font-size:12px;line-height:1.5;columns:1}
+.ars ul.two{columns:2;column-gap:14px}
+.ars li{break-inside:avoid}
+.ice{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+@media(max-width:900px){.ice{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ice .tier{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff}
+.ice .tier h5{margin:0 0 6px;font-size:12px;color:var(--ink)}
+.ice .tier div{font-size:12px;padding:3px 0;display:flex;gap:6px;align-items:center}
+.ice .has{color:var(--mint-dark);font-weight:700}.ice .miss{color:var(--coral-dark);font-weight:700}
+/* glossary */
+.gl{columns:2;column-gap:26px}
+@media(max-width:800px){.gl{columns:1}}
+.gl .g{break-inside:avoid;padding:7px 0;border-bottom:1px solid var(--line);font-size:12.5px;line-height:1.5}
+.gl .g b{display:block;color:var(--ink)}
+/* rhythm */
+.rh{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:14px;align-items:start}
+@media(max-width:900px){.rh{grid-template-columns:1fr}}
+.rh label{display:block;font-size:11.5px;color:var(--muted);margin:8px 0 3px}
+.rh input,.rh select{border:1px solid var(--line-2);border-radius:10px;padding:7px 11px;font:inherit;outline:none;background:#fff;width:100%}
+.rh input:focus{border-color:var(--mint-dark)}
+.next{background:var(--ink);color:#fff;border-radius:var(--r);padding:16px 18px}
+.next .e{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mint);font-weight:700}
+.next h4{color:#fff;font-size:16px;margin:4px 0 6px}
+.next p{color:#c9cbce;font-size:12.5px;margin:0 0 10px;line-height:1.5}
+.next .btn{border-color:var(--mint);background:var(--mint);color:var(--ink)}
+.log{font-size:12.5px}
+.log div{padding:5px 0;border-bottom:1px solid var(--line);display:flex;gap:10px}
+.log .d{font:500 11.5px var(--mono);color:var(--muted);white-space:nowrap}
+.toast{position:fixed;right:18px;bottom:18px;background:var(--ink);color:#fff;padding:9px 14px;border-radius:10px;font-size:12.5px;opacity:0;transition:.2s;pointer-events:none;z-index:50}
+.toast.on{opacity:1}
+footer.cl-foot{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between;font-size:11px;color:var(--muted);padding:18px 0 0;border-top:1px solid var(--line);margin-top:26px}
+</style>
+</head>
+<body>
+<div class="wrap"><div id="root"></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const D = /*__DATA__*/{};
+if (window.self !== window.top) document.body.classList.add('embedded');
+const KEY = 'jos-claude-learn-v1';
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const md = s => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+
+/* =====================================================================
+   ПРОГРАММА. 6 уровней × 5–6 уроков. Каждый урок = что это · где живёт у тебя · упражнение на своих файлах · зачёт.
+   Пути — реальные (💻 LAPTOP = C:\Users\user, 🖥 PC = WIN-26VA5TE5144). Правь текст прямо в JOS (✏️), правки хранятся в браузере.
+   ===================================================================== */
+const PROG = {
+  method: [
+    {n:'1', t:'Карта', p:'15 минут: прочитать урок здесь. Понять, ЧТО это и ГДЕ оно лежит на твоих машинах. Не трогать руки, пока не ясно место в схеме.'},
+    {n:'2', t:'Руками', p:'30–45 минут: упражнение только на своих файлах и задачах. Учебных примеров нет — каждый урок двигает W2W, JOS или рутины.'},
+    {n:'3', t:'Зачёт', p:'Done-check в уроке: конкретный проверяемый результат. Нет результата — урок не закрыт, галочка не ставится.'},
+    {n:'4', t:'Память', p:'В конце сессии `/level-up`: что реально мешало → память / скилл / hook. Claude становится лучше от твоего обучения, не только ты.'}
+  ],
+  levels: [
+  { id:'L0', name:'Карта: как это вообще работает', hours:4,
+    goal:'Перестать путать модель, оболочку и файлы. После уровня ты знаешь, ГДЕ исполняется любая твоя вещь и почему «он забыл».',
+    why:'**Главная путаница:** «Claude» — это три разных слоя. **Модель** (Fable 5.1 / Opus 5.5 / Sonnet 5.5 / Haiku 5.5) только читает текст и пишет текст, ничего не помнит между вызовами и сама не умеет ни читать файлы, ни ходить в интернет. **Claude Code** — оболочка (harness): даёт модели инструменты (Read / Edit / Bash / Browser / MCP) и крутит цикл «подумала → вызвала инструмент → получила результат → думает дальше». **Твои файлы** в `~/.claude` (CLAUDE.md, память, скилы, hooks, расписания) — это и есть всё «умение» и «характер» твоего Claude. Выключи оболочку — останется голая модель; удали `~/.claude` — останется чужой Claude.',
+    lessons: [
+      {id:'L0.1', t:'Три слоя: модель → оболочка → файлы', min:40,
+       d:'Модель = мозг без рук и без памяти. Claude Code = руки (инструменты) + цикл. `~/.claude` = память, навыки, правила. Всё, что ты «настроил», — это файлы, которые оболочка подсовывает модели в контекст.',
+       where:'`C:\\Users\\user\\.claude\\` — settings.json (hooks, permissions), CLAUDE.md (правила), skills\\, commands\\, agents\\ (пусто), scheduled-tasks\\, scripts\\, projects\\…\\memory\\ (junction на `F:\\Obsidian\\Javokhir\\_claude-memory`). `C:\\Users\\user\\.claude.json` — MCP-серверы.',
+       ex:'Открыть `C:\\Users\\user\\.claude\\` и каждую папку приписать к слою: модель / оболочка / файлы. Потом попросить Claude: «покажи, какие из этих файлов ты читал при старте этой сессии».',
+       check:'Схема от руки за 3 минуты: 3 слоя, стрелки «кто что читает». Без подглядывания.'},
+      {id:'L0.2', t:'Контекст и почему «он забыл»', min:40,
+       d:'Сессия = одно контекстное окно. Внутри него модель видит всё; снаружи — ничего. Когда окно переполняется, оболочка сжимает историю в summary (ты видишь это как «он потерял детали»). Между сессиями переносятся ТОЛЬКО файлы: CLAUDE.md, MEMORY.md + память, vault, репо.',
+       where:'Память: `C:\\Users\\user\\.claude\\projects\\C--Users-user-Claude\\memory\\MEMORY.md` (индекс, читается при старте) + 220 файлов. Транскрипты сессий: `~/.claude/projects/<cwd>/*.jsonl` → Stop-hook переписывает в Obsidian `Feed/Sessions/`.',
+       ex:'Спросить в новой сессии «что мы делали вчера?» и посмотреть, откуда он это берёт (память? vault? ничего?). Потом «объясни мне мой usage» — увидеть, что ест контекст.',
+       check:'Объяснить вслух: что модель помнит внутри сессии, что между сессиями, и через какие три файла это переносится.'},
+      {id:'L0.3', t:'Цикл инструментов и режимы разрешений', min:40,
+       d:'Каждое действие = tool call: модель пишет JSON-вызов, оболочка исполняет, результат возвращается в контекст. Ты видишь только часть. Режимы: default (спрашивает), plan (сначала план, потом исполнение), acceptEdits, bypassPermissions (у тебя сейчас — ничего не спрашивает).',
+       where:'`C:\\Users\\user\\.claude\\settings.json` → `"defaultMode": "bypassPermissions"`, `permissions.allow` (Read/Write/Bash/Slack… разрешены навсегда).',
+       ex:'Одну правку в jay-dashboard сделать в plan mode: увидеть план ДО исполнения, отклонить, поменять, принять. Сравнить с тем, как ты работаешь обычно (голосом → сразу делает).',
+       check:'Назвать 4 режима и сказать, какой стоит у тебя и чем он опасен (одна фраза: «любая инъекция из файла/страницы исполнится без вопроса»).'},
+      {id:'L0.4', t:'Где что исполняется: 💻 LAPTOP · 🖥 PC · ☁️ claude.ai', min:45,
+       d:'Три места. 💻 Ноутбук = интерактив (desktop app, worktrees, встроенный браузер, publish JOS, passphrase). 🖥 Сервер WIN-26VA5TE5144 = Task Scheduler `\\Jay\\` (S4U), боты, `claude -p` headless на Max. ☁️ claude.ai = коннекторы (Gmail, Calendar, Docs, Higgsfield), routines, cloud sessions. Headless на сервере НЕ видит коннекторы claude.ai — поэтому календарь идёт через Apps Script bridge, а не MCP.',
+       where:'💻 `C:\\Users\\user\\.claude\\scheduled-tasks\\` (27 рутин), `\\JOS\\jos-sales-ig-refresh`. 🖥 `Get-ScheduledTask -TaskPath \\Jay\\` (jay-ai-bot, advisor-*, ig-carousel, finance-relay, crosspost…). `/fleet status` показывает оба яруса.',
+       ex:'Таблица «кто где» на 6 вещей: ig-carousel 19:00 · advisors · jay-ai-bot · publish.sh · Stop-hook Obsidian · jos-sales-ig-refresh. Столбцы: машина, кто запускает, где лог, что видит (vault? календарь? CRM?).',
+       check:'Без подглядывания: что упадёт, если выключить ноутбук на сутки, и что — если сервер.'},
+      {id:'L0.5', t:'Входы: CLI · app · VS Code · web · Telegram · API', min:35,
+       d:'Один и тот же Claude Code доступен через 6 дверей: терминал `claude`, desktop app (Code tab: worktrees, browser pane, artifacts, split sessions), VS Code extension, claude.ai/code (cloud), Telegram agent mode (`jay_agent.py` = Claude Code через бота), Agent SDK / API (свой код). Разница — не в мозге, а в инструментах и в том, где лежат файлы.',
+       where:'Telegram-агент: сервер, `jay_agent.py` в Jay AI bot. Cloud: claude.ai/code стартует с ветки GitHub, не видит `F:\\`. App: `C:\\Users\\user\\Claude\\.claude\\launch.json` — превью-серверы.',
+       ex:'Одну задачу («покажи 5 последних коммитов jay-dashboard и что изменилось») выполнить из app и из Telegram-агента. Заметить разницу в скорости, инструментах, видимости файлов.',
+       check:'Для каждой из 6 дверей — одна строка «для чего она мне».'}
+    ],
+    exam:{t:'Зачёт L0 — лекция 10 минут', p:'Рассказать Фазлиддину или ученику «как работает мой Claude» без заметок: три слоя, контекст, цикл инструментов, три машины, шесть входов. Записать тезисы в Obsidian `Jay/Projects/Обучение/`.'}
+  },
+  { id:'L1', name:'Оператор: ежедневная работа без потерь', hours:8,
+    goal:'Каждая сессия даёт результат с первого раза: правильный промпт, правильная модель, правильный контекст, Claude сам проверяет и показывает.',
+    why:'**Где теряется результат:** размытая задача (голосовое на 40 секунд без критериев), не та модель (Fable на рутину — дорого, Haiku на архитектуру — слабо), пустой контекст (новая сессия не знает, как публикуется JOS), и ручная проверка глазами вместо того, чтобы Claude показал скриншот. Уровень закрывает все четыре.',
+    lessons: [
+      {id:'L1.1', t:'Промпт из 6 частей как стандарт', min:60,
+       d:'Роль · Контекст · Задача · Формат · Критерии · Ограничения. Ты уже используешь это в `/prezentatsiya-x` для студентов — теперь для себя. Критерии = как Claude сам поймёт, что готово; Ограничения = что НЕ трогать.',
+       where:'`C:\\Users\\user\\.claude\\skills\\prezentatsiya-x\\SKILL.md` — твоя же схема.',
+       ex:'Взять 3 последних своих голосовых запроса (из транскриптов `Feed/Sessions/`) и переписать каждый в 6 частей. Прогнать заново. Сравнить: сколько переделок было и стало.',
+       check:'3 запроса → 3 результата без «нет, я имел в виду…».'},
+      {id:'L1.2', t:'CLAUDE.md: правила проекта, не факты', min:60,
+       d:'Иерархия: глобальный `~/.claude/CLAUDE.md` (кто ты, где файлы, запреты) → `<repo>/CLAUDE.md` (как собирать, публиковать, что нельзя) → `<repo>/.claude/` (локальные настройки). Туда пишут ПРАВИЛА и КОМАНДЫ, не историю — история живёт в памяти и vault.',
+       where:'Глобальный: `C:\\Users\\user\\.claude\\CLAUDE.md`. В `Dev\\jay-dashboard` CLAUDE.md сейчас НЕТ — каждая сессия заново узнаёт про build_jos.py / publish.sh / `/*__DATA__*/`.',
+       ex:'Написать `C:\\Users\\user\\Dev\\jay-dashboard\\CLAUDE.md`: структура, build/publish-команды, правило «каждая вкладка редактируема + копия в Obsidian + владелец обновления», что не коммитить (data/, scripts/).',
+       check:'Новая сессия в репо без единого объяснения отвечает «как опубликовать вкладку» правильно.'},
+      {id:'L1.3', t:'Память: что сохраняется само и как чинить', min:45,
+       d:'Auto-memory = файлы 4 типов: `user_*` (кто ты), `feedback_*` (как работать, с Why/How to apply), `project_*` (что идёт), `reference_*` (ссылки). `MEMORY.md` — индекс, грузится при старте. Память ≠ CLAUDE.md (правила) ≠ Obsidian (знания компании). Ложная память вредит больше отсутствующей.',
+       where:'`C:\\Users\\user\\.claude\\projects\\C--Users-user-Claude\\memory\\` = `F:\\Obsidian\\Javokhir\\_claude-memory\\` (junction). Архив старого: `MEMORY-archive.md`.',
+       ex:'Открыть MEMORY.md, найти 2 записи, которые уже не правда (проект закрыт, путь сменился). Сказать Claude «исправь / заархивируй». Проверить файл.',
+       check:'Одной фразой: разница memory / CLAUDE.md / vault — и пример каждого.'},
+      {id:'L1.4', t:'Модель и деньги: кто на что', min:45,
+       d:'Fable 5.1 — архитектура, сложные решения, длинные многошаговые задачи. Opus 5.5 — сильная рабочая лошадь (+ `/fast`). Sonnet 5.5 — код, рутина, рефреши. Haiku 5.5 — классификация, hooks, массовые прогоны (`claude -p --model haiku`). Субагенту можно задать свою модель. Экономия — через модель, не через смену инструмента.',
+       where:'Выбор модели — в app (селектор) или `/model` в CLI; в рутинах — флаг `--model` в `run_advisors.ps1`, `sync_to_obsidian.py` (Haiku).',
+       ex:'Неделю вести в заметке урока: задача → модель → переделки. В пятницу «объясни мой usage». Вывести правило.',
+       check:'Правило «что на Haiku / Sonnet / Opus / Fable» записано как `feedback_model_routing_cost` память (обновить существующую).'},
+      {id:'L1.5', t:'Сессии: plan mode, worktree, параллель, handoff', min:60,
+       d:'Plan mode — сначала план, потом код. Worktree — отдельная копия репо и ветка, чтобы две сессии не писали в один файл. Параллель — две сессии на разные задачи (одна read-only анализ, вторая правит). Handoff — текущую задачу увести в свою сессию, чтобы ответить на новое.',
+       where:'Desktop app → Code tab: «New session», split view, worktree при старте. Правило: два писателя никогда не трогают одни файлы.',
+       ex:'Запустить 2 сессии: (1) только читает CRM `Dev\\jay-crm\\data\\crm.sqlite` и даёт отчёт, (2) правит страницу в jay-dashboard в worktree. Слить результат.',
+       check:'Знаешь, когда worktree обязателен, а когда «тут же». Проверка: сессия с правками одного файла в двух местах — ты её не допускаешь.'},
+      {id:'L1.6', t:'Превью и проверка: Claude показывает, ты не смотришь руками', min:40,
+       d:'launch.json описывает dev-серверы; `preview_start` поднимает и открывает во встроенном браузере; Claude читает консоль, сеть, делает скриншот. Правило: изменение видно в браузере → Claude обязан сам проверить и показать доказательство.',
+       where:'`C:\\Users\\user\\Claude\\.claude\\launch.json` (jos-preview :8765, jos-auto :8766, jos-clients :8768, jos-cal :8769, jos-learn :8771, jos-claude :8772).',
+       ex:'Попросить изменить цвет одной плашки в этой вкладке и получить скриншот ДО/ПОСЛЕ без своего участия.',
+       check:'В трёх задачах подряд ты не открывал страницу сам — доказательство пришло скриншотом.'}
+    ],
+    exam:{t:'Зачёт L1 — один рабочий день по правилам', p:'День: только 6-частные промпты, модель по правилу, CLAUDE.md в репо, проверка скриншотом. Вечером `/level-up` → минимум одна настоящая память из реального трения (ноль выдуманных).'}
+  },
+  { id:'L2', name:'Конструктор: скилы, команды, субагенты', hours:10,
+    goal:'Повторяющаяся задача → скилл с триггером и проверкой. Ты понимаешь, когда скилл, когда команда, когда субагент — и делаешь их сам.',
+    why:'**Скилл** — папка с `SKILL.md`: frontmatter `name` + `description` (ТРИГГЕР: по нему модель решает, вызвать ли) и тело-инструкция, плюс `references/`, `scripts/`, `assets/`. Прогрессивное раскрытие: в контексте всегда только description, тело грузится при вызове. **Команда** `commands/*.md` — то же, но вызываешь ты через `/`. **Субагент** `agents/*.md` — отдельный контекст, свои инструменты, своя модель; возвращает выжимку, не дампы. У тебя: 14 скилов, 12 команд, **0 субагентов**.',
+    lessons: [
+      {id:'L2.1', t:'Анатомия SKILL.md', min:45,
+       d:'`name`, `description` (когда срабатывает — пишется глазами модели: ключевые слова, которыми ты просишь), тело = пошаговая инструкция, `references/` (знания, грузятся по ссылке), `scripts/` (детерминированный код), `assets/` (шаблоны). Плохой description = скилл есть, но никогда не вызывается.',
+       where:'`C:\\Users\\user\\.claude\\skills\\w2w-order\\` — лучший твой пример: движок + калибровка + шаблон.',
+       ex:'Прочитать `w2w-order/SKILL.md`, выписать 5 частей. Потом найти скилл с самым слабым description (подсказка: `obsidian-bases`) и переписать его триггер.',
+       check:'Объяснить, почему тело скилла не стоит токенов, пока не вызвано, и что стоит всегда.'},
+      {id:'L2.2', t:'Скилл vs команда vs субагент vs плагин', min:40,
+       d:'Команда — ты зовёшь. Скилл — модель зовёт сама (и ты можешь `/name`). Субагент — отдельный «сотрудник» с узким контекстом. Плагин — пакет из всего этого + hooks + MCP, ставится одной командой (у тебя стоят engineering / marketing / legal / finance / productivity bundles).',
+       where:'`~/.claude/commands/` (fleet, kit, level-up, today, vault, spark…), `~/.claude/skills/`, `~/.claude/agents/` (пусто).',
+       ex:'Перенести `/humanize-post` из команды в скилл с description-триггером «перепиши пост в моём голосе». Проверить, что срабатывает без слэша.',
+       check:'Таблица 4×3: что · кто вызывает · когда выбирать. Своими словами.'},
+      {id:'L2.3', t:'Свой скилл через skill-creator', min:90,
+       d:'Процесс: найти реальный повтор (ты просил ≥3 раза) → `skill-creator` → описание, инструкция, тест-кейсы (evals) → прогон → правка description по промахам. Скилл без eval — догадка.',
+       where:'Плагин `anthropic-skills:skill-creator`. Кандидаты из твоих повторов: «транскрипт встречи → задачи в Google Tasks», «проверка КП по фактам (docs-only)», «разбор клиента из `data/jos/clients/`».',
+       ex:'Выбрать ОДИН реальный повтор и собрать скилл до конца: 3 eval-кейса, прогон, фикс триггера.',
+       check:'Скилл срабатывает на описание задачи без `/name` в 3 из 3 прогонов.'},
+      {id:'L2.4', t:'Детерминированный движок внутри скилла', min:60,
+       d:'Правило w2w-order: модель не считает деньги и часы — считает Python, модель оформляет. Везде, где в выводе цифра, которая должна совпадать с прошлым разом, — это `scripts/`. Защита от «не выдумывать данные» на уровне архитектуры, а не просьбы.',
+       where:'`skills\\w2w-order\\` (движок), `Dev\\w2w-strategy\\strategy.json` → `build_jos.py` (цифры стратегии в JOS из JSON, не из модели).',
+       ex:'Пройти свои 14 скилов и найти 2 места, где модель «считает» (часы, цены, даты). Вынести одно в script.',
+       check:'Одна цифра в КП перестала зависеть от модели: два прогона → одинаковый результат.'},
+      {id:'L2.5', t:'Память как продукт: Why / How to apply / ссылки', min:45,
+       d:'Хорошая feedback-память: факт + **Why** (почему это важно) + **How to apply** (как применять) + `[[ссылки]]` snake_case на имя файла. `consolidate-memory` сливает дубли и чистит индекс. Stop-hook переносит транскрипты в Obsidian — но это сырьё, не память.',
+       where:'`memory\\feedback_*.md`, `MEMORY.md`, hook `~/.claude/scripts/sync_to_obsidian.py` (Haiku-классификатор, кэш `_sync-state.json`).',
+       ex:'Прогнать `consolidate-memory`: найти битые `[[ссылки]]` (аудит 09-07 нашёл 150+) и дубли. Проверить MEMORY.md после.',
+       check:'MEMORY.md без дублей, ни одной ссылки на несуществующий файл в 10 случайных памятях.'},
+      {id:'L2.6', t:'Первый субагент', min:60,
+       d:'Файл `~/.claude/agents/<name>.md`: frontmatter `name`, `description` (когда главный агент его зовёт), `tools` (ограничить!), `model` (дешевле). Нужен, когда: параллель, изоляция большого контекста (прочитать 50 файлов, вернуть 10 строк), другая модель.',
+       where:'`C:\\Users\\user\\.claude\\agents\\` — сейчас пусто. Готовые типы в сессии: Explore, Plan, general-purpose, claude-code-guide.',
+       ex:'Создать агента `crm-reader`: Sonnet, только Read/Bash(sqlite), читает `Dev\\jay-crm\\data\\crm.sqlite`, возвращает «кто ждёт ответа > 7 дней» в 10 строк. Вызвать из обычной сессии.',
+       check:'Агент возвращает выжимку, а не дампы; главный контекст не вырос.'}
+    ],
+    exam:{t:'Зачёт L2 — три артефакта', p:'1 новый скилл с evals (зелёный прогон) + 1 субагент + память без битых ссылок. `/kit` показывает всё три и не находит «MISSING: subagents».'}
+  },
+  { id:'L3', name:'Интегратор: MCP, коннекторы, hooks, настройки', hours:10,
+    goal:'Любой внешний сервис или правило — подключено правильным способом. Ты знаешь три способа подключить MCP, пишешь hooks и свой сервер инструментов.',
+    why:'**MCP** (Model Context Protocol) — сервер, который отдаёт модели список инструментов; модель вызывает их как Read или Bash. Три способа у тебя: (1) локальный stdio в `~/.claude.json` (telegram-mcp), (2) проектный `.mcp.json` в репо, (3) **коннекторы claude.ai** — OAuth в настройках claude.ai, видны в сессии как `mcp__<id>__…` (Gmail, Calendar, Docs, Higgsfield, Motion). Коннекторы НЕ работают в headless `claude -p` — поэтому сервер ходит в календарь через твой Apps Script bridge. **Hooks** — команды оболочки на событиях (Stop, PreToolUse…): так ты делаешь правила, которые модель не может нарушить.',
+    lessons: [
+      {id:'L3.1', t:'MCP: что это и где у тебя три конфига', min:45,
+       d:'Сервер (stdio-процесс или remote HTTP) → `tools/list` → модель видит инструменты с описаниями → вызывает. Сломанный сервер = «Connection closed» при старте (сегодня так у telegram-mcp). Company Brain (мозг Фазлиддина) — тоже MCP: `list_entities`, `get_entity`, `search`.',
+       where:'`C:\\Users\\user\\.claude.json` → `mcpServers.telegram-mcp`; коннекторы — claude.ai → Settings → Connectors; проектные — `<repo>/.mcp.json`.',
+       ex:'В терминале `claude` → `/mcp`: список, статусы. Разобраться, почему telegram-mcp падает (сессия MTProto? путь к python?). Починить или выключить.',
+       check:'Три способа подключения — и где конфиг каждого — по памяти.'},
+      {id:'L3.2', t:'Интерактив vs headless: что доступно где', min:40,
+       d:'В app/CLI: всё (коннекторы, MCP, браузер). В `claude -p` на сервере: локальные MCP и файлы, но не коннекторы claude.ai и не браузер. В cloud-сессиях: репо, но не `F:\\`. Отсюда архитектура: календарь/Tasks для сервера = Apps Script, не Google MCP.',
+       where:'`JOS-Tasks-Setup\\Code.gs` — bridge (ns w2w / me / dm / dms / learn, Tasks, agenda). Сервер `advisor-*` читают Brain + CRM + strategy, календарь — нет.',
+       ex:'Таблица интеграций: Gmail, Calendar, Tasks, Drive, Company Brain, Telegram, CRM sqlite, Higgsfield. Столбцы: app / headless / cloud / через что.',
+       check:'Таблица в Obsidian `Jay/Projects/Обучение/Интеграции.md`. Ни одной клетки «не знаю».'},
+      {id:'L3.3', t:'Hooks: правила, которые нельзя нарушить', min:60,
+       d:'События: SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, Stop, SubagentStop, Notification. Хук = команда в `settings.json`; получает JSON на stdin; exit 2 = заблокировать действие с сообщением модели. Твой единственный hook — Stop → Obsidian-sync. Идеальное место для «LOCAL-ONLY», «no send», «не трогать Sardor-Strategy».',
+       where:'`settings.json` → `hooks.Stop[0]` → `python C:/Users/user/.claude/scripts/sync_to_obsidian.py`. Скилл `update-config` умеет писать hooks.',
+       ex:'Добавить PreToolUse-hook на Bash: если команда содержит `git push` и cwd внутри `F:\\Dev\\Sardor-Strategy` — exit 2 с текстом «LOCAL-ONLY». Проверить на реальном push в другом репо (должен пройти).',
+       check:'Push в Sardor-Strategy блокируется, остальные — нет. Правило больше не зависит от памяти модели.'},
+      {id:'L3.4', t:'settings.json: слои и разрешения', min:40,
+       d:'Слои: user (`~/.claude/settings.json`) → project (`<repo>/.claude/settings.json`, в git) → local (`settings.local.json`, не в git). `permissions.allow / deny / ask`, `defaultMode`, `env`. bypassPermissions оправдан на своей машине с бэкапами, опасен при чтении чужих файлов/страниц (инъекция исполнится).',
+       where:'`C:\\Users\\user\\.claude\\settings.json`; проектные — `Dev\\jay-dashboard\\.claude\\`, `Claude\\.claude\\`.',
+       ex:'Добавить `deny` на `Bash(rm -rf*)`, `Bash(git push --force*)` и чтение `*.env`. Проверить, что deny бьёт bypass.',
+       check:'Объяснить порядок: deny > ask > allow > defaultMode. Один deny реально сработал.'},
+      {id:'L3.5', t:'Свой MCP-сервер поверх JOS-данных', min:90,
+       d:'Apps Script bridge — «MCP для бедных» по HTTP. Настоящий MCP: Python `mcp` SDK (FastMCP), 20 строк на tool. Смысл: Claude спрашивает `get_client("ProfiTex")` и получает досье, а не читает 49 файлов. Это же — ядро Company Brain, который ты продаёшь.',
+       where:'Данные: `Dev\\jay-dashboard\\data\\jos\\clients\\` (49 досье), `clients.json`, `finance.json`. Образец чужого MCP: telegram-mcp (`chigwell/telegram-mcp`).',
+       ex:'Минимальный сервер `jos-brain` с 2 tools: `get_client(name)`, `search_clients(q)`. Подключить в `~/.claude.json`. Спросить про клиента.',
+       check:'Ответ про клиента приходит через tool-call (видно в транскрипте), не через Read файлов.'},
+      {id:'L3.6', t:'Свой плагин jay-ops', min:60,
+       d:'Плагин = `.claude-plugin/plugin.json` + skills/ + commands/ + agents/ + hooks/ + .mcp.json в одной папке; ставится из marketplace или локально. Для тебя: один `install` переносит весь арсенал на сервер/вторую машину вместо ручного копирования `~/.claude`.',
+       where:'Скилл `plugin-authoring`, `cowork-plugin-customizer`. Текущие рутины копируются руками (см. `claude-data-backup-daily`).',
+       ex:'Собрать `F:\\Dev\\jay-ops-plugin` из commands + 3 ключевых скилов + Stop-hook. Поставить на сервере.',
+       check:'На сервере `/kit` видит те же команды, что на ноутбуке.'}
+    ],
+    exam:{t:'Зачёт L3 — три интеграции', p:'Работающий hook-правило, свой MCP `jos-brain` (или плагин jay-ops), таблица интеграций в Obsidian. Telegram-mcp либо починен, либо осознанно удалён.'}
+  },
+  { id:'L4', name:'Автоматизатор: headless, расписания, Telegram, данные', hours:12,
+    goal:'Любую повторяющуюся работу ты превращаешь в рутину на сервере с логом, копией в Obsidian, вкладкой в JOS и владельцем обновления. И умеешь найти, где она упала.',
+    why:'**Headless** = `claude -p "задача"` без интерфейса: текст на вход, текст/JSON на выход, exit code. На этом стоят советники, Obsidian-sync, MiroFish-proxy. **Три яруса расписаний:** routines claude.ai (`~/.claude/scheduled-tasks/`, 27 шт., облако), Windows Task Scheduler на 💻 (`\\JOS\\…`), Task Scheduler на 🖥 (`\\Jay\\…`, S4U, 15+ задач). Твоё правило с 10-12: автоматизация = вкладка в JOS + копия в Obsidian + владелец обновления, иначе не готово.',
+    lessons: [
+      {id:'L4.1', t:'claude -p: флаги, вход, выход', min:60,
+       d:'`-p` промпт, `--model`, `--output-format json|stream-json`, `--allowedTools`, `--max-turns`, `--append-system-prompt`, stdin как вход, exit code. Без hooks/MCP для дочерних процессов (иначе рекурсия — см. OBSIDIAN_SYNC_CHILD в sync-скрипте).',
+       where:'`Dev\\jay-dashboard\\agents\\advisors\\run_advisors.ps1`, `~/.claude/scripts/sync_to_obsidian.py` (CLI-классификатор), `Dev\\claude-max-proxy` (OpenAI-совместимый → `claude -p`).',
+       ex:'Прочитать run_advisors.ps1 построчно с Claude: каждая строка — зачем. Потом написать однострочник: текст из stdin → Haiku → категория из 5 (JSON).',
+       check:'Однострочник работает из PowerShell и из Task Scheduler (пути абсолютные!).'},
+      {id:'L4.2', t:'Три яруса расписаний и /fleet', min:50,
+       d:'Routine claude.ai = облако, видит коннекторы, не видит `F:\\`. Windows-задача на ноуте = видит всё, но ноут должен быть включён. Задача на сервере = 24/7, S4U, видит vault-копию `C:\\FDrive\\…`. Падение каждой диагностируется по-разному — `/fleet status` + ежедневный heartbeat 08:46.',
+       where:'`~/.claude/scheduled-tasks/<name>/SKILL.md` × 27; `\\JOS\\jos-sales-ig-refresh`; сервер `\\Jay\\*`. Команда `/fleet`, рутина `fleet-heartbeat`.',
+       ex:'`/fleet status`. Найти 3 рутины, которые давно не давали результата (например старые jos-* на v6-маркеры). Выключить или перенацелить. Записать решение.',
+       check:'Своими словами: три яруса, что видит каждый, как узнать о падении. Fleet без красных, о которых ты не знаешь.'},
+      {id:'L4.3', t:'Трассировка агента на сервере', min:60,
+       d:'Паттерн: S4U-задача → PowerShell → python / `claude -p` → результат в Obsidian / JOS / Telegram + лог. Gotchas уже собраны: голые `python`/`node` в задачах ломаются, IgnoreNew бесполезен для detached, `gh auth` на сервере отдельный.',
+       where:'🖥 `\\Jay\\ig-carousel` → `ig-pipeline/ai_carousel.py`; логи рядом со скриптом; память `project_gh_cli_scheduled_task_auth`.',
+       ex:'Пройти ig-carousel от задачи до поста в Instagram: задача → скрипт → генерация → публикация → отчёт. На каждом шаге — где лог.',
+       check:'По одному логу (дать Claude путь) назвать шаг, на котором упало, за 2 минуты.'},
+      {id:'L4.4', t:'Telegram как пульт: agent mode и кнопки', min:60,
+       d:'Jay AI bot = обычные команды (`/dm`, `/brand`, `/studio`) + agent mode (`jay_agent.py` — Claude Code с инструментами по сообщению). Mini App (`studio_app.py`) — формы с телефона. Это твой интерфейс, когда ноута нет.',
+       where:'🖥 Jay AI bot (`jay_agent.py`, `link_studio.py`, `studio_app.py`), токены только в `.env`.',
+       ex:'Добавить команду `/learn` в Jay AI bot: читает экспорт этой вкладки (`data/jos/claude-progress.json`, скопированный на сервер) и показывает уровень, % и следующий урок.',
+       check:'С телефона видно «следующий урок» — тот же, что в JOS.'},
+      {id:'L4.5', t:'Данные: build → encrypt → Pages, bridge, Obsidian-блоки', min:60,
+       d:'JOS: `src/*.tpl.html` + `data/jos/*.json` → `build_*.py` вклеивает JSON в `/*__DATA__*/` → `publish.sh` шифрует staticrypt (одна соль → «Remember me» на всё) → GitHub Pages. Живые данные — Apps Script bridge (ns, rev, conflict). Obsidian-копии — блоки `<!-- x:start/end -->`, которые перезаписываются, остальное — твоё.',
+       where:'`Dev\\jay-dashboard\\scripts\\build_jos.py`, `build_claude.py` (эта вкладка), `publish.sh`; `JOS-Tasks-Setup\\Code.gs` (NS_ таблица).',
+       ex:'Добавить ns `claude` в Code.gs (по образцу `learn`), задеплоить, подключить синхронизацию прогресса этой вкладки (сейчас — localStorage + экспорт JSON).',
+       check:'Галочка, поставленная на ноуте, видна на телефоне без экспорта.'},
+      {id:'L4.6', t:'Надёжность и секреты', min:45,
+       d:'Бэкапы: `claude-data-backup` 03:30, `github-autopush` 02:00 (сервер требует `gh auth login`). Watchdog + kill-zombie. Секреты: только `.env` / `*-sync.json` (gitignored), рядом `*.example.json`; в репо никогда. Утечка → ротация сразу (CF-ключ голосового моста до сих пор 🔴).',
+       where:'`~/.claude/scheduled-tasks/claude-data-backup-daily`, `F:\\Dev\\scripts\\github-autopush.ps1`, `_gitignore-template`; память `project_alice_claude_bridge`.',
+       ex:'Аудит с Claude: 5 мест, где секрет мог попасть в репо или транскрипт (grep по `Dev\\` и `Feed/Sessions`). Ротация всего найденного.',
+       check:'Список из 5 мест проверен, 🔴 CF-ключ ротирован, память обновлена.'}
+    ],
+    exam:{t:'Зачёт L4 — рутина end-to-end', p:'Одна новая рутина: сервер → результат в JOS-вкладке + копия в Obsidian + владелец обновления + строка в fleet. 7 дней без ручного вмешательства, падения видны в heartbeat.'}
+  },
+  { id:'L5', name:'Архитектор агентов: SDK, мультиагент, evals, экономика', hours:16,
+    goal:'Ты проектируешь агентные системы, а не просто пользуешься: выбираешь архитектуру, пишешь на SDK, меряешь качество и стоимость. Это то, что W2W продаёт как Company Brain.',
+    why:'**Четыре способа сделать агента:** субагенты внутри сессии (быстро, без кода), Workflow (скрипт-оркестратор над агентами), **Agent SDK** (свой агент на Python/TS с теми же инструментами, hooks и правами — для ботов и продуктов), Managed Agents (сервер Anthropic держит цикл). **Качество** = evals: набор задач с ожидаемым результатом, прогон после каждого изменения. **Экономика** = модель-роутинг + кэш промпта + batch; Max-план ≠ бесплатно для клиентов.',
+    lessons: [
+      {id:'L5.1', t:'Когда что: subagent · Workflow · SDK · Managed', min:50,
+       d:'Субагент — разовая параллель внутри сессии. Workflow — повторяемый многоагентный сценарий (review → verify). SDK — продукт: бот, сервис, своя UI, свои tools, свои права. Managed — когда не хочешь держать сервер. Твои 4 советника сейчас = 4 `claude -p` по расписанию; это самый простой уровень.',
+       where:'Скилл `claude-api` (справочник: модели, цены, SDK, Managed). `agents\\advisors\\` (текущая реализация).',
+       ex:'Для «4 советника» расписать 4 варианта архитектуры с плюсами/минусами и выбрать один с обоснованием (стоимость, доступ к календарю, надёжность).',
+       check:'Решение записано в `Jay/W2W/Advisors/Архитектура.md` с источником цен.'},
+      {id:'L5.2', t:'Agent SDK: свой агент в коде', min:120,
+       d:'`query()` / клиент с сессией, свои tools (функции), hooks в коде, permissions, модель. Это Claude Code как библиотека. Кандидат №1 — Jay AI bot: сейчас `jay_agent.py` крутит CLI; на SDK получишь стриминг, права per-tool, стоимость на запрос.',
+       where:'🖥 `jay_agent.py`; `Dev\\claude-max-proxy`; справочник `claude-api` → Agent SDK.',
+       ex:'Переписать одну команду бота (например `/studio`) на SDK с одним своим tool. Залогировать токены на запрос.',
+       check:'Команда работает через SDK, в логе — стоимость каждого ответа.'},
+      {id:'L5.3', t:'Мультиагентные паттерны', min:60,
+       d:'Оркестратор → воркеры (fan-out), pipeline (каждый результат сразу в следующий этап), адверсариальная проверка (один находит, другой опровергает), «доска» = общие файлы, worktree-изоляция для писателей. Главное правило: два агента никогда не пишут в один файл.',
+       where:'Скилл `workflow-authoring`, команда `/code-review` (review → verify), `Workflow` tool (ultracode).',
+       ex:'`/code-review high` на jay-dashboard с verify-проходом. Посмотреть, сколько находок отсеял второй агент.',
+       check:'Объяснить, зачем verify-агент и почему оркестратор не должен сам читать все файлы.'},
+      {id:'L5.4', t:'Evals: качество как тест', min:90,
+       d:'Набор «вход → ожидаемый выход» + судья (код или LLM-as-judge) + прогон после каждого изменения скилла/промпта. Без evals ты меняешь промпт и надеешься. Образец у тебя уже есть: MUROJAAT 78/78 E2E. Тест «не выдумывает» — тоже eval.',
+       where:'`skill-creator` (evals + benchmark), `w2w-order` (детерминированный движок — идеальный объект).',
+       ex:'Eval-набор для w2w-order: 3 реальных транскрипта → ожидаемые часы ±10 % и обязательные фазы. Прогон до зелёного.',
+       check:'Два прогона подряд — одинаковый результат; отчёт eval в репо скилла.'},
+      {id:'L5.5', t:'Самоулучшающийся цикл', min:45,
+       d:'`/level-up` после сессии: трение → память / скилл / hook. `claude-self-improve-weekly` — то же раз в неделю. Правило: только реальное трение, пустой результат — честный результат. Также знать, когда НЕ автоматизировать.',
+       where:'`~/.claude/commands/level-up.md`, рутина `claude-self-improve-weekly`, `consolidate-memory`.',
+       ex:'4 пятницы подряд `/level-up`. Журнал в Obsidian: что нашёл, что сделал, что отклонил и почему.',
+       check:'≥3 настоящих апгрейда за месяц, 0 выдуманных, 1 осознанный отказ от автоматизации.'},
+      {id:'L5.6', t:'Токены и деньги', min:60,
+       d:'Контекст стоит на каждом ходе (поэтому CLAUDE.md и MEMORY.md — не бесплатны). Кэш промпта, batch API (дешевле), модель-роутинг. Max-план покрывает тебя, но не продукт для клиента — там API и цена за токен.',
+       where:'Скилл `claude-api` (цены), `explain-usage`, рутина `jos-usage-cost-weekly`.',
+       ex:'Посчитать месячную стоимость всех 27 рутин + советников + бота, если перевести на API по текущим ценам. Вывести в JOS «Финансы» строкой с источником.',
+       check:'Цифра в JOS с датой и источником цен; понятно, что переводить на API, а что оставить на Max.'}
+    ],
+    exam:{t:'Зачёт L5 — Company Brain для одного клиента', p:'Спроектировать и запустить агента для одного клиента W2W: SDK + MCP над его документами + eval-набор + расписание + вкладка/страница. Это уже продукт, который продаётся, — и доказательство, что ты пользуешься Claude на профессиональном уровне.'}
+  }
+  ],
+  glossary: [
+    ['Модель','Fable / Opus / Sonnet / Haiku — читает и пишет текст. Не помнит между вызовами, сама не умеет вызывать инструменты.'],
+    ['Claude Code (harness)','Оболочка: даёт модели инструменты и крутит цикл «мысль → инструмент → результат».'],
+    ['Контекстное окно','Всё, что модель видит в одной сессии. Переполнилось — оболочка сжала в summary.'],
+    ['Сессия','Один разговор = один контекст. Между сессиями переносятся только файлы.'],
+    ['Tool call','Вызов инструмента моделью (Read, Edit, Bash, Browser, MCP-tool). Основа всего.'],
+    ['CLAUDE.md','Правила для Claude: глобальные (`~/.claude`) и проектные (в репо). Читаются при старте.'],
+    ['Память (auto-memory)','Файлы user_/feedback_/project_/reference_ + индекс MEMORY.md. Факты и правила между сессиями.'],
+    ['Скилл','Папка с SKILL.md (+ references, scripts, assets). Модель вызывает сама по description.'],
+    ['Команда','`commands/*.md` — вызываешь ты через `/имя`.'],
+    ['Субагент','`agents/*.md` — отдельный контекст и инструменты; возвращает выжимку.'],
+    ['Плагин','Пакет skills + commands + agents + hooks + MCP, ставится одной командой.'],
+    ['MCP','Model Context Protocol — сервер инструментов для модели. Локальный (stdio), remote (HTTP), коннектор claude.ai.'],
+    ['Коннектор claude.ai','MCP с OAuth в настройках claude.ai (Gmail, Calendar, Docs…). В headless не работает.'],
+    ['Hook','Команда на событии оболочки (Stop, PreToolUse…). exit 2 = заблокировать.'],
+    ['settings.json','Разрешения, режим, hooks, env. Слои: user → project → local.'],
+    ['Permission mode','default / plan / acceptEdits / bypassPermissions. У тебя bypass.'],
+    ['Plan mode','Сначала план, исполнение — после твоего ОК.'],
+    ['Worktree','Отдельная копия репо + ветка на сессию. Два писателя не трогают одни файлы.'],
+    ['Headless (`claude -p`)','Claude Code без интерфейса: промпт → ответ → exit code. Основа рутин на сервере.'],
+    ['Routine / scheduled task','Задача по расписанию: claude.ai (облако), Windows Task Scheduler (💻 / 🖥).'],
+    ['S4U-задача','Задача Task Scheduler, которая работает без залогиненного пользователя (сервер).'],
+    ['Bridge (Apps Script)','Твой HTTP-мост к Google (Tasks, Calendar) и хранилище состояний JOS (ns w2w/me/dm/learn).'],
+    ['staticrypt','Шифрование страниц JOS одной солью; «Remember me» открывает все.'],
+    ['Agent SDK','Claude Code как библиотека: свой агент в Python/TS с инструментами, hooks и правами.'],
+    ['Workflow','Скрипт-оркестратор над несколькими агентами (pipeline, fan-out, verify).'],
+    ['Eval','Набор «вход → ожидаемый выход» + судья. Прогон после каждого изменения.'],
+    ['Prompt caching','Повторяющийся префикс контекста дешевле. Важно для API, не для Max.'],
+    ['Инъекция (prompt injection)','Текст в файле/странице, который притворяется командой. В bypass-режиме исполнится.'],
+    ['Company Brain','Второй мозг компании (MCP над документами + агенты) — продукт W2W.'],
+    ['/level-up','Твоя команда: трение сессии → память / скилл / hook. Самоулучшение.']
+  ],
+  places: [
+    ['💻 `C:\\Users\\user\\.claude\\CLAUDE.md`','Глобальные правила: кто ты, где файлы, запреты, единый workspace'],
+    ['💻 `…\\.claude\\settings.json`','Режим bypassPermissions, allow-лист, hook Stop → Obsidian'],
+    ['💻 `…\\.claude\\skills\\` (14)','Скилы — модель вызывает по description'],
+    ['💻 `…\\.claude\\commands\\` (12)','Слэш-команды — вызываешь ты'],
+    ['💻 `…\\.claude\\agents\\` (0)','Субагенты — пусто, урок L2.6'],
+    ['💻 `…\\.claude\\scheduled-tasks\\` (27)','Рутины claude.ai (SKILL.md на каждую)'],
+    ['💻 `…\\.claude\\scripts\\sync_to_obsidian.py`','Stop-hook: транскрипт → Obsidian Feed/Sessions (Haiku)'],
+    ['💻 `…\\.claude\\projects\\…\\memory\\` = `F:\\Obsidian\\Javokhir\\_claude-memory\\`','Память: MEMORY.md + 220 файлов (junction)'],
+    ['💻 `C:\\Users\\user\\.claude.json`','MCP-серверы (telegram-mcp)'],
+    ['💻 `C:\\Users\\user\\Claude\\.claude\\launch.json`','Превью-серверы для встроенного браузера'],
+    ['💻 `C:\\Users\\user\\Dev\\jay-dashboard\\`','JOS: src/*.tpl.html → build_*.py → publish.sh → GitHub Pages'],
+    ['💻 `C:\\Users\\user\\Claude\\JOS-Tasks-Setup\\Code.gs`','Apps Script bridge (Tasks, agenda, ns-хранилища)'],
+    ['💻 `F:\\Obsidian\\Javokhir\\Jay\\`','Второй мозг: проекты, клиенты, встречи, Feed'],
+    ['🖥 WIN-26VA5TE5144 `\\Jay\\*`','Task Scheduler: боты, советники, IG, finance-relay, crosspost (S4U)'],
+    ['🖥 `C:\\FDrive\\Obsidian\\Javokhir\\Jay`','Копия vault на сервере (sync в обе стороны)'],
+    ['☁️ claude.ai → Connectors','Gmail, Google Calendar, Claude Docs, Higgsfield, Motion — OAuth, только интерактив'],
+    ['☁️ claude.ai → Routines','Те же 27 рутин, запуск в облаке; видят коннекторы, не видят `F:\\`']
+  ]
+};
+
+/* ---------- state ---------- */
+let S; try { S = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { S = {}; }
+S.done = S.done || {}; S.doing = S.doing || {}; S.exam = S.exam || {}; S.notes = S.notes || {}; S.ov = S.ov || {}; S.log = S.log || [];
+S.rhythm = S.rhythm || {slots: 3, min: 60}; S.start = S.start || new Date().toISOString().slice(0, 10);
+const ALL = PROG.levels.flatMap(l => l.lessons);
+function save(){ S.total = ALL.length; S.doneN = Object.keys(S.done).length; S.updated = new Date().toISOString(); try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function toast(t){ const el = document.getElementById('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('on'), 1600); }
+function log(t){ S.log.unshift({d: new Date().toISOString().slice(0, 16).replace('T', ' '), t}); S.log = S.log.slice(0, 60); }
+const lv = l => ({n: l.lessons.length, d: l.lessons.filter(x => S.done[x.id]).length});
+const lvlDone = l => lv(l).d === lv(l).n && S.exam[l.id];
+function curLevel(){ return PROG.levels.find(l => !lvlDone(l)) || PROG.levels[PROG.levels.length - 1]; }
+function nextLesson(){ const doing = ALL.find(x => S.doing[x.id] && !S.done[x.id]); if (doing) return doing; const l = curLevel(); return l.lessons.find(x => !S.done[x.id]) || null; }
+const hoursDone = () => Math.round(ALL.filter(x => S.done[x.id]).reduce((a, x) => a + x.min, 0) / 60 * 10) / 10;
+const hoursAll = () => Math.round(ALL.reduce((a, x) => a + x.min, 0) / 60);
+function eta(){ const left = ALL.filter(x => !S.done[x.id]).reduce((a, x) => a + x.min, 0); const perWeek = S.rhythm.slots * S.rhythm.min; if (!perWeek) return null; const weeks = Math.ceil(left / perWeek); const d = new Date(); d.setDate(d.getDate() + weeks * 7); return {weeks, date: d.toLocaleDateString('ru-RU', {day: '2-digit', month: 'short', year: 'numeric'})}; }
+const T = (id, f, def) => (S.ov[id] && S.ov[id][f]) || def;
+
+/* ---------- prompt for a lesson (copy → paste into Claude Code) ---------- */
+function lessonPrompt(l, lvl){
+  return `Урок ${l.id} из моей программы «Claude Pro» в JOS (уровень ${lvl.id} — ${lvl.name}).
+Роль: ты мой наставник по Claude Code, объясняешь на моих реальных файлах и машинах (💻 LAPTOP C:\\Users\\user, 🖥 PC WIN-26VA5TE5144), без учебных примеров.
+Тема: ${T(l.id, 't', l.t)}. Суть: ${T(l.id, 'd', l.d)}
+Где это у меня: ${l.where}
+Упражнение: ${l.ex}
+Зачёт: ${l.check}
+Формат: 1) объясни за 10 строк, что это и где лежит у меня (покажи реальные файлы); 2) проведи упражнение шаг за шагом, спрашивая меня только там, где решение моё; 3) в конце проверь зачёт и скажи честно, закрыт он или нет; 4) что записать в память (feedback/project) — предложи текст.
+Ограничения: ничего не отправлять наружу, ничего не публиковать, не выдумывать цифры и пути — если файла нет, так и скажи.`;
+}
+function copyPrompt(id){ const l = ALL.find(x => x.id === id), lvl = PROG.levels.find(v => v.lessons.includes(l)); navigator.clipboard.writeText(lessonPrompt(l, lvl)).then(() => toast('Промпт урока скопирован → вставь в Claude Code'), () => toast('Не удалось скопировать')); }
+
+/* ---------- render ---------- */
+let TAB = 'prog';
+function render(){
+  const cur = curLevel(), nx = nextLesson(), e = eta();
+  const pct = Math.round(100 * Object.keys(S.done).length / ALL.length);
+  const root = document.getElementById('root');
+  root.innerHTML = `
+  <div class="ptop"><h1>🧠 Claude Pro — моя программа</h1><span class="pill mint">только для Jay</span><span class="pill grey">${esc(D.built || '')}</span><span class="sp"></span>
+    <button class="btn sm" id="b-edit">✏️ Править текст</button><button class="btn sm" onclick="exportJson()">⬇ Экспорт прогресса</button><label class="btn sm">⬆ Импорт<input type="file" accept="application/json" style="display:none" onchange="importJson(this)"></label><button class="btn sm" onclick="resetAll()">↺ Сброс</button></div>
+  <div class="kpis">
+    <div class="stat hl"><div class="v">${cur.id}<small>${esc(cur.name.split(':')[0])}</small></div><div class="l">текущий уровень</div><div class="n">${lv(cur).d}/${lv(cur).n} уроков</div></div>
+    <div class="stat"><div class="v">${pct}%</div><div class="l">программа пройдена</div><div class="n">${Object.keys(S.done).length} из ${ALL.length} уроков</div></div>
+    <div class="stat"><div class="v">${hoursDone()}<small>/ ${hoursAll()} ч</small></div><div class="l">часов наработано</div><div class="n">по оценке уроков</div></div>
+    <div class="stat"><div class="v">${PROG.levels.filter(lvlDone).length}<small>/ 6</small></div><div class="l">зачётов сдано</div><div class="n">уровень = все уроки + зачёт</div></div>
+    <div class="stat"><div class="v">${e ? e.weeks + '<small>нед</small>' : '—'}</div><div class="l">до конца при ритме</div><div class="n">${S.rhythm.slots}×${S.rhythm.min} мин/нед${e ? ' → ' + e.date : ''}</div></div>
+  </div>
+  <div class="subtabs">${[['prog', '📚 Программа'], ['map', '🗺 Как это работает'], ['gl', '📖 Словарь'], ['rh', '⏱ Ритм и журнал']].map(([k, n]) => `<button class="${TAB === k ? 'on' : ''}" onclick="TAB='${k}';render()">${n}</button>`).join('')}</div>
+  <div id="tab"></div>
+  <footer class="cl-foot"><span>Программа составлена 20.10.2026 по живому арсеналу: ${D.inv ? `${D.inv.skills.length} скилов · ${D.inv.commands.length} команд · ${D.inv.routines.length} рутин · ${D.inv.hooks.length} hook · ${D.inv.mcp.length} MCP` : ''}</span><span>прогресс: этот браузер (localStorage) → ⬇ Экспорт в <code>data/jos/claude-progress.json</code> → Obsidian при сборке</span></footer>`;
+  document.getElementById('b-edit').onclick = toggleEdit;
+  const tab = document.getElementById('tab');
+  if (TAB === 'prog') tab.innerHTML = renderProg(cur, nx);
+  if (TAB === 'map') tab.innerHTML = renderMap();
+  if (TAB === 'gl') tab.innerHTML = renderGl();
+  if (TAB === 'rh') tab.innerHTML = renderRh(nx, e);
+  bind(); applyEdit(); post();
+}
+function renderProg(cur, nx){
+  const next = nx ? `<div class="next"><div class="e">следующий шаг</div><h4>${esc(nx.id)} · ${esc(T(nx.id, 't', nx.t))}</h4><p>${esc(T(nx.id, 'd', nx.d)).slice(0, 220)}…</p><div class="chip-row"><button class="btn sm" onclick="copyPrompt('${nx.id}')">📋 Промпт урока → в Claude Code</button><button class="btn sm" style="background:#fff" onclick="setDoing('${nx.id}')">▶ Начал</button></div></div>`
+    : `<div class="next"><div class="e">программа</div><h4>Все уроки закрыты</h4><p>Остались зачёты уровней — отметь их в карточках.</p></div>`;
+  return `<div class="g2 grid" style="display:grid;gap:14px;margin:0 0 18px;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)">
+    <div class="card white"><h4>Модель обучения: Карта → Руками → Зачёт → Память</h4><div class="method">${PROG.method.map(m => `<div class="m"><div class="n">${m.n}</div><h4>${esc(m.t)}</h4><p>${md(m.p)}</p></div>`).join('')}</div>
+      <p class="small muted" style="margin-top:10px">Один урок = одна рабочая сессия 45–60 минут. Кнопка «📋 Промпт урока» копирует готовый 6-частный промпт — вставь его в Claude Code, и урок пройдёт на твоих файлах. Галочка ставится только после зачёта.</p></div>
+    ${next}</div>
+  ${PROG.levels.map(l => renderLevel(l, l === cur)).join('')}`;
+}
+function renderLevel(l, isCur){
+  const v = lv(l), pct = Math.round(100 * v.d / v.n), done = lvlDone(l), open = S.open ? S.open[l.id] : isCur;
+  return `<div class="lvl ${isCur ? 'cur' : ''} ${done ? 'done' : ''} ${open ? 'open' : ''}" id="lvl-${l.id}">
+    <div class="lvl-h" onclick="toggleLvl('${l.id}')"><div class="no">${l.id}<small>${l.hours} ч</small></div><div><h3>${esc(l.name)} ${done ? '<span class="pill mint">сдан</span>' : isCur ? '<span class="pill warn">текущий</span>' : ''}</h3><div class="goal">${esc(l.goal)}</div></div>
+      <div class="meta"><b>${v.d}/${v.n}</b><div class="prog" style="margin:4px 0"><i style="width:${pct}%"></i></div>${S.exam[l.id] ? 'зачёт ✓' : 'зачёт —'}</div><div class="arr">▶</div></div>
+    <div class="lvl-b"><div class="why">${md(l.why)}</div>
+      ${l.lessons.map(x => renderLesson(x)).join('')}
+      <div class="exam ${S.exam[l.id] ? 'done' : ''}"><div class="cb" onclick="toggleExam('${l.id}')">${S.exam[l.id] ? '✓' : ''}</div><div><h5>🎓 ${esc(l.exam.t)}</h5><p>${esc(l.exam.p)}</p>${S.exam[l.id] ? `<p class="small muted">сдан ${S.exam[l.id].slice(0, 10)}</p>` : ''}</div></div>
+    </div></div>`;
+}
+function renderLesson(x){
+  const st = S.done[x.id] ? 'done' : S.doing[x.id] ? 'doing' : '';
+  return `<div class="les ${st}" data-id="${x.id}">
+    <div class="cb" onclick="toggleDone('${x.id}')" title="${st === 'done' ? 'снять' : 'закрыть урок (после зачёта)'}">${st === 'done' ? '✓' : st === 'doing' ? '…' : ''}</div>
+    <div><div class="lt"><span class="id">${x.id}</span><span data-ov="${x.id}:t">${esc(T(x.id, 't', x.t))}</span></div>
+      <div class="ld" data-ov="${x.id}:d">${md(T(x.id, 'd', x.d))}</div>
+      <div class="row"><div class="k">где у меня</div><div class="v">${md(x.where)}</div></div>
+      <div class="row"><div class="k">упражнение</div><div class="v" data-ov="${x.id}:ex">${md(T(x.id, 'ex', x.ex))}</div></div>
+      <div class="row"><div class="k">зачёт</div><div class="v" data-ov="${x.id}:check">${md(T(x.id, 'check', x.check))}</div></div>
+      <div class="note" contenteditable="true" data-note="${x.id}">${esc(S.notes[x.id] || '')}</div>
+      ${S.done[x.id] ? `<div class="small muted" style="margin-top:4px">закрыт ${S.done[x.id].slice(0, 10)}</div>` : ''}</div>
+    <div class="ops"><span class="min">${x.min} мин</span><button class="btn sm" onclick="copyPrompt('${x.id}')">📋 Промпт</button>${st !== 'done' ? `<button class="btn sm ${st === 'doing' ? 'on' : ''}" onclick="setDoing('${x.id}')">${st === 'doing' ? '▶ в работе' : '▶ Начал'}</button>` : ''}</div></div>`;
+}
+function renderMap(){
+  const inv = D.inv || {skills: [], commands: [], agents: [], routines: [], hooks: [], mcp: [], connectors: []};
+  const tiers = [
+    ['Основы', [['Промпты, CLAUDE.md, память', true], ['Выбор модели / fast', true], ['Plan mode, worktrees', true]]],
+    ['Контекст · скилы · MCP', [[`Скилы (${inv.skills.length})`, inv.skills.length > 0], [`Команды (${inv.commands.length})`, inv.commands.length > 0], [`MCP локальные (${inv.mcp.length})`, inv.mcp.length > 0], ['Коннекторы claude.ai', true], ['Свой MCP-сервер', false]]],
+    ['Hooks · субагенты · плагины', [[`Hooks (${inv.hooks.length}: ${inv.hooks.join(', ') || '—'})`, inv.hooks.length > 0], [`Субагенты (${inv.agents.length})`, inv.agents.length > 0], ['Свой плагин', false], ['Deny-правила в settings', false]]],
+    ['Глубокий ярус', [[`Рутины по расписанию (${inv.routines.length} + сервер)`, inv.routines.length > 0], ['Headless claude -p на сервере', true], ['Telegram agent mode', true], ['Самоулучшение /level-up', true], ['Evals', false], ['Agent SDK в продукте', false], ['Мультиагент / Workflow', false]]]
+  ];
+  return `<div class="layers">
+    <div class="layer l1"><div class="t">1 · Модель</div><ul><li>Fable 5.1 — архитектура, сложные решения</li><li>Opus 5.5 — сильная работа, <code>/fast</code></li><li>Sonnet 5.5 — код, рутина</li><li>Haiku 5.5 — классификация, hooks, массовые прогоны</li><li>Не помнит. Не умеет инструменты. Только текст ↔ текст.</li></ul></div>
+    <div class="layer l2"><div class="t">2 · Оболочка Claude Code</div><ul><li>Инструменты: Read / Edit / Bash / Browser / MCP / Agent</li><li>Цикл: мысль → tool call → результат → мысль</li><li>Режимы разрешений, plan mode, worktrees</li><li>Входы: CLI · app · VS Code · web · Telegram · SDK</li><li>Hooks — события оболочки, не модели</li></ul></div>
+    <div class="layer l3"><div class="t">3 · Твои файлы = твой Claude</div><ul><li>CLAUDE.md — правила</li><li>memory/ — факты и обратная связь</li><li>skills/ commands/ agents/ — навыки</li><li>settings.json — права + hooks</li><li>scheduled-tasks/ + Task Scheduler — расписания</li><li>Obsidian vault — знания компании</li></ul></div></div>
+  <div class="card white" style="margin:0 0 14px"><h4>Где что лежит (💻 LAPTOP · 🖥 PC · ☁️ claude.ai)</h4><div class="tbl map"><table><thead><tr><th>Место</th><th>Что это</th></tr></thead><tbody>${PROG.places.map(p => `<tr><td>${md(p[0])}</td><td>${md(p[1])}</td></tr>`).join('')}</tbody></table></div></div>
+  <div class="card white" style="margin:0 0 14px"><h4>Айсберг возможностей: что уже есть, чего нет <span class="pill grey">считается при сборке из файлов</span></h4><div class="ice">${tiers.map(([t, items]) => `<div class="tier"><h5>${t}</h5>${items.map(([n, has]) => `<div><span class="${has ? 'has' : 'miss'}">${has ? '✓' : '✗'}</span>${esc(n)}</div>`).join('')}</div>`).join('')}</div></div>
+  <div class="ars">
+    <div class="card white"><h4>Скилы <span class="pill">${inv.skills.length}</span></h4><ul class="two">${inv.skills.map(s => `<li>${esc(s)}</li>`).join('')}</ul></div>
+    <div class="card white"><h4>Команды <span class="pill">${inv.commands.length}</span></h4><ul>${inv.commands.map(s => `<li>/${esc(s)}</li>`).join('')}</ul><h4 style="margin-top:12px">Субагенты <span class="pill ${inv.agents.length ? '' : 'bad'}">${inv.agents.length}</span></h4><ul>${inv.agents.length ? inv.agents.map(s => `<li>${esc(s)}</li>`).join('') : '<li class="muted">пусто → урок L2.6</li>'}</ul><h4 style="margin-top:12px">Hooks <span class="pill">${inv.hooks.length}</span></h4><ul>${inv.hooks.map(s => `<li>${esc(s)}</li>`).join('') || '<li class="muted">—</li>'}</ul><h4 style="margin-top:12px">MCP (локальные) <span class="pill">${inv.mcp.length}</span></h4><ul>${inv.mcp.map(s => `<li>${esc(s)}</li>`).join('') || '<li class="muted">—</li>'}</ul></div>
+    <div class="card white"><h4>Рутины claude.ai <span class="pill">${inv.routines.length}</span></h4><ul class="two">${inv.routines.map(s => `<li>${esc(s)}</li>`).join('')}</ul></div>
+  </div>`;
+}
+function renderGl(){ return `<div class="card white"><h4>Словарь — ${PROG.glossary.length} терминов, одной строкой каждый</h4><div class="gl">${PROG.glossary.map(g => `<div class="g"><b>${esc(g[0])}</b>${md(g[1])}</div>`).join('')}</div></div>`; }
+function renderRh(nx, e){
+  return `<div class="rh"><div>
+    <div class="card white" style="margin:0 0 14px"><h4>Ритм</h4>
+      <label>слотов в неделю</label><input type="number" min="1" max="14" value="${S.rhythm.slots}" onchange="S.rhythm.slots=+this.value||1;save();render()">
+      <label>минут на слот</label><input type="number" min="15" max="240" step="15" value="${S.rhythm.min}" onchange="S.rhythm.min=+this.value||60;save();render()">
+      <label>старт программы</label><input type="date" value="${S.start}" onchange="S.start=this.value;save();render()">
+      <p class="small muted" style="margin-top:10px">Осталось ${ALL.filter(x => !S.done[x.id]).reduce((a, x) => a + x.min, 0)} мин. ${e ? `При ${S.rhythm.slots}×${S.rhythm.min} мин — ${e.weeks} нед, ориентир ${e.date}.` : ''} Рекомендация: 3 слота по 60 мин (вт/чт/сб) — один урок за слот, пятница — <code>/level-up</code>.</p></div>
+    <div class="card white"><h4>Уровни</h4>${PROG.levels.map(l => { const v = lv(l); return `<div style="display:grid;grid-template-columns:40px minmax(0,1fr) 60px;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:12.5px"><b>${l.id}</b><div class="prog ${S.exam[l.id] ? 'lav' : ''}"><i style="width:${Math.round(100 * v.d / v.n)}%"></i></div><span class="mono muted">${v.d}/${v.n}${S.exam[l.id] ? ' 🎓' : ''}</span></div>`; }).join('')}</div>
+  </div><div>
+    <div class="card white"><h4>Журнал</h4><div class="log">${S.log.length ? S.log.map(x => `<div><span class="d">${esc(x.d)}</span><span>${esc(x.t)}</span></div>`).join('') : '<p class="small muted">пока пусто — отметки уроков и зачётов появятся здесь</p>'}</div></div>
+  </div></div>`;
+}
+
+/* ---------- actions ---------- */
+function toggleLvl(id){ S.open = S.open || {}; const el = document.getElementById('lvl-' + id); const now = !el.classList.contains('open'); PROG.levels.forEach(l => S.open[l.id] = l.id === id ? now : (S.open[l.id] ?? false)); save(); render(); }
+function toggleDone(id){ if (S.done[id]) { delete S.done[id]; log(`снята галочка ${id}`); } else { S.done[id] = new Date().toISOString(); delete S.doing[id]; log(`урок ${id} закрыт`); } save(); render(); toast(S.done[id] ? 'Урок закрыт' : 'Галочка снята'); }
+function setDoing(id){ S.doing[id] = !S.doing[id]; if (S.doing[id]) log(`начал ${id}`); save(); render(); }
+function toggleExam(id){ if (S.exam[id]) delete S.exam[id]; else { S.exam[id] = new Date().toISOString(); log(`зачёт ${id} сдан`); } save(); render(); }
+function exportJson(){ const out = Object.assign({}, S, {exported: new Date().toISOString(), program: ALL.map(x => ({id: x.id, t: x.t, min: x.min}))}); const blob = new Blob([JSON.stringify(out, null, 2)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'claude-progress.json'; a.click(); toast('Сохрани в data/jos/claude-progress.json'); }
+function importJson(inp){ const f = inp.files[0]; if (!f) return; f.text().then(t => { const j = JSON.parse(t); ['done', 'doing', 'exam', 'notes', 'ov', 'log', 'rhythm', 'start'].forEach(k => { if (j[k] !== undefined) S[k] = j[k]; }); save(); render(); toast('Прогресс импортирован'); }).catch(() => toast('Не JSON')); }
+function resetAll(){ if (!confirm('Сбросить весь прогресс, заметки и правки текста в этом браузере?')) return; localStorage.removeItem(KEY); location.reload(); }
+let EDIT = false;
+function toggleEdit(){ EDIT = !EDIT; document.getElementById('b-edit').classList.toggle('on', EDIT); applyEdit(); toast(EDIT ? 'Правь текст уроков прямо на странице' : 'Правки сохранены'); }
+function applyEdit(){ document.querySelectorAll('[data-ov]').forEach(el => { el.contentEditable = EDIT; el.style.outline = EDIT ? '1px dashed var(--mint-dark)' : ''; if (!el._b) { el._b = 1; el.addEventListener('blur', () => { const [id, f] = el.dataset.ov.split(':'); S.ov[id] = S.ov[id] || {}; S.ov[id][f] = el.innerText.trim(); save(); }); } }); }
+function bind(){ document.querySelectorAll('[data-note]').forEach(el => el.addEventListener('blur', () => { S.notes[el.dataset.note] = el.innerText.trim(); save(); })); }
+function post(){ try { parent.postMessage({jos: 'h', page: D.page || 'claude', h: document.documentElement.scrollHeight}, '*'); } catch (e) {} }
+window.addEventListener('load', post); window.addEventListener('resize', post); setInterval(post, 1500);
+save(); render();
+</script>
+</body>
+</html>
