@@ -377,7 +377,7 @@ function renderMarketing(){
       ${posts(th.posts)}
       <div class="chip-row" style="margin-top:10px">${open(th.url,'Профиль ↗')}</div></div>
     <div class="card white"><div class="sect-h"><h4>▶️ YouTube Shorts</h4>${st(yt.ok, yt.error)}</div>
-      <p class="small">${yt.ok?`${esc(yt.channel)} · ${fmt(yt.subscribers)} подписчиков · ${fmt(yt.videos)} видео · ${fmt(yt.views)} просмотров.`:'Каждая Instagram-карусель станет Shorts (вертикальное слайд-шоу ~25 с, узбекское название и описание). Нужна одноразовая авторизация Google (шаг в списке выше).'} Лимит YouTube: ≤ ${M.crosspost.config.yt_max||2} загрузки за запуск.</p>
+      <p class="small">${yt.ok?`${esc(yt.channel)} · ${fmt(yt.subscribers)} подписчиков · ${fmt(yt.videos)} видео · ${fmt(yt.views)} просмотров.`:'Нужна одноразовая авторизация Google (шаг в списке выше).'} Рилсы Instagram уходят в Shorts по одному в 11:00 и 19:45 (yt_reels.py), название пишет Claude.${yt.reels_failed?` <span class="pill bad">ошибок: ${yt.reels_failed}</span>`:''}</p>
       ${posts(yt.posts)}
       <div class="chip-row" style="margin-top:10px">${open(yt.url,'Канал ↗')}</div></div>
     <div class="card white"><div class="sect-h"><h4>🔍 Google</h4>${st(C.google.ok, C.google.error)}</div>
