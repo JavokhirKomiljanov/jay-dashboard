@@ -70,6 +70,18 @@ td .snip{color:var(--body);font-size:12px;line-height:1.35;max-width:440px}
 .edrow label{font-size:11.5px;color:var(--muted);padding-top:8px}
 .edrow input,.edrow select{border:1px solid var(--line-2);border-radius:10px;padding:7px 10px;font:inherit;font-size:12.5px;width:100%;box-sizing:border-box;background:#fff}
 .edited{font-size:10.5px;color:#b36b00;font-weight:600}
+.fday{font:700 11.5px var(--text);text-transform:uppercase;letter-spacing:.08em;color:var(--mint-dark);margin:18px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+.frow{display:grid;grid-template-columns:34px minmax(0,1fr) 190px;gap:10px;align-items:start;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:#fff;margin:6px 0}
+.frow.pin{border-color:var(--mint-light);background:var(--mint-tint)}
+.frow .fic{font-size:20px;line-height:1.2;text-align:center}
+.frow .fname{font-weight:600;font-size:13px;word-break:break-word}
+.frow .fpath{font-size:10.5px;color:var(--muted);word-break:break-all;margin-top:2px}
+.frow .fnote{font-size:12px;color:#7a5a00;margin-top:4px}
+.frow .fmeta{text-align:right;font-size:11.5px}
+.frow .fbtn{display:flex;gap:4px;justify-content:flex-end;flex-wrap:wrap;margin-top:4px}
+.frow .fbtn button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:2px 7px;font-size:11px;cursor:pointer;color:var(--body)}
+.frow .fbtn button:hover{border-color:var(--mint-dark);color:var(--mint-dark)}
+@media(max-width:640px){.frow{grid-template-columns:28px minmax(0,1fr)}.frow .fmeta{grid-column:2;text-align:left}.frow .fbtn{justify-content:flex-start}}
 </style>
 </head>
 <body>
@@ -402,8 +414,66 @@ function renderMarketing(){
   return M.generated;
 }
 
+/* ============ FILES (history of what was made, laptop + server) ============ */
+const FICON = {doc:'📄', deck:'📊', sheet:'📈', html:'🌐', image:'🖼', video:'🎬', audio:'🎧', archive:'🗜', code:'⌨️', note:'📝', folder:'📁', other:'📎'};
+let FE = {pins:{}, notes:{}};
+try { FE = Object.assign(FE, JSON.parse(localStorage.getItem('jos7-files')||'{}')); } catch(e) {}
+const feSave = () => { try { localStorage.setItem('jos7-files', JSON.stringify(FE)); } catch(e) {} };
+const FQ = {q:'', kind:'', machine:'', root:'', project:'', n:150};
+const human = n => n < 1024 ? n+' Б' : n < 1048576 ? (n/1024).toFixed(0)+' КБ' : n < 1073741824 ? (n/1048576).toFixed(1)+' МБ' : (n/1073741824).toFixed(2)+' ГБ';
+function copyTxt(t, btn){ const done = () => { const o = btn.textContent; btn.textContent = '✓ скопировано'; setTimeout(()=>btn.textContent=o, 1200); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, () => prompt('Скопируй путь:', t));
+  else prompt('Скопируй путь:', t); }
+function fileRow(e, i){
+  const pin = !!FE.pins[e.path], note = FE.notes[e.path] || '';
+  return `<div class="frow ${pin?'pin':''}" data-i="${i}">
+    <div class="fic">${FICON[e.kind]||'📎'}</div>
+    <div class="fmain"><div class="fname">${esc(e.name)} <span class="pill ${e.machine==='server'?'lav':'mint'}">${e.machine==='server'?'🖥 сервер':'💻 ноутбук'}</span> <span class="pill">${esc(e.root)}</span>${e.project&&e.project!==e.root?` <span class="pill grey">${esc(e.project)}</span>`:''}</div>
+      <div class="fpath mono">${esc(e.path)}</div>${note?`<div class="fnote">📝 ${esc(note)}</div>`:''}</div>
+    <div class="fmeta"><div class="mono">${dmy(e.mtime)}</div><div class="small muted">${D.files.kind_label[e.kind]||e.kind} · ${e.kind==='folder'?'':human(e.size)}</div>
+      <div class="fbtn"><button onclick="copyTxt(${JSON.stringify(e.path).replace(/"/g,'&quot;')}, this)">📋 путь</button><button onclick="copyTxt(${JSON.stringify(e.dir).replace(/"/g,'&quot;')}, this)">📂 папка</button><button onclick="fePin(${i})" title="закрепить">${pin?'★':'☆'}</button><button onclick="feNote(${i})" title="заметка">📝</button></div></div>
+  </div>`;
+}
+function fePin(i){ const e = D.files.items[i]; if (FE.pins[e.path]) delete FE.pins[e.path]; else FE.pins[e.path] = 1; feSave(); renderFileList(); }
+function feNote(i){ const e = D.files.items[i]; const v = prompt('Заметка к файлу (хранится в этом браузере):', FE.notes[e.path]||''); if (v === null) return; if (v.trim()) FE.notes[e.path] = v.trim(); else delete FE.notes[e.path]; feSave(); renderFileList(); }
+function feSet(k, v){ FQ[k] = FQ[k] === v ? '' : v; FQ.n = 150; renderFileList(); }
+function renderFileList(){
+  const F = D.files, q = FQ.q.toLowerCase().trim();
+  const hit = e => (!q || (e.name+' '+e.path+' '+(FE.notes[e.path]||'')).toLowerCase().includes(q)) && (!FQ.kind || e.kind===FQ.kind) && (!FQ.machine || e.machine===FQ.machine) && (!FQ.root || e.root===FQ.root) && (!FQ.project || (e.root+' / '+e.project)===FQ.project);
+  const idx = F.items.map((e,i)=>i).filter(i=>hit(F.items[i]));
+  const pinned = idx.filter(i=>FE.pins[F.items[i].path]);
+  let html = '';
+  if (pinned.length) html += `<div class="sect-h"><h3>★ Закреплённые</h3><span class="tag">${pinned.length}</span></div>` + pinned.map(i=>fileRow(F.items[i], i)).join('');
+  let day = null;
+  idx.slice(0, FQ.n).forEach(i => { const e = F.items[i], d = e.mtime.slice(0,10); if (d !== day) { day = d; html += `<div class="fday">${d === F.generated.slice(0,10) ? 'Сегодня · ' : ''}${d.slice(8,10)}.${d.slice(5,7)}.${d.slice(0,4)}</div>`; } html += fileRow(e, i); });
+  if (!idx.length) html += '<p class="small muted">Ничего не найдено. Попробуй часть имени или папки.</p>';
+  if (idx.length > FQ.n) html += `<p style="text-align:center;margin:14px 0"><button class="btn" onclick="FQ.n+=200;renderFileList()">Показать ещё (${idx.length-FQ.n})</button></p>`;
+  document.getElementById('flist').innerHTML = html;
+  document.getElementById('fcount').textContent = `${idx.length} из ${F.count}`;
+  document.querySelectorAll('.flt button[data-k]').forEach(b => b.classList.toggle('on', FQ[b.dataset.k] === b.dataset.v));
+  post();
+}
+function renderFiles(){
+  const F = D.files;
+  document.title = 'Jay OS — Файлы';
+  document.getElementById('pt').textContent = 'Файлы · история';
+  const kinds = Object.entries(F.kinds).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('root').innerHTML = `
+  <div class="eyebrow">История файлов · ${F.days} дней · ${fmt(F.count)} файлов</div>
+  <h2 class="h2">Что создано и <span class="hl">где лежит</span></h2>
+  <p class="lead">Всё, что ты или агенты сделали за последние ${F.days} дней: 💻 ноутбук — ${F.roots.filter(r=>r.exists).map(r=>r.label).join(', ')}; 🖥 сервер — ${F.server_roots.join(', ')||'пока ничего'}. «📋 путь» копирует полный путь, чтобы переслать или открыть. ★ и заметки живут в этом браузере.</p>
+  <div class="flt" style="margin-bottom:8px"><input id="fq" placeholder="Поиск по имени, папке, заметке…" oninput="FQ.q=this.value;FQ.n=150;renderFileList()"><span class="small muted" id="fcount"></span></div>
+  <div class="flt"><button data-k="machine" data-v="laptop" onclick="feSet('machine','laptop')">💻 ноутбук</button><button data-k="machine" data-v="server" onclick="feSet('machine','server')">🖥 сервер</button>
+    <span class="muted">·</span>${kinds.map(([k,n])=>`<button data-k="kind" data-v="${k}" onclick="feSet('kind','${k}')">${FICON[k]||''} ${F.kind_label[k]||k} <span class="muted">${n}</span></button>`).join('')}</div>
+  <div class="flt"><span class="small muted">Проекты:</span>${F.projects.slice(0,24).map(p=>`<button data-k="project" data-v="${esc(p.root+' / '+p.project)}" onclick="feSet('project',${JSON.stringify(p.root+' / '+p.project).replace(/"/g,'&quot;')})">${esc(p.project)} <span class="muted">${p.n}</span></button>`).join('')}</div>
+  <div id="flist" style="margin-top:14px"></div>`;
+  renderFileList();
+  document.getElementById('foot').innerHTML = `<span>Сканируется ноутбуком 3 раза в день (задача \\JOS\\jos-sales-ig-refresh) + выходы сервера через remote_snapshot</span><span>Копия последних 7 дней: Obsidian Library/Файлы — история.md</span>`;
+  return F.generated;
+}
+
 function post(){ try{ parent.postMessage({jos:'h', page:D.page, h:document.documentElement.scrollHeight}, '*'); }catch(e){} }
-const gen = D.page === 'sales' ? renderSales() : D.page === 'marketing' ? renderMarketing() : renderIG();
+const gen = D.page === 'sales' ? renderSales() : D.page === 'marketing' ? renderMarketing() : D.page === 'files' ? renderFiles() : renderIG();
 document.getElementById('ps').textContent = 'обновлено ' + dmy(gen);
 const age = sinceH(gen);
 if (age != null && age > 26) { const s = document.getElementById('stale'); s.classList.add('on'); s.textContent = `Данные устарели: последнее обновление ${dmy(gen)} (${hm(age)} назад). Обновление идёт с ноутбука — он, видимо, был выключен.`; }
