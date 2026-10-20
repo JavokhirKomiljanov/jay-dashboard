@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<title>Обучение · Javokhir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Student page of Jay's mentoring platform (JOS «🎓 Обучение»). Public file, holds NO data: everything is
+     loaded with the student's own key from the URL (#k=…) via the JOS bridge ops learn-student / learn-submit. -->
+<style>
+:root{--ink:#131313;--body:#4f5153;--muted:#8a8a8a;--mint:#07e7b7;--mint-dark:#05a884;--mint-tint:#eefcf8;--mint-light:#74dfc8;--coral:#e8623c;--gold:#b36b00;
+  --bg:#fff;--card:#f6f7f8;--line:#e6e8ea;--line-2:#d9dcdf;--r:16px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--body);font:15px/1.55 'Inter',system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:'Manrope','Inter',sans-serif;color:var(--ink);margin:0;letter-spacing:-.02em}
+a{color:#0a5fc0}
+.wrap{max-width:860px;margin:0 auto;padding:22px 16px 60px}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.logo{width:34px;height:34px;border-radius:10px;background:var(--mint);display:grid;place-items:center;font:800 15px 'Manrope';color:var(--ink)}
+.top .who{font-size:12px;color:var(--muted);line-height:1.3}.top .who b{display:block;color:var(--ink);font-size:14px}
+.sp{flex:1}
+.lang button{border:1px solid var(--line-2);background:#fff;border-radius:8px;padding:4px 9px;font:600 12px 'Inter';cursor:pointer;color:var(--body)}
+.lang button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.hero{background:var(--mint-tint);border:1px solid var(--mint-light);border-radius:var(--r);padding:18px 20px;margin-bottom:22px}
+.hero h1{font-size:24px}.hero p{margin:6px 0 0}
+.bar{height:8px;border-radius:99px;background:#fff;overflow:hidden;margin:14px 0 6px;border:1px solid var(--mint-light)}.bar i{display:block;height:100%;background:var(--mint-dark)}
+.sec{margin:26px 0 10px;display:flex;align-items:baseline;gap:10px}.sec h2{font-size:18px}.sec span{font-size:12px;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
+.card.wait{background:#fffaf0;border-color:#ffd58a}.card.ok{background:var(--mint-tint);border-color:var(--mint-light)}.card.re{background:#fff4f0;border-color:#ffc4b0}
+.lesson{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}.lesson:last-child{border-bottom:0}
+.lesson .ic{font-size:18px;line-height:1.3;width:24px;text-align:center;flex:none}
+.lesson b{color:var(--ink)}.small{font-size:13px}.muted{color:var(--muted)}
+.pill{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:99px;border:1px solid var(--line-2);background:#fff;white-space:nowrap;vertical-align:middle}
+.pill.ok{background:var(--mint-tint);border-color:var(--mint-light);color:var(--mint-dark)}.pill.wait{background:#fff6e6;border-color:#ffd58a;color:var(--gold)}.pill.re{background:#fff0eb;border-color:#ffc4b0;color:var(--coral)}.pill.tz{background:#f3eeff;border-color:#dccfff;color:#6b45d6}
+.task h3{font-size:16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.brief{white-space:pre-wrap;margin:8px 0}
+.ver{border-top:1px dashed var(--line-2);margin-top:10px;padding-top:10px;font-size:13.5px}
+.fb{white-space:pre-wrap;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:6px;color:var(--ink)}
+.crit{display:grid;grid-template-columns:1fr auto;gap:2px 10px;margin-top:6px;font-size:13px}
+textarea,input{font:inherit;font-size:14px;width:100%;border:1px solid var(--line-2);border-radius:10px;padding:10px 12px;background:#fff;color:var(--ink)}
+textarea{min-height:170px;resize:vertical}textarea:focus,input:focus{outline:none;border-color:var(--mint-dark)}
+.form{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.btn{border:0;background:var(--ink);color:#fff;border-radius:10px;padding:11px 16px;font:600 14px 'Inter';cursor:pointer;align-self:flex-start}
+.btn:disabled{opacity:.5;cursor:default}
+.msg{font-size:13px}.msg.err{color:var(--coral)}.msg.ok{color:var(--mint-dark)}
+details summary{cursor:pointer;color:var(--ink);font-weight:600;font-size:13.5px}
+.empty{text-align:center;padding:60px 10px}
+.foot{margin-top:36px;font-size:12px;color:var(--muted);text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><p class="muted">…</p></div>
+<script>
+const CFG = /*__CFG__*/{};
+const T = {
+  ru: {mentor:'Наставник', title:'Обучение', hi:'Здравствуйте', prog:'Программа', progress:'пройдено', lessons:'уроков', tasks:'Задания', next:'Следующий шаг',
+    st:{todo:'впереди', now:'идёт', done:'пройден', skip:'пропущен'}, ts:{open:'задано', sub:'на проверке', rework:'нужна доработка', done:'принято'},
+    due:'срок', tz:'ТЗ', hw:'Задание', ver:'Версия', sent:'отправлено', review:'Проверка', ok:'Принято', re:'Нужна доработка', waiting:'Наставник проверит — фидбек появится здесь.',
+    send:'Отправить на проверку', resend:'Отправить новую версию', text:'Текст (можно вставить целиком)', link:'Ссылка (Google Docs, Drive…) — необязательно',
+    sending:'Отправляю…', sentok:'Отправлено! Наставник получил вашу работу.', empty:'Вставьте текст или ссылку.', badlink:'Ссылка должна начинаться с https://',
+    nolink:'Ссылка недействительна', nolink2:'Попросите у наставника новую ссылку на вашу страницу.', neterr:'Нет связи. Текст сохранён на этом устройстве — попробуйте ещё раз.',
+    rubric:'Как проверяется ТЗ', rubric2:'Каждый пункт 0 / 1 / 2. Принято, если', from:'из', must:'и нет нуля по пунктам', materials:'материалы',
+    notasks:'Заданий пока нет.', nolessons:'Программа ещё готовится.', total:'Итого', draft:'черновик сохранён на этом устройстве', mat:'Материалы урока', result:'Результат урока'},
+  uz: {mentor:'Ustoz', title:"O'qish", hi:'Assalomu alaykum', prog:'Dastur', progress:"o'tildi", lessons:'dars', tasks:'Topshiriqlar', next:'Keyingi qadam',
+    st:{todo:'oldinda', now:'jarayonda', done:"o'tildi", skip:"o'tkazildi"}, ts:{open:'berildi', sub:'tekshiruvda', rework:'qayta ishlash kerak', done:'qabul qilindi'},
+    due:'muddat', tz:'TZ', hw:'Topshiriq', ver:'Versiya', sent:'yuborildi', review:'Tekshiruv', ok:'Qabul qilindi', re:'Qayta ishlash kerak', waiting:"Ustoz tekshiradi — fikr shu yerda chiqadi.",
+    send:'Tekshiruvga yuborish', resend:'Yangi versiyani yuborish', text:"Matn (to'liq qo'yish mumkin)", link:'Havola (Google Docs, Drive…) — ixtiyoriy',
+    sending:'Yuborilmoqda…', sentok:'Yuborildi! Ustoz ishingizni oldi.', empty:"Matn yoki havola qo'ying.", badlink:'Havola https:// bilan boshlanishi kerak',
+    nolink:'Havola yaroqsiz', nolink2:"Ustozdan sahifangiz uchun yangi havola so'rang.", neterr:"Aloqa yo'q. Matn shu qurilmada saqlandi — yana urinib ko'ring.",
+    rubric:'TZ qanday tekshiriladi', rubric2:'Har bir band 0 / 1 / 2. Qabul qilinadi, agar', from:'dan', must:"va quyidagi bandlarda 0 bo'lmasa", materials:'materiallar',
+    notasks:"Hozircha topshiriq yo'q.", nolessons:'Dastur tayyorlanmoqda.', total:'Jami', draft:'qoralama shu qurilmada saqlandi', mat:'Dars materiallari', result:'Dars natijasi'}
+};
+const key = (new URLSearchParams(location.hash.slice(1))).get('k') || '';
+let S = null, lang = null;
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const dt = s => s ? String(s).slice(0, 10).split('-').reverse().join('.') : '';
+const L = () => T[lang] || T.ru;
+const safeUrl = u => /^https?:\/\//i.test(u || '') ? u : '';
+const draftKey = id => 'ucheba-draft-' + id;
+const ls = {get(k){ try{ return localStorage.getItem(k) || ''; }catch(e){ return ''; } }, set(k, v){ try{ v ? localStorage.setItem(k, v) : localStorage.removeItem(k); }catch(e){} }};
+async function api(body){ const r = await fetch(CFG.url, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(Object.assign({key, ns:'learn'}, body))}); return r.json(); }
+async function load(){
+  if(!key || !CFG.url) return fail();
+  try{ const r = await api({fin:'learn-student'}); if(!r.ok) return fail(); S = r; if(!lang) lang = ls.get('ucheba-lang') || S.student.lang || 'ru'; render(); }
+  catch(e){ document.getElementById('app').innerHTML = `<div class="empty"><h2>⚠</h2><p>${esc(T.ru.neterr)}</p></div>`; }
+}
+function fail(){ const t = L(); document.getElementById('app').innerHTML = `<div class="empty"><h2>🔒 ${esc(t.nolink)}</h2><p class="muted">${esc(t.nolink2)}</p></div>`; }
+function setLang(l){ lang = l; ls.set('ucheba-lang', l); render(); }
+function render(){
+  const t = L(), st = S.student, Ls = st.lessons || [], act = Ls.filter(l => l.status !== 'skip'), done = act.filter(l => l.status === 'done').length, pct = act.length ? Math.round(100 * done / act.length) : 0;
+  const ic = {todo:'⚪', now:'🟡', done:'✅', skip:'⏭'}, next = (S.sessions || []).filter(x => x.next).sort((a, b) => String(b.date).localeCompare(a.date))[0];
+  const R = S.rubric || [], max = R.length * 2, crit = R.filter(c => c.crit).map(c => c.name);
+  document.documentElement.lang = lang;
+  document.getElementById('app').innerHTML = `
+  <div class="top"><div class="logo">J</div><div class="who">${esc(t.mentor)}<b>Javokhir Komiljonov</b></div><span class="sp"></span>
+    <div class="lang"><button class="${lang === 'ru' ? 'on' : ''}" onclick="setLang('ru')">RU</button> <button class="${lang === 'uz' ? 'on' : ''}" onclick="setLang('uz')">UZ</button></div></div>
+  <div class="hero"><p class="small muted" style="margin:0">${esc(t.title)}</p><h1>${esc(t.hi)}, ${esc(st.name)}!</h1>
+    ${st.program ? `<p><b>${esc(t.prog)}:</b> ${esc(st.program)}</p>` : ''}
+    ${act.length ? `<div class="bar"><i style="width:${pct}%"></i></div><p class="small" style="margin:0"><b>${pct}%</b> ${esc(t.progress)} · ${done}/${act.length} ${esc(t.lessons)}</p>` : ''}
+    ${next ? `<p class="small" style="margin-top:10px"><b>${esc(t.next)} (${dt(next.date)}):</b> ${esc(next.next)}</p>` : ''}</div>
+  <div class="sec"><h2>${esc(t.tasks)}</h2><span>${(S.tasks || []).length}</span></div>
+  ${(S.tasks || []).length ? S.tasks.map(task).join('') : `<p class="muted">${esc(t.notasks)}</p>`}
+  <div class="sec"><h2>${esc(t.prog)}</h2><span>${act.length ? done + '/' + act.length : ''}</span></div>
+  <div class="card">${Ls.length ? Ls.map(l => `<div class="lesson"><span class="ic">${ic[l.status] || '⚪'}</span><div><b>${esc(l.n)}. ${esc(l.title)}</b> <span class="pill ${l.status === 'done' ? 'ok' : l.status === 'now' ? 'wait' : ''}">${esc(t.st[l.status] || l.status)}</span>${l.date && l.status === 'done' ? ` <span class="small muted">${dt(l.date)}</span>` : ''}
+      ${l.goal ? `<div class="small">${esc(l.goal)}</div>` : ''}${l.result ? `<div class="small muted">${esc(t.result)}: ${esc(l.result)}</div>` : ''}${safeUrl(l.link) ? `<div class="small"><a href="${esc(l.link)}" target="_blank" rel="noopener">📎 ${esc(t.mat)}</a></div>` : ''}</div></div>`).join('') : `<p class="muted">${esc(t.nolessons)}</p>`}</div>
+  ${R.length ? `<details class="card" style="background:#fff"><summary>📏 ${esc(t.rubric)}</summary><p class="small">${esc(t.rubric2)} ≥ ${S.pass && S.pass.min || ''} ${esc(t.from)} ${max}${crit.length ? ' ' + esc(t.must) + ': ' + crit.map(esc).join(', ') : ''}.</p>
+    ${R.map((c, i) => `<p class="small" style="margin:4px 0"><b>${i + 1}. ${esc(c.name)}</b> — ${esc(c.hint)}</p>`).join('')}</details>` : ''}
+  <p class="foot">Javokhir Komiljonov · W2W</p>`;
+  document.querySelectorAll('textarea[data-t]').forEach(ta => ta.addEventListener('input', () => { ls.set(draftKey(ta.dataset.t), ta.value); const m = document.getElementById('m-' + ta.dataset.t); if(m){ m.className = 'msg muted'; m.textContent = t.draft; } }));
+}
+function task(k){
+  const t = L(), subs = (S.subs || []).filter(s => s.tid === k.id).sort((a, b) => (b.v || 0) - (a.v || 0)), R = S.rubric || [];
+  const cls = k.status === 'done' ? 'ok' : k.status === 'rework' ? 're' : k.status === 'sub' ? 'wait' : '';
+  const mark = v => v == null ? '·' : +v === 2 ? '✅' : +v === 1 ? '🟡' : '❌';
+  return `<div class="card task ${cls}"><h3><span class="pill ${k.kind === 'tz' ? 'tz' : ''}">${esc(k.kind === 'tz' ? t.tz : t.hw)}</span> ${esc(k.title)} <span class="pill ${cls}">${esc(t.ts[k.status] || k.status)}</span></h3>
+    ${k.due ? `<div class="small muted">${esc(t.due)}: ${dt(k.due)}</div>` : ''}${k.brief ? `<div class="brief small">${esc(k.brief)}</div>` : ''}
+    ${subs.map(s => `<div class="ver"><b>${esc(t.ver)} ${s.v}</b> · ${esc(t.sent)} ${dt(s.at)}${safeUrl(s.link) ? ` · <a href="${esc(s.link)}" target="_blank" rel="noopener">🔗</a>` : ''}
+      ${s.review ? `<div style="margin-top:6px"><span class="pill ${s.review.verdict === 'ok' ? 'ok' : 're'}">${esc(s.review.verdict === 'ok' ? t.ok : t.re)}</span>
+        ${Object.keys(s.review.sc || {}).length ? `<div class="crit">${R.map(c => `<span>${mark(s.review.sc[c.id])} ${esc(c.name)}</span><span class="muted">${s.review.sc[c.id] == null ? '' : s.review.sc[c.id] + '/2'}</span>`).join('')}<b>${esc(t.total)}</b><b>${R.reduce((a, c) => a + (+s.review.sc[c.id] || 0), 0)}/${R.length * 2}</b></div>` : ''}
+        ${s.review.fb ? `<div class="fb">${esc(s.review.fb)}</div>` : ''}</div>` : `<div class="small muted" style="margin-top:4px">${esc(t.waiting)}</div>`}
+      ${s.text ? `<details style="margin-top:6px"><summary>${esc(t.text.split(' (')[0])}</summary><div class="brief small">${esc(s.text)}</div></details>` : ''}</div>`).join('')}
+    ${k.status !== 'done' ? `<div class="form"><textarea data-t="${esc(k.id)}" id="tx-${esc(k.id)}" placeholder="${esc(t.text)}">${esc(ls.get(draftKey(k.id)))}</textarea>
+      <input id="ln-${esc(k.id)}" placeholder="${esc(t.link)}"><button class="btn" id="b-${esc(k.id)}" onclick="submitTask('${esc(k.id)}')">${esc(subs.length ? t.resend : t.send)}</button><div class="msg" id="m-${esc(k.id)}"></div></div>` : ''}</div>`;
+}
+async function submitTask(id){
+  const t = L(), text = document.getElementById('tx-' + id).value.trim(), link = document.getElementById('ln-' + id).value.trim(), m = document.getElementById('m-' + id), b = document.getElementById('b-' + id);
+  if(!text && !link){ m.className = 'msg err'; m.textContent = t.empty; return; }
+  if(link && !safeUrl(link)){ m.className = 'msg err'; m.textContent = t.badlink; return; }
+  b.disabled = true; m.className = 'msg muted'; m.textContent = t.sending;
+  try{ const r = await api({fin:'learn-submit', tid:id, text, link}); if(!r.ok) throw new Error(r.error);
+    ls.set(draftKey(id), ''); await load(); const m2 = document.getElementById('m-' + id); if(m2){ m2.className = 'msg ok'; m2.textContent = t.sentok; } else alert(t.sentok); }
+  catch(e){ b.disabled = false; m.className = 'msg err'; m.textContent = (e.message && e.message !== 'Failed to fetch' ? e.message + ' — ' : '') + t.neterr; }
+}
+window.addEventListener('hashchange', () => location.reload());
+load();
+</script>
+</body>
+</html>

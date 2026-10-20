@@ -371,6 +371,7 @@ footer{padding:18px 28px;border-top:1px solid var(--line);color:var(--muted);fon
   </div>
   <div class="nav on" data-v="today"><span class="ic">🏠</span>Сегодня<span class="cnt" id="cnt-today"></span></div>
   <div class="nav" data-v="cal"><span class="ic">📅</span>Календарь<span class="cnt" id="cnt-cal"></span></div>
+  <div class="nav" data-v="learn"><span class="ic">🎓</span>Обучение<span class="cnt" id="cnt-learn"></span></div>
   <div class="nav" data-v="strategy"><span class="ic">🧭</span>Стратегия<span class="cnt">Q4'26–Q4'27</span></div>
   <div class="nav" data-v="advisors"><span class="ic">🧑‍💼</span>Советники<span class="cnt">4</span></div>
   <div class="nav" data-v="brain"><span class="ic">🧠</span>Company Brain<span class="cnt" id="cnt-brain"></span></div>
@@ -406,6 +407,7 @@ footer{padding:18px 28px;border-top:1px solid var(--line);color:var(--muted);fon
   <div class="wrap">
     <section class="view on" id="v-today"></section>
     <section class="view" id="v-cal"></section>
+    <section class="view" id="v-learn"></section>
     <section class="view" id="v-strategy"></section>
     <section class="view" id="v-advisors"></section>
     <section class="view" id="v-brain"></section>
@@ -516,6 +518,7 @@ function renderToday(){
 
   <div class="grid g5 sect">
     <a class="card mint" href="#marketing" onclick="JOS.go('marketing');return false"><h4>📣 Маркетинг →</h4><p class="small">Один отдел: LinkedIn (RU/EN, с картинками), Telegram-канал на узбекском, Threads, YouTube Shorts, Google, сайт. Что вышло, что в очереди, что сломано.</p></a>
+    <a class="card mint" href="#learn" onclick="JOS.go('learn');return false"><h4>🎓 Обучение →</h4><p class="small">${learnTodayTxt()}</p></a>
     <a class="card mint" href="#me" onclick="JOS.go('me');return false"><h4>👛 Мои финансы →</h4><p class="small" id="me-today">${meTodayTxt()}</p></a>
     <a class="card mint" href="#finance" onclick="JOS.go('finance');return false"><h4>💰 Финансы W2W →</h4><p class="small">Открыто (Not paid + In progress): <b>${money(finOpen())}</b>. Расходы из Notion, правятся как в Notion — статус, суммы, платежи.</p></a>
     <a class="card mint" href="#sales" onclick="JOS.go('sales');return false"><h4>📇 Продажи · CRM →</h4><p class="small">Лиды из Telegram @ceo_w2w: сколько ждут ответа, воронка, медиана ответа. Обновляется с сервера несколько раз в день.</p></a>
@@ -1554,15 +1557,17 @@ function renderCal(){
 }
 setInterval(() => { if(!document.hidden && document.getElementById('v-cal').classList.contains('on')) calPull(); }, 5 * 60 * 1000);
 
+/*__LEARN__*/
 /* ---------- app ---------- */
 const JOS = {
   go(v){ document.querySelectorAll('.nav[data-v]').forEach(n=>n.classList.toggle('on', n.dataset.v===v)); document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on', x.id==='v-'+v));
-    const titles = {today:['Сегодня','план дня, дедлайны, задачи советников'], cal:['Календарь','встречи из личного и рабочего календаря + задачи Google Tasks'], strategy:['Стратегия','Q4 2026 – Q4 2027 · база, модель, допущения'], advisors:['Советники','Chief of Staff · HR · Маркетинг · Финансы'], brain:['Company Brain','второй мозг W2W — то, что продаём'], w2w:['W2W','клиенты, оффер, команда'], sales:['Продажи','Jay CRM · лиды Telegram @ceo_w2w'], instagram:['Instagram','@javohir_w2w · AI-блог и его агенты'], marketing:['Маркетинг','LinkedIn · Telegram · Threads · YouTube · Google · сайт — один отдел'], auto:['Автоматизации','Instagram: комментарий → ссылка в директ'], finance:['Финансы W2W','расходы и долги W2W · копия Notion, правится здесь'], me:['Мои финансы','личные деньги: расходы, неожиданные траты, план, долги · с телефона'], agents:['Agents House','все агенты на сервере']};
+    const titles = {today:['Сегодня','план дня, дедлайны, задачи советников'], cal:['Календарь','встречи из личного и рабочего календаря + задачи Google Tasks'], strategy:['Стратегия','Q4 2026 – Q4 2027 · база, модель, допущения'], advisors:['Советники','Chief of Staff · HR · Маркетинг · Финансы'], brain:['Company Brain','второй мозг W2W — то, что продаём'], w2w:['W2W','клиенты, оффер, команда'], sales:['Продажи','Jay CRM · лиды Telegram @ceo_w2w'], instagram:['Instagram','@javohir_w2w · AI-блог и его агенты'], marketing:['Маркетинг','LinkedIn · Telegram · Threads · YouTube · Google · сайт — один отдел'], auto:['Автоматизации','Instagram: комментарий → ссылка в директ'], finance:['Финансы W2W','расходы и долги W2W · копия Notion, правится здесь'], learn:['Обучение','ученики, программы, задания и проверка ТЗ'], me:['Мои финансы','личные деньги: расходы, неожиданные траты, план, долги · с телефона'], agents:['Agents House','все агенты на сервере']};
     const nav = document.querySelector(`.nav[data-v="${v}"]`), tt = titles[v] || [nav ? nav.textContent.replace(/\d.*$/, '').trim() : v, ''];  // a tab without a title must still load
     document.getElementById('top-title').textContent = tt[0]; document.getElementById('top-sub').textContent = tt[1];
     if(v === 'finance') finPull();
     if(v === 'me') mePull();
     if(v === 'cal') calPull();
+    if(v === 'learn') learnPull();
     const fr = document.querySelector('#v-'+v+' iframe.panel'); if(fr && !fr.src) fr.src = panelUrl(fr.dataset.page);
     document.body.classList.remove('menu'); location.hash = v; window.scrollTo(0,0); this.applyEdit(); },
   toggleEdit(){ document.body.classList.toggle('editing'); document.getElementById('btn-edit').classList.toggle('on', document.body.classList.contains('editing')); this.applyEdit(); },
@@ -1586,8 +1591,8 @@ document.getElementById('lnk-strategy').href = L.strategy_page; document.getElem
 document.getElementById('foot-built').textContent = 'собрано ' + D.built; document.getElementById('foot-src').textContent = 'стратегия ' + S.meta.generated + ' · мозг ' + BR.snapshot + ' · агенты ' + AG.checked;
 document.getElementById('cnt-today').textContent = allTasks().filter(t=>!E.done[t.id]).length;
 document.getElementById('cnt-brain').textContent = BR.totals.clients; document.getElementById('cnt-w2w').textContent = S.installed_base.accounts.length + ' акк.'; document.getElementById('cnt-agents').textContent = AG.agents.filter(a=>a.state==='running').length + ' live';
-renderToday(); renderStrategy(); renderAdvisors(); renderBrain(); renderW2W(); renderFinance(); renderMe(); renderAgents(); finPull(); mePull(); meBadge(); renderCal(); calBadge(); calPull();
-const VIEWS = ['today','cal','strategy','advisors','brain','w2w','sales','marketing','instagram','auto','finance','me','agents'];
+renderToday(); renderStrategy(); renderAdvisors(); renderBrain(); renderW2W(); renderFinance(); renderMe(); renderAgents(); finPull(); mePull(); meBadge(); renderCal(); calBadge(); calPull(); renderLearn(); learnBadge(); learnPull();
+const VIEWS = ['today','cal','learn','strategy','advisors','brain','w2w','sales','marketing','instagram','auto','finance','me','agents'];
 const h = (location.hash||'').slice(1); if(VIEWS.includes(h)) JOS.go(h); else JOS.applyEdit();
 window.addEventListener('hashchange', () => { const v = (location.hash||'').slice(1); if(VIEWS.includes(v) && !document.getElementById('v-'+v).classList.contains('on')) JOS.go(v); });
 </script>
