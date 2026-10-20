@@ -369,7 +369,7 @@ footer{padding:18px 28px;border-top:1px solid var(--line);color:var(--muted);fon
     <svg viewBox="0 0 29.5 30"><circle cx="14.75" cy="15" r="14.75" fill="#07e7b7"/><path d="M7.5 13.2l3.6 7.2 3.65-7.2 3.65 7.2 3.6-7.2" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     <div class="wm"><b>Jay OS</b><span>WIN TO WIN</span></div>
   </div>
-  <div class="nav on" data-v="today"><span class="ic">🏠</span>Сегодня<span class="cnt" id="cnt-today"></span></div>
+  <div class="nav on" data-v="today"><span class="ic">🏠</span>Главная<span class="cnt" id="cnt-today"></span></div>
   <div class="nav" data-v="cal"><span class="ic">📅</span>Календарь<span class="cnt" id="cnt-cal"></span></div>
   <div class="nav" data-v="files"><span class="ic">🗂</span>Файлы<span class="cnt">история</span></div>
   <div class="nav" data-v="learn"><span class="ic">🎓</span>Обучение<span class="cnt" id="cnt-learn"></span></div>
@@ -399,7 +399,7 @@ footer{padding:18px 28px;border-top:1px solid var(--line);color:var(--muted);fon
 <main class="main">
   <div class="top">
     <button class="btn sm menu-btn" onclick="document.body.classList.toggle('menu')">☰</button>
-    <div><h1 id="top-title">Сегодня</h1><div class="sub" id="top-sub"></div></div>
+    <div><h1 id="top-title">Главная</h1><div class="sub" id="top-sub"></div></div>
     <div class="sp"></div>
     <button class="btn" id="btn-edit" onclick="JOS.toggleEdit()">✏️ Править</button>
     <button class="btn" onclick="JOS.exportEdits()">⬇ Экспорт</button>
@@ -473,73 +473,7 @@ function deadlines(){
   (S.targets.gates||[]).forEach(g => push(g.date, `Ворота · ${g.kind}`, 'ворота'));
   return out.filter(x => x.n != null && x.n >= -3).sort((a,b)=>a.n-b.n);
 }
-function renderToday(){
-  const dls = deadlines().slice(0, 10);
-  const three = S.summary.three_numbers_end_2027_base;
-  const tasks = allTasks().filter(t => !E.done[t.id]).sort((a,b)=>(daysTo(a.due)??99)-(daysTo(b.due)??99)).slice(0,8);
-  const run = AG.agents.filter(a=>a.state==='running').length, rdy = AG.agents.filter(a=>a.state==='ready').length, pl = AG.agents.filter(a=>a.state==='planned').length;
-  const cadence = S.org.cadence || [];
-  const wd = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс']; const dow = (TODAY.getDay()+6)%7;
-  const week = wd.map((n,i)=>({n,i,ev:[]}));
-  const put = (i, txt, cls='') => week[i].ev.push({txt, cls});
-  cadence.forEach(c => { const w = c.when.toLowerCase(); const txt = c.what.split(/[:;]/)[0].slice(0,70);
-    if(w.startsWith('понедельник')) put(0, txt, 'mint'); else if(w.startsWith('среда')) put(2, txt, 'mint'); });
-  put(1,'17:30 LinkedIn (агент)'); put(2,'17:30 LinkedIn (агент)'); put(3,'17:30 LinkedIn (агент)');
-  for(let i=0;i<7;i++) put(i,'19:00 IG-карусель (агент)');
-  dls.filter(x=>x.n>=0 && x.n<7).forEach(x => { const d = new Date(TODAY); d.setDate(d.getDate()+x.n); put((d.getDay()+6)%7, '⏰ '+x.what.slice(0,60), ''); });
-  document.getElementById('v-today').innerHTML = `
-  <div class="eyebrow">${TODAY.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})}</div>
-  <h2 class="h2">Фокус: ${E_('today.focus','<span class="hl">W2W</span> — агенты, Company Brain, сбор денег')}</h2>
-  <p class="lead">${E_('today.lead','Один вход — AI-агент на процесс за $2 000 + $150/мес. Ядро — Company Brain. Всё остальное (Home Alliance, Venture Studios, US) — в архиве.')}</p>
-
-  <div class="sect"><div class="sect-h"><h3>Ближайшие дедлайны</h3><span class="tag">из решений и ворот стратегии</span></div>
-    <div class="dl">${dls.map(x=>`<div class="d ${x.n<=3?'hot':''} ${x.n<0?'past':''}"><div class="when">${dateRu(x.date)} · ${esc(x.src)}</div><div class="days">${x.n<0?'просрочено':x.n===0?'сегодня':x.n+' дн'}</div><div class="what">${esc(x.what.length>90?x.what.slice(0,88)+"…":x.what)}</div></div>`).join('')}</div>
-  </div>
-
-  <div class="grid g3 sect">
-    ${three.map((t,i)=>`<div class="stat ${t.value<0?'neg':i===0?'hl':''}"><div class="v">${fmt(t.value)}<small>млн сум</small></div><div class="l">${esc(t.name)}</div><div class="n">${t.usd?'≈ $'+fmt(t.usd,0):'≈ $'+fmt(t.usd_k,1)+'K'} · база, модель</div></div>`).join('')}
-  </div>
-
-  <div class="grid g2 sect">
-    <div class="card white"><div class="sect-h"><h3>Задачи от советников</h3><span class="tag">${allTasks().filter(t=>!E.done[t.id]).length} открытых</span></div>
-      ${tasks.map(taskRow).join('')}
-      <p class="small muted" style="margin-top:10px">Полный список — во вкладке «Советники». Галочка сохраняется.</p>
-    </div>
-    <div>
-      <div class="card white" style="margin-bottom:12px"><div class="sect-h"><h3>Агенты</h3><span class="tag">${esc(AG.checked)}</span></div>
-        <div class="grid g3" style="gap:8px">
-          <div class="stat pos" style="padding:10px 12px"><div class="v" style="font-size:22px">${run}</div><div class="l">работают</div></div>
-          <div class="stat" style="padding:10px 12px"><div class="v" style="font-size:22px">${rdy}</div><div class="l">по расписанию</div></div>
-          <div class="stat" style="padding:10px 12px"><div class="v" style="font-size:22px;color:var(--mint-dark)">${pl}</div><div class="l">ждут доступов</div></div>
-        </div>
-        <p class="small muted" style="margin:10px 0 0">Сервер ${esc(L.server)} · <a href="#" onclick="JOS.go('agents');return false">открыть дом агентов →</a></p>
-      </div>
-      <div class="card mint"><h4>Три риска плана</h4>${S.summary.three_risks.map((r,i)=>`<p class="small"><b>${i+1}.</b> ${esc(r.risk.split('.')[0]).slice(0,140)}.</p>`).join('')}</div>
-    </div>
-  </div>
-
-  <div class="sect"><div class="sect-h"><h3>Ритм недели</h3><span class="tag">org.cadence · 20 ч/нед, 10 из них продажи</span></div>
-    <div class="week">${week.map(w=>`<div class="day ${w.i===dow?'today':''}"><h5>${w.n}</h5>${w.ev.map(e=>`<div class="ev ${e.cls}">${esc(e.txt)}</div>`).join('')}</div>`).join('')}</div>
-  </div>
-
-  <div class="grid g5 sect">
-    <a class="card mint" href="#files" onclick="JOS.go('files');return false"><h4>🗂 Файлы →</h4><p class="small">История файлов: что создано за 90 дней на ноутбуке и сервере, по проектам, с поиском и копированием пути.</p></a>
-    <a class="card mint" href="#marketing" onclick="JOS.go('marketing');return false"><h4>📣 Маркетинг →</h4><p class="small">Один отдел: LinkedIn (RU/EN, с картинками), Telegram-канал на узбекском, Threads, YouTube Shorts, Google, сайт. Что вышло, что в очереди, что сломано.</p></a>
-    <a class="card mint" href="#learn" onclick="JOS.go('learn');return false"><h4>🎓 Обучение →</h4><p class="small">${learnTodayTxt()}</p></a>
-    <a class="card mint" href="#me" onclick="JOS.go('me');return false"><h4>👛 Мои финансы →</h4><p class="small" id="me-today">${meTodayTxt()}</p></a>
-    <a class="card mint" href="#finance" onclick="JOS.go('finance');return false"><h4>💰 Финансы W2W →</h4><p class="small">Открыто (Not paid + In progress): <b>${money(finOpen())}</b>. Расходы из Notion, правятся как в Notion — статус, суммы, платежи.</p></a>
-    <a class="card mint" href="#sales" onclick="JOS.go('sales');return false"><h4>📇 Продажи · CRM →</h4><p class="small">Лиды из Telegram @ceo_w2w: сколько ждут ответа, воронка, медиана ответа. Обновляется с сервера несколько раз в день.</p></a>
-    <a class="card mint" href="#instagram" onclick="JOS.go('instagram');return false"><h4>📷 Instagram →</h4><p class="small">Подписчики, просмотры постов, AI-карусели 19:00, DM-бот «+», статус агентов.</p></a>
-  </div>
-
-  <div class="grid g4 sect">
-    <a class="card white" href="${esc(L.strategy_page)}" target="_blank"><h4>📄 Полная стратегия ↗</h4><p class="small">12 разделов, 3 сценария, 119 допущений, 31 действие 30/60/90</p></a>
-    <a class="card white" href="${esc(L.w2w_map)}" target="_blank"><h4>🗺 Карта компании ↗</h4><p class="small">Оргсхема, роли, доли, KPI, партнёрская программа</p></a>
-    <a class="card white" href="#sales" onclick="JOS.go('sales');return false"><h4>📇 Продажи →</h4><p class="small">CRM: кто ждёт ответа, воронка, все лиды и переписка</p></a>
-    <a class="card white" href="${esc(L.archive_page)}" target="_blank"><h4>🗄 Архив ↗</h4><p class="small">Home Alliance, Venture Studios, Apollo/US, отчёты, ROI — всё старое в одном месте</p></a>
-  </div>`;
-  bindTasks();
-}
+function renderToday(){ renderDashboard(); }  // «🏠 Главная» lives in src/dashboard.js (inlined at the DASH marker)
 function taskRow(t){
   const n = daysTo(t.due); const cls = n==null?'':n<=0?'today':n<=3?'soon':'';
   return `<label class="task ${E.done[t.id]?'done':''}"><input type="checkbox" data-done="${t.id}" ${E.done[t.id]?'checked':''}><div class="t">${E_('task.'+t.id, esc(t.text))}<div><span class="who">${t.emoji||''} ${esc(t.who||'')}</span> <span class="src">${esc(t.src||'')}</span></div></div><div class="d ${cls}">${dateRu(t.due)}${n!=null?'<br>'+dl(n):''}</div></label>`;
@@ -1565,10 +1499,11 @@ function renderCal(){
 setInterval(() => { if(!document.hidden && document.getElementById('v-cal').classList.contains('on')) calPull(); }, 5 * 60 * 1000);
 
 /*__LEARN__*/
+/*__DASH__*/
 /* ---------- app ---------- */
 const JOS = {
   go(v){ document.querySelectorAll('.nav[data-v]').forEach(n=>n.classList.toggle('on', n.dataset.v===v)); document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on', x.id==='v-'+v));
-    const titles = {today:['Сегодня','план дня, дедлайны, задачи советников'], cal:['Календарь','встречи из личного и рабочего календаря + задачи Google Tasks'], files:['Файлы','история: что создано и где лежит — ноутбук и сервер, поиск по имени и пути'], strategy:['Стратегия','Q4 2026 – Q4 2027 · база, модель, допущения'], advisors:['Советники','Chief of Staff · HR · Маркетинг · Финансы'], brain:['Company Brain','второй мозг W2W — то, что продаём'], w2w:['W2W','клиенты, оффер, команда'], sales:['Продажи','Jay CRM · лиды Telegram @ceo_w2w'], instagram:['Instagram','@javohir_w2w · AI-блог и его агенты'], marketing:['Маркетинг','LinkedIn · Telegram · Threads · YouTube · Google · сайт — один отдел'], auto:['Автоматизации','Instagram: комментарий → ссылка в директ'], backup:['Бэкап и восстановление','код на GitHub, шифрованный бэкап, восстановление сервера, рецепты для друзей'], finance:['Финансы W2W','расходы и долги W2W · копия Notion, правится здесь'], learn:['Обучение','ученики, программы, задания и проверка ТЗ'], claude:['Claude Pro','моя программа: как устроен Claude Code — уровни, скилы, MCP, автоматизация, агенты'], me:['Мои финансы','личные деньги: расходы, неожиданные траты, план, долги · с телефона'], agents:['Agents House','все агенты на сервере']};
+    const titles = {today:['Главная','все отделы на одном экране: что требует тебя, цифры и свежесть данных'], cal:['Календарь','встречи из личного и рабочего календаря + задачи Google Tasks'], files:['Файлы','история: что создано и где лежит — ноутбук и сервер, поиск по имени и пути'], strategy:['Стратегия','Q4 2026 – Q4 2027 · база, модель, допущения'], advisors:['Советники','Chief of Staff · HR · Маркетинг · Финансы'], brain:['Company Brain','второй мозг W2W — то, что продаём'], w2w:['W2W','клиенты, оффер, команда'], sales:['Продажи','Jay CRM · лиды Telegram @ceo_w2w'], instagram:['Instagram','@javohir_w2w · AI-блог и его агенты'], marketing:['Маркетинг','LinkedIn · Telegram · Threads · YouTube · Google · сайт — один отдел'], auto:['Автоматизации','Instagram: комментарий → ссылка в директ'], backup:['Бэкап и восстановление','код на GitHub, шифрованный бэкап, восстановление сервера, рецепты для друзей'], finance:['Финансы W2W','расходы и долги W2W · копия Notion, правится здесь'], learn:['Обучение','ученики, программы, задания и проверка ТЗ'], claude:['Claude Pro','моя программа: как устроен Claude Code — уровни, скилы, MCP, автоматизация, агенты'], me:['Мои финансы','личные деньги: расходы, неожиданные траты, план, долги · с телефона'], agents:['Agents House','все агенты на сервере']};
     const nav = document.querySelector(`.nav[data-v="${v}"]`), tt = titles[v] || [nav ? nav.textContent.replace(/\d.*$/, '').trim() : v, ''];  // a tab without a title must still load
     document.getElementById('top-title').textContent = tt[0]; document.getElementById('top-sub').textContent = tt[1];
     if(v === 'finance') finPull();
@@ -1598,7 +1533,7 @@ document.getElementById('lnk-strategy').href = L.strategy_page; document.getElem
 document.getElementById('foot-built').textContent = 'собрано ' + D.built; document.getElementById('foot-src').textContent = 'стратегия ' + S.meta.generated + ' · мозг ' + BR.snapshot + ' · агенты ' + AG.checked;
 document.getElementById('cnt-today').textContent = allTasks().filter(t=>!E.done[t.id]).length;
 document.getElementById('cnt-brain').textContent = BR.totals.clients; document.getElementById('cnt-w2w').textContent = S.installed_base.accounts.length + ' акк.'; document.getElementById('cnt-agents').textContent = AG.agents.filter(a=>a.state==='running').length + ' live';
-renderToday(); renderStrategy(); renderAdvisors(); renderBrain(); renderW2W(); renderFinance(); renderMe(); renderAgents(); finPull(); mePull(); meBadge(); renderCal(); calBadge(); calPull(); renderLearn(); learnBadge(); learnPull();
+renderToday(); renderStrategy(); renderAdvisors(); renderBrain(); renderW2W(); renderFinance(); renderMe(); renderAgents(); finPull(); mePull(); meBadge(); renderCal(); calBadge(); calPull(); renderLearn(); learnBadge(); learnPull(); kpiLoad();
 (function claudeBadge(){ const f = () => { try { const s = JSON.parse(localStorage.getItem('jos-claude-learn-v1') || '{}'); document.getElementById('cnt-claude').textContent = s.total ? (s.doneN || 0) + '/' + s.total : ''; } catch (e) {} }; f(); window.addEventListener('storage', f); window.addEventListener('message', e => { if (e.data && e.data.jos === 'h' && e.data.page === 'claude') f(); }); })();
 const VIEWS = ['today','cal','files','learn','claude','strategy','advisors','brain','w2w','sales','marketing','instagram','auto','backup','finance','me','agents'];
 const h = (location.hash||'').slice(1); if(VIEWS.includes(h)) JOS.go(h); else JOS.applyEdit();
