@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<title>Jay OS — Бэкап</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/*__CSS__*/
+/* ---- panel-only ---- */
+body{background:var(--bg)}
+body.embedded .wrap{padding:0}
+body.embedded .ptop h1{display:none}
+.ptop{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 18px}
+.ptop h1{font-size:20px;font-weight:800}
+.ptop .sp{flex:1}
+.subtabs{display:flex;gap:6px;margin:0 0 18px;border-bottom:1px solid var(--line);padding-bottom:10px;flex-wrap:wrap}
+.subtabs button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font:600 13px var(--text);color:var(--body);cursor:pointer}
+.subtabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.pane{display:none}.pane.on{display:block}
+.alert{border-radius:var(--r);padding:12px 16px;margin:0 0 12px;font-size:13px;border:1px solid}
+.alert.bad{background:#fff0eb;border-color:#ffc4b0;color:var(--coral-dark)}
+.alert.warn{background:#fff6e6;border-color:#ffd58a;color:#7a4a00}
+.alert.ok{background:var(--mint-tint);border-color:var(--mint-light);color:var(--mint-dark)}
+.keycard{display:flex;gap:14px;align-items:flex-start}
+.keycard .ic{font-size:28px;line-height:1}
+.keycard label{display:flex;gap:8px;align-items:center;margin-top:8px;font-size:12.5px;color:var(--ink);cursor:pointer}
+td.nw{white-space:nowrap}
+/* markdown */
+.md{font-size:13.5px;line-height:1.6;color:var(--body)}
+.md h1{font-size:19px;margin:0 0 10px}.md h2{font-size:16px;margin:22px 0 8px}.md h3{font-size:14px;margin:16px 0 6px}
+.md p{margin:0 0 10px}.md ul,.md ol{margin:0 0 10px;padding-left:22px}.md li{margin:3px 0}
+.md blockquote{margin:0 0 12px;padding:8px 14px;border-left:3px solid var(--mint);background:var(--mint-tint);border-radius:0 10px 10px 0;color:var(--ink)}
+.md code{font-family:var(--mono);font-size:12px;background:var(--card-2);padding:1px 5px;border-radius:5px}
+.md table{margin:0 0 12px}.md th,.md td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.code{position:relative;margin:0 0 12px}
+.code pre{margin:0;background:#131313;color:#e9f7f3;border-radius:12px;padding:12px 14px;overflow-x:auto;font:12px/1.55 var(--mono);white-space:pre}
+.code .cp{position:absolute;top:8px;right:8px}
+.code .lang{position:absolute;top:-9px;left:12px;font:600 10px var(--mono);background:var(--mint);color:var(--ink);padding:1px 7px;border-radius:999px}
+li.ck{list-style:none;margin-left:-20px}
+li.ck input{margin-right:8px;accent-color:var(--mint-dark)}
+li.ck.done>span{color:var(--muted);text-decoration:line-through}
+/* recipes */
+.rgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media(max-width:1100px){.rgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.rgrid{grid-template-columns:1fr}}
+.rc{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.rc .no{font:800 12px var(--mono);color:var(--mint-dark)}
+.rc h4{margin:0;font-size:14.5px}
+.rc p{margin:0;font-size:12.5px;flex:1}
+.rc .acts{display:flex;gap:6px;flex-wrap:wrap}
+.rc .nt{font-size:12px;color:var(--muted);border-top:1px dashed var(--line);padding-top:6px;min-height:1.4em}
+.rc .nt:empty:before{content:attr(data-ph);color:var(--faint)}
+.viewer{background:#fff;border:1px solid var(--line-2);border-radius:var(--r);padding:18px 22px;margin:14px 0}
+.viewer .vh{display:flex;gap:8px;align-items:center;margin:0 0 12px;flex-wrap:wrap}
+.viewer .vh .sp{flex:1}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:8px 16px;border-radius:999px;font-size:12.5px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:50}
+.toast.on{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="ptop">
+    <h1>🛟 Бэкап и восстановление</h1>
+    <span class="pill grey" id="built"></span>
+    <span class="sp"></span>
+    <button class="btn sm" id="b-edit" onclick="toggleEdit()">✏️ Правка</button>
+    <button class="btn sm" onclick="exportJson()">⬇ Экспорт JSON</button>
+    <button class="btn sm" onclick="resetAll()">↺ Сброс</button>
+  </div>
+  <div class="subtabs" id="tabs">
+    <button data-p="state" class="on">Состояние</button>
+    <button data-p="restore">Восстановить сервер</button>
+    <button data-p="recipes">Рецепты для друзей</button>
+  </div>
+  <section class="pane on" id="p-state"></section>
+  <section class="pane" id="p-restore"></section>
+  <section class="pane" id="p-recipes"></section>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const D = /*__DATA__*/{};
+if (window.self !== window.top) document.body.classList.add('embedded');
+const KEY = 'jos-backup-v1';
+let S = {}; try { S = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+S.ck = S.ck || {}; S.notes = S.notes || {}; S.tab = S.tab || 'state';
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const when = s => s ? s.slice(0, 16).replace('T', ' ') : '—';
+function ago(s){ if (!s) return ''; const h = (Date.now() - new Date(s).getTime()) / 36e5; return h < 1 ? 'меньше часа назад' : h < 48 ? Math.round(h) + ' ч назад' : Math.round(h / 24) + ' дн назад'; }
+const fmtHead = h => { const m = String(h || '').match(/^(\w+)\s+(\d{4})-(\d\d)-(\d\d)T(\d\d:\d\d)/); return m ? `${m[1]} · ${m[4]}.${m[3]} ${m[5]}` : (h || ''); };
+function toast(t){ const el = document.getElementById('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('on'), 1800); }
+
+/* ---------- tiny markdown (headings, lists, tables, code, quotes, inline) ---------- */
+function inline(s){
+  return esc(s).replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
+    .replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+}
+let CODES = [];
+function md(src, ns){
+  const L = src.replace(/\r/g, '').split('\n'); let h = '', i = 0, li = 0;
+  while (i < L.length) {
+    let l = L[i];
+    if (/^```/.test(l)) { const lang = l.slice(3).trim(); const buf = []; i++; while (i < L.length && !/^```/.test(L[i])) buf.push(L[i++]); i++;
+      const id = CODES.push(buf.join('\n')) - 1;
+      h += `<div class="code">${lang ? `<span class="lang">${esc(lang)}</span>` : ''}<button class="btn sm cp" onclick="copyCode(${id})">📋 Копировать</button><pre>${esc(buf.join('\n'))}</pre></div>`; continue; }
+    if (/^#{1,4}\s/.test(l)) { const n = l.match(/^#+/)[0].length; h += `<h${n}>${inline(l.replace(/^#+\s*/, ''))}</h${n}>`; i++; continue; }
+    if (/^\|/.test(l)) { const rows = []; while (i < L.length && /^\|/.test(L[i])) rows.push(L[i++]);
+      const cells = r => r.replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+      h += '<div class="tbl"><table><thead><tr>' + cells(rows[0]).map(c => `<th>${inline(c)}</th>`).join('') + '</tr></thead><tbody>'
+        + rows.slice(2).map(r => '<tr>' + cells(r).map(c => `<td>${inline(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table></div>'; continue; }
+    if (/^>\s?/.test(l)) { const buf = []; while (i < L.length && /^>\s?/.test(L[i])) buf.push(L[i++].replace(/^>\s?/, '')); h += `<blockquote>${inline(buf.join(' '))}</blockquote>`; continue; }
+    if (/^\s*(\d+\.|[-*])\s/.test(l)) { const ol = /^\s*\d+\./.test(l); const items = [];
+      while (i < L.length && (/^\s*(\d+\.|[-*])\s/.test(L[i]) || (/^\s{2,}\S/.test(L[i]) && items.length))) {
+        if (/^\s*(\d+\.|[-*])\s/.test(L[i])) items.push(L[i].replace(/^\s*(\d+\.|[-*])\s/, '')); else items[items.length - 1] += '\n' + L[i].trim();
+        i++;
+        // fenced code inside a list item
+        if (i < L.length && /^\s+```/.test(L[i])) { const lang = L[i].trim().slice(3); const buf = []; i++; while (i < L.length && !/^\s*```/.test(L[i])) buf.push(L[i++].replace(/^\s{3}/, '')); i++; items[items.length - 1] += '\n\u0000' + (CODES.push(buf.join('\n')) - 1) + '\u0000' + lang; }
+      }
+      h += (ol ? '<ol>' : '<ul>') + items.map(t => {
+        const parts = t.split('\n'); let body = '';
+        parts.forEach(p => { const m = p.match(/^\u0000(\d+)\u0000(.*)$/); body += m ? `<div class="code" style="margin-top:8px">${m[2] ? `<span class="lang">${esc(m[2])}</span>` : ''}<button class="btn sm cp" onclick="copyCode(${m[1]})">📋 Копировать</button><pre>${esc(CODES[+m[1]])}</pre></div>` : (body ? '<br>' : '') + inline(p); });
+        if (ns && ol) { const k = ns + ':' + (li++); return `<li class="ck${S.ck[k] ? ' done' : ''}"><input type="checkbox" ${S.ck[k] ? 'checked' : ''} onchange="tick('${k}',this)"><span>${body}</span></li>`; }
+        return `<li>${body}</li>`; }).join('') + (ol ? '</ol>' : '</ul>'); continue; }
+    if (!l.trim()) { i++; continue; }
+    const buf = []; while (i < L.length && L[i].trim() && !/^(```|#{1,4}\s|\||>|\s*(\d+\.|[-*])\s)/.test(L[i])) buf.push(L[i++]);
+    h += `<p>${inline(buf.join(' '))}</p>`;
+  }
+  return h;
+}
+function copyText(t){
+  const done = () => toast('Скопировано');
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t).then(done, () => fallback());
+  else fallback();
+  function fallback(){ const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch (e) {} ta.remove(); }
+}
+function copyCode(i){ copyText(CODES[i]); }
+function tick(k, el){ if (el.checked) S.ck[k] = new Date().toISOString(); else delete S.ck[k]; el.parentElement.classList.toggle('done', el.checked); save(); }
+
+/* ---------- 1. state ---------- */
+const ST = {pushed:['mint','отправлено'], clean:['mint','без изменений'], 'fallback-branch':['warn','в ветку server-autobackup'],
+  'patch-in-vault':['mint','свои коммиты — в шифрованном бэкапе'], 'blocked-secret':['bad','секрет — не отправлено'], failed:['bad','ошибка'], 'not-wired':['bad','не подключено'], empty:['grey','пусто']};
+const RES = r => r === 0 ? ['mint', 'ок'] : r === 267009 ? ['blue', 'работает'] : r === 267011 ? ['grey', 'ещё не запускалась'] : r === 2147946720 ? ['blue', 'перезапущена'] : ['bad', 'код ' + r];
+function renderState(){
+  const s = D.status, v = (s && s.vault) || {}, lv = D.laptop_vault, repos = (s && s.repos) || [];
+  const good = repos.filter(r => ['pushed', 'clean', 'patch-in-vault', 'fallback-branch'].includes(r.status)).length, bad = repos.filter(r => ['failed', 'blocked-secret', 'not-wired'].includes(r.status));
+  const old = t => (Date.now() - new Date(t)) > 30 * 36e5, stale = s && (s.lastOk ? old(s.lastOk) : old(s.run));
+  let h = '';
+  if (!s) h += `<div class="alert warn">Ночной бэкап ещё ни разу не отчитался. Первый запуск в 02:00 или вручную: задача <code>\\Jay\\github-autopush-daily</code>.</div>`;
+  else if (stale) h += `<div class="alert bad"><b>Полностью успешного бэкапа не было ${s.lastOk ? ago(s.lastOk) : 'ни разу'}.</b> Сторож сервера шлёт об этом алерт в Telegram. Ниже видно, что именно сломалось.</div>`;
+  else if (!s.ok) h += `<div class="alert warn">Последний прогон ${when(s.run)} прошёл с проблемами (см. таблицу). Последний полностью успешный был ${ago(s.lastOk)}.</div>`;
+  else h += `<div class="alert ok">Всё в порядке: прошлой ночью (${when(s.run)}) код ушёл на GitHub, секреты и данные — в шифрованный бэкап.</div>`;
+  (D.errors || []).forEach(e => h += `<div class="alert warn small">Сервер: ${esc(e)}</div>`);
+  h += `<div class="grid g4 sect">
+    <div class="stat ${s && s.ok ? 'pos' : 'neg'}"><div class="v">${s ? (s.ok ? 'OK' : 'Проблема') : '—'}</div><div class="l">Ночной бэкап сервера</div><div class="n">${s ? when(s.run) + ' · ' + ago(s.run) : 'ещё не запускался'}</div></div>
+    <div class="stat"><div class="v">${good}<small>/ ${repos.length}</small></div><div class="l">Папок с кодом на GitHub</div><div class="n">${bad.length ? bad.length + ' с ошибкой' : 'все приватные'}${s && s.unwired && s.unwired.length ? ' · новых: ' + s.unwired.length : ''}</div></div>
+    <div class="stat"><div class="v">${v.enc_mb != null ? v.enc_mb : '—'}<small>МБ</small></div><div class="l">Шифрованный бэкап сервера</div><div class="n">${v.files != null ? v.files + ' файлов · ' : ''}${(v.slots || []).join(', ') || esc(v.detail || '')}</div></div>
+    <div class="stat"><div class="v">${lv && lv.enc_mb != null ? lv.enc_mb : '—'}<small>МБ</small></div><div class="l">Шифрованный бэкап ноутбука</div><div class="n">${lv ? when(lv.at) + ' · ' + lv.files + ' файлов' : 'ещё не делался'}</div></div>
+  </div>`;
+  h += `<div class="card white sect keycard"><div class="ic">🔑</div><div><h4>Ключ расшифровки — только у тебя</h4>
+    <p class="small">Файл <code>JAY-BACKUP-PRIVATE-KEY.pem</code> лежит на ноутбуке: <code>${esc(D.key_path || '—')}</code>. Без него шифрованный бэкап не открыть никому, включая тебя. Нужны ещё 2 копии: менеджер паролей и флешка.</p>
+    <label><input type="checkbox" ${S.ck.key1 ? 'checked' : ''} onchange="tick('key1',this)">Копия в менеджере паролей</label>
+    <label><input type="checkbox" ${S.ck.key2 ? 'checked' : ''} onchange="tick('key2',this)">Копия на флешке / во втором месте</label></div></div>`;
+  h += `<div class="sect"><div class="sect-h"><h3>Код → GitHub</h3><span class="tag">каждую ночь 02:00 · ключ доступа на каждый репозиторий</span></div><div class="tbl"><table>
+    <thead><tr><th>Папка на сервере</th><th>Репозиторий</th><th>Статус</th><th>Последний коммит</th></tr></thead><tbody>`
+    + (repos.length ? repos.map(r => { const t = ST[r.status] || ['grey', r.status];
+      return `<tr><td><b>${esc(r.folder)}</b></td><td class="mono">${esc(r.repo)}${r.remote && r.remote !== 'origin' ? ' <span class="pill grey">' + esc(r.remote) + '</span>' : ''}</td><td><span class="pill ${t[0]}">${t[1]}</span>${r.detail ? `<div class="small muted">${esc(r.detail)}</div>` : ''}${r.skipped ? `<div class="small muted">пропущено (большие/.bak): ${r.skipped.length}</div>` : ''}</td><td class="mono nw">${esc(fmtHead(r.head))}</td></tr>`; }).join('')
+      : '<tr><td colspan="4" class="muted">— данных ещё нет (бэкап не запускался)</td></tr>')
+    + `</tbody></table></div>${s && s.unwired && s.unwired.length ? `<p class="small muted" style="margin-top:8px">Новые папки без GitHub: <b>${s.unwired.map(esc).join(', ')}</b>. Ноутбук создаст для них приватные репозитории при следующем обновлении JOS.</p>` : ''}</div>`;
+  const T = D.tasks || [];
+  h += `<div class="sect"><div class="sect-h"><h3>Агенты на сервере</h3><span class="tag">${T.length} задач · точная копия настроек: ${(D.exports || []).length} XML в jay-server/restore/tasks</span></div><div class="tbl"><table>
+    <thead><tr><th>Агент</th><th>Тип</th><th>Состояние</th><th>Последний запуск</th><th>Расписание</th></tr></thead><tbody>`
+    + T.map(t => { const r = RES(t.res); return `<tr><td><b>${esc(t.n)}</b>${t.d ? `<div class="small muted">${esc(t.d)}</div>` : ''}</td><td class="nw">${t.kind === '24/7' ? '<span class="pill mint">24/7</span>' : '<span class="pill grey">по расписанию</span>'}</td>
+      <td class="nw">${t.s === 'Disabled' ? '<span class="pill grey">выключена</span>' : t.s === 'Running' ? '<span class="pill blue">работает</span>' : `<span class="pill ${r[0]}">${r[1]}</span>`}</td><td class="mono nw">${when(t.last)}</td><td class="small">${esc(t.t || '')}</td></tr>`; }).join('')
+    + `</tbody></table></div></div>`;
+  h += `<p class="small muted">Обновлено ${esc(D.built)}. Ноутбук сам подключает новые папки к GitHub и делает свой шифрованный бэкап не чаще раза в 20 ч. Копия этой страницы лежит в Obsidian: <code>Library/Reference/Бэкап и восстановление.md</code>.</p>`;
+  document.getElementById('p-state').innerHTML = h;
+}
+
+/* ---------- 2. restore ---------- */
+function renderRestore(){
+  const src = D.restore_md || '# Инструкция не получена\n\nСервер не отдал `jay-server/restore/RESTORE.md`. Копия есть в GitHub: репозиторий **jay-server**, папка `restore/`.';
+  const done = Object.keys(S.ck).filter(k => k.startsWith('rs:')).length;
+  document.getElementById('p-restore').innerHTML = `<div class="card mint sect"><h4>Сервер умер? Открой эту вкладку на любом компьютере.</h4>
+    <p class="small">Отмечай шаги галочками по ходу, отметки сохраняются в этом браузере (${done} отмечено). Каждую команду можно скопировать кнопкой. Тот же текст лежит в GitHub (<code>jay-server/restore/RESTORE.md</code>) и в Obsidian.</p>
+    <div class="chip-row" style="margin-top:8px"><button class="btn sm" onclick="dl('RESTORE.md', D.restore_md)">⬇ RESTORE.md</button><button class="btn sm" onclick="clearSteps()">Снять все галочки</button></div></div>
+    <div class="card white md">${md(src, 'rs')}</div>`;
+}
+function clearSteps(){ Object.keys(S.ck).filter(k => k.startsWith('rs:')).forEach(k => delete S.ck[k]); save(); renderRestore(); }
+
+/* ---------- 3. recipes ---------- */
+let OPEN = null;
+function renderRecipes(){
+  const R = D.recipes || [];
+  let h = `<div class="card mint sect"><h4>Понравилась автоматизация? Отправь другу файл, и он соберёт такую же у себя.</h4>
+    <p class="small">Каждый рецепт — один .md-файл. Внутри: что получится, что нужно, как устроено, сборка по шагам, запуск 24/7, грабли и готовый <b>промпт для Claude Code</b>. Друг вставляет его в Claude Code, и тот собирает систему с нуля. Секретов, токенов, имён клиентов и твоих данных в рецептах нет.</p>
+    <div class="chip-row" style="margin-top:8px"><button class="btn sm pri" onclick="dlAll()">⬇ Все ${R.length} рецептов одним файлом</button></div></div>`;
+  if (OPEN) { const r = R.find(x => x.id === OPEN); if (r) h += `<div class="viewer" id="viewer"><div class="vh"><b>${esc(r.title)}</b><span class="sp"></span>
+      <button class="btn sm mint" onclick="dlOne('${r.id}')">⬇ ${esc(r.file)}</button><button class="btn sm" onclick="copyText(byId('${r.id}').md)">📋 Копировать всё</button><button class="btn sm" onclick="OPEN=null;renderRecipes()">✕ Закрыть</button></div><div class="md">${md(r.md)}</div></div>`; }
+  h += `<div class="rgrid">` + R.map(r => `<div class="rc"><span class="no">${esc(r.file.slice(0, 2))} · ${r.lines} строк</span><h4>${esc(r.title)}</h4><p>${esc(r.one)}</p>
+    <div class="acts"><button class="btn sm mint" onclick="dlOne('${r.id}')">⬇ .md</button><button class="btn sm" onclick="copyText(byId('${r.id}').md)">📋</button><button class="btn sm" onclick="OPEN='${r.id}';renderRecipes();document.getElementById('viewer').scrollIntoView({behavior:'smooth'})">👁 Открыть</button></div>
+    <div class="nt" data-note="${r.id}" data-ph="заметка: кому отправил, что спросили…">${esc(S.notes[r.id] || '')}</div></div>`).join('') + `</div>`;
+  if (!R.length) h += '<p class="muted">Рецептов пока нет — папка jay-recipes/recipes пуста.</p>';
+  document.getElementById('p-recipes').innerHTML = h; bindNotes();
+}
+const byId = id => (D.recipes || []).find(x => x.id === id);
+function dl(name, text){ const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], {type: 'text/markdown;charset=utf-8'})); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500); }
+function dlOne(id){ const r = byId(id); dl(r.file, r.md); }
+function dlAll(){ dl('рецепты-автоматизаций.md', '# Рецепты автоматизаций\n\n' + (D.recipes || []).map(r => '- ' + r.title).join('\n') + '\n\n---\n\n' + (D.recipes || []).map(r => r.md).join('\n\n---\n\n')); }
+function bindNotes(){ document.querySelectorAll('[data-note]').forEach(el => { el.contentEditable = EDIT; el.style.outline = EDIT ? '1px dashed var(--mint-dark)' : ''; if (!el._b) { el._b = 1; el.addEventListener('blur', () => { const t = el.innerText.trim(); if (t) S.notes[el.dataset.note] = t; else delete S.notes[el.dataset.note]; save(); }); } }); }
+
+/* ---------- shell ---------- */
+let EDIT = false;
+function toggleEdit(){ EDIT = !EDIT; document.getElementById('b-edit').classList.toggle('on', EDIT); bindNotes(); toast(EDIT ? 'Пиши заметки прямо на карточках рецептов' : 'Сохранено'); }
+function exportJson(){ dl('jos-backup-edits.json', JSON.stringify(Object.assign({exported: new Date().toISOString()}, S), null, 1)); }
+function resetAll(){ if (!confirm('Сбросить галочки и заметки на этой вкладке в этом браузере?')) return; try { localStorage.removeItem(KEY); } catch (e) {} location.reload(); }
+function tab(p){ S.tab = p; save(); document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.p === p)); document.querySelectorAll('.pane').forEach(x => x.classList.toggle('on', x.id === 'p-' + p)); post(); }
+document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => tab(b.dataset.p));
+document.getElementById('built').textContent = 'обновлено ' + (D.built || '—');
+function post(){ try { parent.postMessage({jos: 'h', page: D.page || 'backup', h: document.documentElement.scrollHeight}, '*'); } catch (e) {} }
+window.addEventListener('load', post); window.addEventListener('resize', post); setInterval(post, 1500);
+renderState(); renderRestore(); renderRecipes(); tab(['state', 'restore', 'recipes'].includes(location.hash.slice(1)) ? location.hash.slice(1) : S.tab);
+</script>
+</body>
+</html>
