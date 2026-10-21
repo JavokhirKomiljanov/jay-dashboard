@@ -360,7 +360,49 @@ body.me-hide .mv{filter:blur(7px);user-select:none}
   .dl .d{flex-basis:160px}
 }
 footer{padding:18px 28px;border-top:1px solid var(--line);color:var(--muted);font-size:11.5px;font-family:var(--mono);display:flex;gap:14px;flex-wrap:wrap}
+
+/* ===== dark theme (2026-10-21): html[data-theme=dark], toggle 🌙/☀️ in the top bar, localStorage jos-theme ===== */
+html[data-theme=dark]{color-scheme:dark;
+  --ink:#eceef0;--body:#b7bcc2;--muted:#8d939a;--faint:#5f666d;
+  --mint-dark:#2fd3a8;--mint-light:#1f8f73;--mint-tint:#0f2a24;--mint-tint-2:#12332b;--coral-dark:#ff8a63;--blue:#5ea9ff;
+  --bg:#0e1012;--card:#171a1d;--card-2:#1c2024;--line:#2a2f35;--line-2:#3a4148;--surface:#14171a}
+html[data-theme=dark] .side{background:#111416}
+html[data-theme=dark] .top{background:rgba(14,16,18,.88)}
+html[data-theme=dark] .nav.on,html[data-theme=dark] .btn.pri,html[data-theme=dark] .adv-tabs button.on{background:var(--mint);color:#0b0d0f;border-color:var(--mint)}
+html[data-theme=dark] .nav.on .cnt{background:rgba(0,0,0,.14);color:#0b0d0f}
+html[data-theme=dark] :is(.nav .cnt,.btn,.card.white,.pill,.tbl,details,.dl .d,.week .day,.adv,.adv .pane.rep,.adv-tabs button,.srcs .s,.ask,.cl,.graph,.apanel,.gate .dot,.chart,.fin-bar input[type=search],.fin-bar select,.fi:focus,.debt-card,.fin-form .fi,.me-quick,.me-quick input,.me-quick select,.me-line select,.me-code,.bot .body,.bot.planned .st,body.editing [data-e]:focus){background:var(--surface)}
+html[data-theme=dark] .pill.warn{background:#2b2210;border-color:#5c4514;color:#f0b44c}
+html[data-theme=dark] .pill.bad{background:#2d1712;border-color:#6b2e1f;color:var(--coral-dark)}
+html[data-theme=dark] .pill.blue{background:#0f1f33;border-color:#1f4470;color:#7fb8ff}
+html[data-theme=dark] .pill.lav{background:#1f1830;border-color:#43356b;color:#b9a1ff}
+html[data-theme=dark] .dl .d.hot{background:#2a1813}
+html[data-theme=dark] .brain-hero{background:linear-gradient(135deg,#0f2a24 0%,#0f1f33 100%);border-color:#1e3a40}
+html[data-theme=dark] .house{background:#121518}
+html[data-theme=dark] .room{background:rgba(30,34,38,.72)}
+html[data-theme=dark] .room.board{background:rgba(15,42,36,.85)}
+html[data-theme=dark] .room.lab{background:rgba(31,24,48,.7);border-color:#43356b}
+html[data-theme=dark] .desk{background:#262b30;border-color:#353c43}
+html[data-theme=dark] .bot .nm{background:rgba(14,16,18,.85)}
+html[data-theme=dark] .bot .st{border-color:var(--bg)}
+html[data-theme=dark] .ftbl tr:hover td{background:#1a1e22}
+html[data-theme=dark] .xbtn:hover{background:#2d1712}
+html[data-theme=dark] tr.me-inbox td{background:#262010}
+html[data-theme=dark] input,html[data-theme=dark] select,html[data-theme=dark] textarea{background:var(--surface);color:var(--ink);border-color:var(--line-2)}
+/* inline styles from the render code */
+html[data-theme=dark] [style*="background:#fff;"],html[data-theme=dark] [style$="background:#fff"]{background:var(--surface)!important}
+html[data-theme=dark] [style*="background:#fff6e6"],html[data-theme=dark] [style*="background:#fffaf0"],html[data-theme=dark] [style*="background:#fff9ef"]{background:#2b2210!important;border-color:#5c4514!important}
+html[data-theme=dark] [style*="background:#fff0eb"],html[data-theme=dark] [style*="background:#fffaf8"]{background:#2d1712!important;border-color:#6b2e1f!important}
+html[data-theme=dark] [style*="color:#b36b00"]{color:#f0b44c!important}
+html[data-theme=dark] svg [fill="#131313"]{fill:var(--ink)}
+html[data-theme=dark] svg [stroke="#e6e8ea"],html[data-theme=dark] svg [stroke="#d9dcdf"]{stroke:var(--line-2)}
+/* iframe panels are separate pages without their own dark theme → inverted (photos inside look inverted too) */
+html[data-theme=dark] iframe.panel{filter:invert(.9) hue-rotate(180deg)}
+.pref-btn{min-width:38px;justify-content:center}
 </style>
+<script>/* theme + lang before first paint, so there's no white flash */
+try { const t = localStorage.getItem('jos-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); document.documentElement.dataset.theme = t;
+  document.documentElement.lang = localStorage.getItem('jos-lang') === 'en' ? 'en' : 'ru'; } catch (e) {}
+</script>
 </head>
 <body>
 <div class="app">
@@ -404,6 +446,8 @@ footer{padding:18px 28px;border-top:1px solid var(--line);color:var(--muted);fon
     <button class="btn sm menu-btn" onclick="document.body.classList.toggle('menu')">☰</button>
     <div><h1 id="top-title">Главная</h1><div class="sub" id="top-sub"></div></div>
     <div class="sp"></div>
+    <button class="btn pref-btn" id="btn-theme" onclick="PREFS.theme()" title="Тёмная / светлая тема">🌙</button>
+    <button class="btn pref-btn" id="btn-lang" onclick="PREFS.lang()" title="Язык интерфейса: русский / English">EN</button>
     <button class="btn" id="btn-edit" onclick="JOS.toggleEdit()">✏️ Править</button>
     <button class="btn" onclick="JOS.exportEdits()">⬇ Экспорт</button>
     <button class="btn" onclick="JOS.resetEdits()">↺ Сброс</button>
