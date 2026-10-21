@@ -20,3 +20,6 @@ data/
 scripts/
 # advisors' run output (pages + logs) — local only
 agents/advisors/out/
+
+# advisor/client prompts hold W2W finance + names: never public (audit 2026-10-21)
+agents/**/*.md
