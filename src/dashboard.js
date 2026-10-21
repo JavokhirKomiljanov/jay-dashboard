@@ -95,7 +95,7 @@ function dashActions(){
   if(typeof finOpen === 'function' && F && F.rows){ const open = F.rows.filter(r => r.status === 'Not paid' || r.status === 'In progress').length; if(open) add(0, '💰', 'Открытые расходы W2W', money(finOpen()), open + ' записей Not paid / In progress', 'finance'); }
   return A.sort((a, b) => b.sev - a.sev);
 }
-function dashBadge(){ const el = document.getElementById('cnt-today'); if(!el) return; const A = dashActions(), hot = A.filter(a => a.sev === 2).length, n = A.filter(a => a.sev > 0).length;
+function dashBadge(){ const el = document.getElementById('cnt-today'); if(!el) return; const A = dashActions(), asks = typeof askPending === 'function' ? askPending().length : 0, hot = A.filter(a => a.sev === 2).length + asks, n = A.filter(a => a.sev > 0).length + asks;
   el.textContent = n || ''; el.style.cssText = hot ? 'background:#fff0eb;border-color:#ffc4b0;color:var(--coral-dark)' : n ? 'background:#fff6e6;border-color:#ffd58a;color:#b36b00' : ''; }
 
 /* tiles */
@@ -146,6 +146,7 @@ function renderDashboard(){
     <h2 class="h2">Фокус: ${E_('today.focus', '<span class="hl">W2W</span> — агенты, Company Brain, сбор денег')}</h2></div>
     <div class="src">${srcAt}<br>облако: календарь ${CD && CD.at ? hmTxt(CD.at) : '—'} · обучение ${typeof LD !== 'undefined' && LD.synced ? hmTxt(LD.synced) : '—'} · финансы ${typeof M !== 'undefined' && M.synced ? hmTxt(M.synced) : '—'}</div></div>
 
+  ${typeof askBlock === 'function' ? askBlock() : ''}
   <div class="sect-h"><h3>Нужно от тебя</h3><span class="tag">${A.filter(a => a.sev > 0).length ? A.filter(a => a.sev === 2).length + ' срочных · ' + A.filter(a => a.sev === 1).length + ' в работу' : 'ничего не горит'}</span></div>
   <div class="dash-act">${A.length ? A.map(a => `<a class="${a.sev === 2 ? 'hot' : a.sev === 1 ? 'warn' : ''}" ${go(a.tab)}><span class="ic">${a.ic}</span><span class="t">${a.text}${a.sub ? `<small>${a.sub}</small>` : ''}</span>${a.n !== '' && a.n != null ? `<span class="n">${a.n}</span>` : ''}<span class="go">→</span></a>`).join('') : '<div class="ok">✓ Всё чисто — очередей нет, просрочек нет.</div>'}</div>
 
@@ -173,6 +174,7 @@ function renderDashboard(){
     <a class="card white" ${go('brain')}><h4>🧠 Company Brain →</h4><p class="small">${BR.totals.clients} клиентов · демо-вопросы · что продаём</p></a>
     <a class="card white" href="${esc(L.archive_page)}" target="_blank"><h4>🗄 Архив ↗</h4><p class="small">Home Alliance, Venture Studios, Apollo/US, отчёты, ROI</p></a>
   </div>`;
+  if(typeof askBind === 'function') askBind(document.getElementById('ask-dash'));
   bindTasks(); document.querySelectorAll('#v-today [data-done]').forEach(cb => cb.addEventListener('change', dashBadge));
   dashBadge(); JOS.applyEdit();
 }
