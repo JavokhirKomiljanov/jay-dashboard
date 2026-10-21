@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<title>Jay OS — Безопасность</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/*__CSS__*/
+body{background:var(--bg)}
+body.embedded .wrap{padding:0}
+body.embedded .ptop h1{display:none}
+.ptop{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 18px}
+.ptop h1{font-size:20px;font-weight:800}
+.ptop .sp{flex:1}
+.subtabs{display:flex;gap:6px;margin:0 0 18px;border-bottom:1px solid var(--line);padding-bottom:10px;flex-wrap:wrap}
+.subtabs button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font:600 13px var(--text);color:var(--body);cursor:pointer}
+.subtabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.pane{display:none}.pane.on{display:block}
+.score{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin:0 0 16px}
+.score .big{font:800 44px/1 var(--head);letter-spacing:-1px}
+.score .big.ok{color:var(--mint-dark)}.score .big.warn{color:#b36b00}.score .big.bad{color:var(--coral-dark)}
+.f{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;margin:0 0 8px}
+.f.crit{border-color:#ffc4b0;background:#fff7f4}.f.warn{border-color:#ffd58a;background:#fffbf2}.f.info{border-style:dashed}
+.f .ic{font-size:18px;line-height:1.2}
+.f .t{font-weight:700;font-size:13.5px}
+.f .y{font-size:12px;color:var(--muted);margin-top:2px}
+.f .x{font-family:var(--mono);font-size:11.5px;margin-top:5px;background:var(--bg);padding:4px 8px;border-radius:6px;display:inline-block;cursor:pointer}
+.f .x:hover{background:var(--mint-tint)}
+.kv{font-size:12.5px;line-height:1.7}
+.kv b{font-weight:600}
+.kv code{font-family:var(--mono);font-size:11.5px;background:var(--bg);padding:1px 5px;border-radius:5px}
+.ok{color:var(--mint-dark)}.bad{color:var(--coral-dark);font-weight:700}
+.step{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.step input{margin-top:3px}
+.step.done{opacity:.55;text-decoration:line-through}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+td,th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:8px 14px;border-radius:10px;font-size:12.5px;opacity:0;transition:.2s;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="ptop">
+    <h1>🛡 Безопасность</h1>
+    <span class="pill grey" id="built"></span>
+    <span class="sp"></span>
+    <button class="btn sm" onclick="resetAll()">↺ Сброс галочек</button>
+  </div>
+  <div class="subtabs" id="tabs">
+    <button data-p="find" class="on">Находки</button>
+    <button data-p="steps">Шаги Jay</button>
+    <button data-p="gh">GitHub</button>
+    <button data-p="mail">Почта</button>
+    <button data-p="pc">🖥 PC</button>
+    <button data-p="laptop">💻 LAPTOP</button>
+    <button data-p="how">Как это работает</button>
+  </div>
+  <section class="pane on" id="p-find"></section>
+  <section class="pane" id="p-steps"></section>
+  <section class="pane" id="p-gh"></section>
+  <section class="pane" id="p-mail"></section>
+  <section class="pane" id="p-pc"></section>
+  <section class="pane" id="p-laptop"></section>
+  <section class="pane" id="p-how"></section>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const D = /*__DATA__*/{};
+if (window.self !== window.top) document.body.classList.add('embedded');
+const KEY = 'jos7-security';
+let S = {}; try { S = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+S.ck = S.ck || {};
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function toast(t){ const el = document.getElementById('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('on'), 1800); }
+function copyText(t){ (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast('Скопировано'), () => { const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); toast('Скопировано'); } catch (e) {} ta.remove(); }); }
+const SEV = {crit: '🔴', warn: '🟡', info: 'ℹ️'};
+const C = D.counts || {crit: 0, warn: 0, info: 0};
+document.getElementById('built').textContent = 'проверено ' + (D.ts || '') + (D.baseline_ts ? ' · база ' + D.baseline_ts.slice(0, 10) : ' · базы ещё нет');
+
+function renderFind(){
+  const cls = D.score >= 90 ? 'ok' : D.score >= 60 ? 'warn' : 'bad';
+  let h = `<div class="score"><div class="big ${cls}">${D.score}<span style="font-size:18px;color:var(--muted)">/100</span></div>
+    <div class="kv">🔴 критичных <b>${C.crit}</b> · 🟡 предупреждений <b>${C.warn}</b> · ℹ️ к сведению <b>${C.info}</b><br>
+    <span class="muted">Проверка идёт без токенов: скрипт сравнивает машины, GitHub и почту с базой. Всё новое = находка, пока ты не скажешь «ок».</span></div></div>`;
+  if (!(D.findings || []).length) h += `<div class="card mint"><h4>✅ Чисто</h4><p>Ни одного отклонения от базы.</p></div>`;
+  for (const f of D.findings || []) {
+    h += `<div class="f ${f.sev}"><div class="ic">${SEV[f.sev]}</div><div style="min-width:0"><div class="t">${esc(f.where)} — ${esc(f.what)}</div>` +
+         (f.why ? `<div class="y">${esc(f.why)}</div>` : '') + (f.fix ? `<div class="x" title="скопировать" onclick="copyText(${JSON.stringify(f.fix)})">→ ${esc(f.fix)}</div>` : '') + `</div></div>`;
+  }
+  h += `<p class="small muted" style="margin-top:14px">Принять текущее состояние за норму (после того как посмотрел): 💻 LAPTOP, терминал в <code>C:\\Users\\user\\Dev\\jay-dashboard</code>: <code class="x" onclick="copyText('python scripts/security_check.py --baseline --publish')">python scripts/security_check.py --baseline --publish</code></p>`;
+  document.getElementById('p-find').innerHTML = h;
+}
+function renderSteps(){
+  let h = `<div class="card white"><h4>Только ты можешь это сделать</h4><p class="small muted">Галочки хранятся в этом браузере. Что проверяется автоматически — отмечается само.</p>`;
+  for (const s of D.steps || []) {
+    const done = s.done || S.ck['st:' + s.id];
+    h += `<label class="step ${done ? 'done' : ''}"><input type="checkbox" ${done ? 'checked' : ''} ${s.done ? 'disabled' : ''} onchange="tick('st:${s.id}', this)"><span>${esc(s.text).replace(/`([^`]+)`/g, '<code>$1</code>')}</span></label>`;
+  }
+  document.getElementById('p-steps').innerHTML = h + '</div>';
+}
+function renderGh(){
+  const g = D.github || {};
+  const tf = g.twofa === true ? '<span class="ok">включена</span>' : g.twofa === false ? '<span class="bad">ВЫКЛЮЧЕНА</span>' : '<span class="muted">не видно (нет scope read:user)</span>';
+  let h = `<div class="card white kv"><b>Аккаунт</b> ${esc(D.github && 'JavokhirKomiljanov')} · репозиториев <b>${(g.repos || []).length}</b> · 2FA: ${tf}<br>
+    <b>Публичные (намеренно):</b> ${(g.public || []).map(esc).join(', ') || '—'}<br>
+    <b>Личные SSH-ключи:</b> ${g.user_keys ? g.user_keys.map(k => esc(k.title) + ' (' + (k.created || '').slice(0, 10) + ')').join(', ') || 'нет' : '<span class="muted">не видно (scope admin:public_key)</span>'}</div>`;
+  h += `<div class="card white" style="margin-top:12px"><h4>Deploy keys (${(g.deploy_keys || []).length}) — ключи сервера для ночного бэкапа кода</h4><table><tr><th>репо</th><th>ключ</th><th>права</th><th>создан</th></tr>` +
+       (g.deploy_keys || []).map(k => `<tr><td>${esc(k.repo)}</td><td>${esc(k.title)}</td><td>${k.read_only ? 'read' : 'read+write'}</td><td>${esc(k.created)}</td></tr>`).join('') + '</table></div>';
+  document.getElementById('p-gh').innerHTML = h;
+}
+function renderMail(){
+  const m = D.gmail || {};
+  let h;
+  if (!m.wired) h = `<div class="card soft"><h4>Почта ещё не подключена</h4><p>Нужен один редеплой Apps Script «JOS Tasks» (шаг в «Шаги Jay»). После него скрипт читает письма от GitHub / Google / Meta / Telegram за 3 дня и сверяет каждый «new public key» с нашими deploy keys. Ключ — не нужен: мост работает под твоим Google-аккаунтом, как и задачи.</p></div>`;
+  else if (!(m.mails || []).length) h = `<div class="card mint"><h4>✅ За 3 дня писем о безопасности нет</h4></div>`;
+  else h = `<div class="card white"><table><tr><th>когда</th><th>от кого</th><th>тема</th><th>вердикт</th></tr>` + m.mails.map(x => `<tr><td class="nw">${esc(x.date)}</td><td>${esc((x.from || '').split('<').pop().replace('>', ''))}</td><td>${esc(x.subject)}</td><td>${x.ok ? '✅ ' : x.kind === 'other' ? '· ' : '⚠️ '}${esc(x.note)}</td></tr>`).join('') + '</table></div>';
+  document.getElementById('p-mail').innerHTML = h;
+}
+function renderMachine(w, id){
+  const p = (D.machines || {})[w];
+  const s = (D.secrets || {})[w];
+  const box = document.getElementById(id);
+  if (!p) { box.innerHTML = `<div class="card soft"><h4>Проба не удалась</h4><p>Смотри находки.</p></div>`; return; }
+  const yn = (v, good) => v === good ? `<span class="ok">${v === true ? 'да' : v === false ? 'нет' : esc(v)}</span>` : `<span class="bad">${v === true ? 'ДА' : v === false ? 'НЕТ' : esc(v)}</span>`;
+  let h = `<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
+    <div class="card white kv"><h4>${esc(p.host)}</h4>
+      RDP выключен: ${yn(!!p.rdp_denied, true)} · Файрвол: ${(p.fw || []).map(f => f.endsWith('True') ? `<span class="ok">${esc(f.split('=')[0])}</span>` : `<span class="bad">${esc(f)}</span>`).join(' ')}<br>
+      Defender: ${yn(!!p.av, true)} · реальное время: ${yn(!!p.rt, true)} · сигнатуры ${p.sig_age} дн.<br>
+      ${w === 'laptop' ? 'BitLocker C:: ' + yn(p.bitlocker === 'On' || p.bitlocker === '1' ? 'On' : p.bitlocker, 'On') + '<br>' : ''}
+      Обновления Windows в очереди: <b>${p.updates}</b> · AnyDesk: ${esc(p.anydesk || '—')}<br>
+      sshd: ${esc(p.sshd || '—')} · ${(p.sshd_cfg || []).map(esc).join(' · ') || '—'} · ключей доступа: <b>${(p.authkeys || []).length}</b></div>
+    <div class="card white kv"><h4>Слушающие порты (наружу)</h4>${(p.ports || []).map(esc).join('<br>') || '—'}</div>
+    <div class="card white kv"><h4>Пользователи</h4>${(p.users || []).map(esc).join(', ')}<br><b>Админы:</b> ${(p.admins || []).map(esc).join(', ')}<br><br><b>Автозапуск (Run):</b> ${(p.run || []).map(esc).join(', ') || '—'}</div>
+    <div class="card white kv"><h4>Входы за 3 дня</h4><b>Неудачные (4625):</b><br>${(p.fail || []).map(esc).join('<br>') || 'нет'}<br><b>Сетевые успешные:</b><br>${(p.netlogon || []).map(esc).join('<br>') || 'нет'}<br><b>sshd отказы:</b><br>${(p.sshfail || []).map(esc).join('<br>') || 'нет'}</div>
+    <div class="card white kv"><h4>Секреты в git-файлах</h4>${s ? `репозиториев ${s.repos} · утечек <b class="${s.hits.length ? 'bad' : 'ok'}">${s.hits.length}</b>` + (s.hits.length ? '<br>' + s.hits.map(x => esc(x.join(' / '))).join('<br>') : '') : 'скан не удался'}</div>
+    <div class="card white kv"><h4>Задачи планировщика (${(p.tasks || []).length})</h4><span class="small">${(p.tasks || []).map(esc).join(' · ')}</span></div>
+  </div>`;
+  box.innerHTML = h;
+}
+function renderHow(){
+  document.getElementById('p-how').innerHTML = `<div class="card white kv">
+  <h4>Что это</h4><p>Детерминированный сторож (<code>jay-dashboard/scripts/security_check.py</code>): ноль токенов, ничего не чинит сам. 💻 LAPTOP, задача <code>\\JOS\\security-check</code> — ежедневно 09:00 и через 5 мин после входа.</p>
+  <p><b>Смотрит:</b> GitHub (приватность репо, deploy keys, личные ключи, 2FA) · почту (письма о безопасности от GitHub/Google/Meta/Telegram, через мост Apps Script) · 🖥 PC и 💻 LAPTOP (порты, пользователи, админы, RDP, файрвол, Defender, sshd, ключи доступа, неудачные входы, автозапуск, задачи) · секреты в git-файлах всех репо.</p>
+  <p><b>Логика:</b> есть база (<code>data/jos/security-baseline.json</code>). Всё, чего в базе нет — находка. Посмотрел, всё твоё → <code>--baseline</code>. Telegram-сообщение приходит только когда набор находок изменился (и раз в неделю по понедельникам).</p>
+  <p><b>Что НЕ делает:</b> не хранит и не просит твои ключи и пароли. Не трогает чужие сессии. Не чинит — только показывает команду, которую ты запускаешь сам.</p>
+  <p><b>Obsidian:</b> <code>Jay/Library/Reference/Безопасность.md</code> · <b>Рецепт:</b> jay-recipes/18-security-watchdog.md</p>
+  <p class="small muted">Лог последнего запуска:<br>${(D.log || []).map(esc).join('<br>')}</p></div>`;
+}
+function tick(k, el){ if (el.checked) S.ck[k] = new Date().toISOString(); else delete S.ck[k]; el.parentElement.classList.toggle('done', el.checked); save(); }
+function resetAll(){ if (!confirm('Сбросить галочки на этой вкладке в этом браузере?')) return; try { localStorage.removeItem(KEY); } catch (e) {} location.reload(); }
+function tab(p){ S.tab = p; save(); document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.p === p)); document.querySelectorAll('.pane').forEach(x => x.classList.toggle('on', x.id === 'p-' + p)); post(); }
+document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => tab(b.dataset.p));
+function post(){ try { parent.postMessage({jos: 'h', page: 'security', h: document.documentElement.scrollHeight}, '*'); } catch (e) {} }
+renderFind(); renderSteps(); renderGh(); renderMail(); renderMachine('server', 'p-pc'); renderMachine('laptop', 'p-laptop'); renderHow();
+if (S.tab) tab(S.tab);
+window.addEventListener('load', post); setTimeout(post, 400);
+</script>
+</body>
+</html>
