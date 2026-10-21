@@ -1,0 +1,5 @@
+# GitHub Pages: private prompts and sources are not served (audit 2026-10-21)
+exclude:
+  - agents
+  - src
+  - README.md
