@@ -20,6 +20,11 @@ document.head.insertAdjacentHTML('beforeend', `<style>
 .ask-c .res{font-size:13px;margin-top:4px}.ask-err{color:var(--coral-dark);font-size:12px;margin:4px 0 0}
 .ask-h{width:100%;border-collapse:collapse;font-size:12.5px}.ask-h td,.ask-h th{border-bottom:1px solid var(--line);padding:7px 6px;text-align:left;vertical-align:top}
 .ask-h th{font-size:11px;color:var(--muted);font-weight:600}
+html[data-theme=dark] .ask-c{background:#17191c;border-color:#5a2a1e}html[data-theme=dark] .ask-c.done{border-color:var(--line)}
+html[data-theme=dark] .ask-c .bt button{background:#22262a;color:#e8eaed;border-color:#3a3f45}
+html[data-theme=dark] .ask-c .bt button.y{background:#07e7b7;color:#04261d;border-color:#07e7b7}
+html[data-theme=dark] .ask-c .bt button.n{background:#3a1d17;color:#ffb39e;border-color:#6b3326}
+html[data-theme=dark] .ask-c .rep textarea{background:#111416;color:#e8eaed;border-color:#3a3f45}
 </style>`);
 const ASYNC = D.asksync && D.asksync.url ? D.asksync : null, AKEY = 'jos7-ask';
 const ASK_KINDS = {money: '💰 деньги', people: '👥 люди', family: '🏠 семья', send: '📤 отправка наружу', irreversible: '⚠️ необратимо', access: '🔑 доступы', other: '✋ решение'};
