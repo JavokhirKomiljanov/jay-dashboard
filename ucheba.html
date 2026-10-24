@@ -9,7 +9,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <!-- Student page of Jay's mentoring platform (JOS «🎓 Обучение»). Public file, holds NO data: everything is
-     loaded with the student's own key from the URL (#k=…) via the JOS bridge ops learn-student / learn-submit. -->
+     loaded with the student's own key from the URL (#k=…) via the JOS bridge ops learn-student / learn-submit.
+     2026-10-24: or from login+password — key = sha256(login:password), so the bridge needs no change; remembered on the device.
+     A task with kind 'card' is the student's own «📇 Карточка»: shown as a form, every save = a new version Jay sees in JOS. -->
 <style>
 :root{--ink:#131313;--body:#4f5153;--muted:#8a8a8a;--mint:#07e7b7;--mint-dark:#05a884;--mint-tint:#eefcf8;--mint-light:#74dfc8;--coral:#e8623c;--gold:#b36b00;
   --bg:#fff;--card:#f6f7f8;--line:#e6e8ea;--line-2:#d9dcdf;--r:16px}
@@ -48,6 +50,9 @@ textarea{min-height:170px;resize:vertical}textarea:focus,input:focus{outline:non
 .msg{font-size:13px}.msg.err{color:var(--coral)}.msg.ok{color:var(--mint-dark)}
 details summary{cursor:pointer;color:var(--ink);font-weight:600;font-size:13.5px}
 .empty{text-align:center;padding:60px 10px}
+.login{max-width:380px;margin:50px auto}.login .card{padding:20px}.login h2{font-size:19px;margin-bottom:4px}
+.cardf{display:grid;gap:10px}.cardf label{font-size:12.5px;color:var(--muted);display:block;margin-bottom:3px}.cardf textarea{min-height:64px}
+.out{border:0;background:none;color:var(--muted);font:12px 'Inter';cursor:pointer;text-decoration:underline}
 .foot{margin-top:36px;font-size:12px;color:var(--muted);text-align:center}
 </style>
 </head>
@@ -63,7 +68,10 @@ const T = {
     sending:'Отправляю…', sentok:'Отправлено! Наставник получил вашу работу.', empty:'Вставьте текст или ссылку.', badlink:'Ссылка должна начинаться с https://',
     nolink:'Ссылка недействительна', nolink2:'Попросите у наставника новую ссылку на вашу страницу.', neterr:'Нет связи. Текст сохранён на этом устройстве — попробуйте ещё раз.',
     rubric:'Как проверяется ТЗ', rubric2:'Каждый пункт 0 / 1 / 2. Принято, если', from:'из', must:'и нет нуля по пунктам', materials:'материалы',
-    notasks:'Заданий пока нет.', nolessons:'Программа ещё готовится.', total:'Итого', draft:'черновик сохранён на этом устройстве', mat:'Материалы урока', result:'Результат урока'},
+    notasks:'Заданий пока нет.', nolessons:'Программа ещё готовится.', total:'Итого', draft:'черновик сохранён на этом устройстве', mat:'Материалы урока', result:'Результат урока',
+    login:'Вход', user:'Логин', pass:'Пароль', enter:'Войти', badpass:'Неверный логин или пароль', logout:'Выйти',
+    card:'Моя карточка', cardhint:'Заполняйте и дополняйте — наставник видит каждое сохранение.', save:'Сохранить карточку', saved:'Карточка сохранена',
+    cf:{biz:'Чем занимаетесь (бизнес)', objects:'Объекты / ЖК, которые продаёте', audience:'Ваша аудитория и клиенты', ig:'Instagram / Telegram', goal:'Цель обучения', ai:'Какие задачи хотите отдать ИИ', other:'Другое'}},
   uz: {mentor:'Ustoz', title:"O'qish", hi:'Assalomu alaykum', prog:'Dastur', progress:"o'tildi", lessons:'dars', tasks:'Topshiriqlar', next:'Keyingi qadam',
     st:{todo:'oldinda', now:'jarayonda', done:"o'tildi", skip:"o'tkazildi"}, ts:{open:'berildi', sub:'tekshiruvda', rework:'qayta ishlash kerak', done:'qabul qilindi'},
     due:'muddat', tz:'TZ', hw:'Topshiriq', ver:'Versiya', sent:'yuborildi', review:'Tekshiruv', ok:'Qabul qilindi', re:'Qayta ishlash kerak', waiting:"Ustoz tekshiradi — fikr shu yerda chiqadi.",
@@ -71,39 +79,74 @@ const T = {
     sending:'Yuborilmoqda…', sentok:'Yuborildi! Ustoz ishingizni oldi.', empty:"Matn yoki havola qo'ying.", badlink:'Havola https:// bilan boshlanishi kerak',
     nolink:'Havola yaroqsiz', nolink2:"Ustozdan sahifangiz uchun yangi havola so'rang.", neterr:"Aloqa yo'q. Matn shu qurilmada saqlandi — yana urinib ko'ring.",
     rubric:'TZ qanday tekshiriladi', rubric2:'Har bir band 0 / 1 / 2. Qabul qilinadi, agar', from:'dan', must:"va quyidagi bandlarda 0 bo'lmasa", materials:'materiallar',
-    notasks:"Hozircha topshiriq yo'q.", nolessons:'Dastur tayyorlanmoqda.', total:'Jami', draft:'qoralama shu qurilmada saqlandi', mat:'Dars materiallari', result:'Dars natijasi'}
+    notasks:"Hozircha topshiriq yo'q.", nolessons:'Dastur tayyorlanmoqda.', total:'Jami', draft:'qoralama shu qurilmada saqlandi', mat:'Dars materiallari', result:'Dars natijasi',
+    login:'Kirish', user:'Login', pass:'Parol', enter:'Kirish', badpass:"Login yoki parol noto'g'ri", logout:'Chiqish',
+    card:'Mening kartam', cardhint:"To'ldiring va to'ldirib boring — ustoz har bir saqlashni ko'radi.", save:'Kartani saqlash', saved:'Karta saqlandi',
+    cf:{biz:"Nima bilan shug'ullanasiz (biznes)", objects:'Sotayotgan obyektlar / TJM', audience:'Auditoriyangiz va mijozlar', ig:'Instagram / Telegram', goal:"O'qishdan maqsad", ai:'AIga qaysi vazifalarni bermoqchisiz', other:'Boshqa'}}
 };
-const key = (new URLSearchParams(location.hash.slice(1))).get('k') || '';
+const ls = {get(k){ try{ return localStorage.getItem(k) || ''; }catch(e){ return ''; } }, set(k, v){ try{ v ? localStorage.setItem(k, v) : localStorage.removeItem(k); }catch(e){} }};
+let key = (new URLSearchParams(location.hash.slice(1))).get('k') || ls.get('ucheba-key');
+const CF = ['biz', 'objects', 'audience', 'ig', 'goal', 'ai', 'other'];
 let S = null, lang = null;
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const dt = s => s ? String(s).slice(0, 10).split('-').reverse().join('.') : '';
 const L = () => T[lang] || T.ru;
 const safeUrl = u => /^https?:\/\//i.test(u || '') ? u : '';
 const draftKey = id => 'ucheba-draft-' + id;
-const ls = {get(k){ try{ return localStorage.getItem(k) || ''; }catch(e){ return ''; } }, set(k, v){ try{ v ? localStorage.setItem(k, v) : localStorage.removeItem(k); }catch(e){} }};
 async function api(body){ const r = await fetch(CFG.url, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(Object.assign({key, ns:'learn'}, body))}); return r.json(); }
 async function load(){
-  if(!key || !CFG.url) return fail();
-  try{ const r = await api({fin:'learn-student'}); if(!r.ok) return fail(); S = r; if(!lang) lang = ls.get('ucheba-lang') || S.student.lang || 'ru'; render(); }
+  if(!CFG.url) return fail();
+  if(!key) return loginForm();
+  try{ const r = await api({fin:'learn-student'}); if(!r.ok){ if(ls.get('ucheba-key') === key){ ls.set('ucheba-key', ''); key = ''; return loginForm(); } return fail(); } S = r; if(!lang) lang = ls.get('ucheba-lang') || S.student.lang || 'ru'; render(); }
   catch(e){ document.getElementById('app').innerHTML = `<div class="empty"><h2>⚠</h2><p>${esc(T.ru.neterr)}</p></div>`; }
 }
 function fail(){ const t = L(); document.getElementById('app').innerHTML = `<div class="empty"><h2>🔒 ${esc(t.nolink)}</h2><p class="muted">${esc(t.nolink2)}</p></div>`; }
-function setLang(l){ lang = l; ls.set('ucheba-lang', l); render(); }
+function setLang(l){ lang = l; ls.set('ucheba-lang', l); S ? render() : loginForm(); }
+async function sha(t){ const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
+function loginForm(err){ lang = lang || ls.get('ucheba-lang') || 'ru'; const t = L();
+  document.getElementById('app').innerHTML = `<div class="login"><div class="top"><div class="logo">J</div><div class="who">${esc(t.mentor)}<b>Javokhir Komiljonov</b></div><span class="sp"></span>
+    <div class="lang"><button class="${lang === 'ru' ? 'on' : ''}" onclick="setLang('ru')">RU</button> <button class="${lang === 'uz' ? 'on' : ''}" onclick="setLang('uz')">UZ</button></div></div>
+    <form class="card form" onsubmit="doLogin(event)"><h2>🎓 ${esc(t.title)} · ${esc(t.login)}</h2>
+    <input id="lg-u" placeholder="${esc(t.user)}" autocomplete="username" autocapitalize="none" required><input id="lg-p" type="password" placeholder="${esc(t.pass)}" autocomplete="current-password" required>
+    <button class="btn" id="lg-b">${esc(t.enter)}</button><div class="msg err" id="lg-m">${err ? esc(err) : ''}</div></form></div>`; }
+async function doLogin(e){ e.preventDefault(); const t = L(), b = document.getElementById('lg-b'); b.disabled = true; b.textContent = '…';
+  const k = await sha(document.getElementById('lg-u').value.trim().toLowerCase() + ':' + document.getElementById('lg-p').value);
+  try{ const r = await api({key: k, fin:'learn-student'}); if(!r.ok) return loginForm(t.badpass);
+    key = k; ls.set('ucheba-key', k); S = r; lang = ls.get('ucheba-lang') || S.student.lang || 'ru'; render(); }
+  catch(x){ loginForm(t.neterr); } }
+function logout(){ ls.set('ucheba-key', ''); key = ''; S = null; if(location.hash) history.replaceState(null, '', location.pathname); loginForm(); }
+const cardTask = () => (S.tasks || []).find(k => k.kind === 'card');
+function cardVals(){ const st = S.student, k = cardTask(), v = {biz: st.biz || '', goal: st.goal || ''};
+  const last = k && (S.subs || []).filter(s => s.tid === k.id).sort((a, b) => (b.v || 0) - (a.v || 0))[0];
+  if(last) try{ Object.assign(v, JSON.parse(String(last.text).split('\n---\n')[1] || '{}')); }catch(e){}
+  return v; }
+function cardView(){ const t = L(), k = cardTask(); if(!k) return ''; const v = cardVals();
+  return `<div class="sec"><h2>📇 ${esc(t.card)}</h2></div><div class="card"><p class="small muted" style="margin-top:0">${esc(k.brief || t.cardhint)}</p><div class="cardf">
+    ${CF.map(f => `<div><label for="cf-${f}">${esc(t.cf[f])}</label><textarea id="cf-${f}" style="min-height:${f === 'ig' ? 44 : 64}px">${esc(v[f] || '')}</textarea></div>`).join('')}</div>
+    <div class="form"><button class="btn" id="cf-b" onclick="saveCard()">${esc(t.save)}</button><div class="msg" id="cf-m"></div></div></div>`; }
+async function saveCard(){ const t = L(), k = cardTask(), b = document.getElementById('cf-b'), m = document.getElementById('cf-m'), v = {};
+  CF.forEach(f => { v[f] = document.getElementById('cf-' + f).value.trim(); });
+  const text = CF.filter(f => v[f]).map(f => T.ru.cf[f] + ': ' + v[f]).join('\n\n') + '\n---\n' + JSON.stringify(v);  // readable for Jay + JSON for the form
+  b.disabled = true; m.className = 'msg muted'; m.textContent = t.sending;
+  try{ const r = await api({fin:'learn-submit', tid:k.id, text, link:''}); if(!r.ok) throw new Error(r.error);
+    await load(); const m2 = document.getElementById('cf-m'); if(m2){ m2.className = 'msg ok'; m2.textContent = t.saved; } }
+  catch(e){ b.disabled = false; m.className = 'msg err'; m.textContent = (e.message && e.message !== 'Failed to fetch' ? e.message + ' — ' : '') + t.neterr; } }
 function render(){
   const t = L(), st = S.student, Ls = st.lessons || [], act = Ls.filter(l => l.status !== 'skip'), done = act.filter(l => l.status === 'done').length, pct = act.length ? Math.round(100 * done / act.length) : 0;
   const ic = {todo:'⚪', now:'🟡', done:'✅', skip:'⏭'}, next = (S.sessions || []).filter(x => x.next).sort((a, b) => String(b.date).localeCompare(a.date))[0];
-  const R = S.rubric || [], max = R.length * 2, crit = R.filter(c => c.crit).map(c => c.name);
+  const TK = (S.tasks || []).filter(k => k.kind !== 'card'), R = S.rubric || [], max = R.length * 2, crit = R.filter(c => c.crit).map(c => c.name);
   document.documentElement.lang = lang;
   document.getElementById('app').innerHTML = `
   <div class="top"><div class="logo">J</div><div class="who">${esc(t.mentor)}<b>Javokhir Komiljonov</b></div><span class="sp"></span>
-    <div class="lang"><button class="${lang === 'ru' ? 'on' : ''}" onclick="setLang('ru')">RU</button> <button class="${lang === 'uz' ? 'on' : ''}" onclick="setLang('uz')">UZ</button></div></div>
+    <div class="lang"><button class="${lang === 'ru' ? 'on' : ''}" onclick="setLang('ru')">RU</button> <button class="${lang === 'uz' ? 'on' : ''}" onclick="setLang('uz')">UZ</button></div>${ls.get('ucheba-key') === key ? ` <button class="out" onclick="logout()">${esc(t.logout)}</button>` : ''}</div>
   <div class="hero"><p class="small muted" style="margin:0">${esc(t.title)}</p><h1>${esc(t.hi)}, ${esc(st.name)}!</h1>
     ${st.program ? `<p><b>${esc(t.prog)}:</b> ${esc(st.program)}</p>` : ''}
     ${act.length && st.program ? `<div class="bar"><i style="width:${pct}%"></i></div><p class="small" style="margin:0"><b>${pct}%</b> ${esc(t.progress)} · ${done}/${act.length} ${esc(t.lessons)}</p>`
       : act.length ? `<p class="small" style="margin:10px 0 0">${esc(t.lessons[0].toUpperCase() + t.lessons.slice(1))} ${esc(t.progress)}: <b>${done}</b></p>` : ''}
     ${next ? `<p class="small" style="margin-top:10px"><b>${esc(t.next)} (${dt(next.date)}):</b> ${esc(next.next)}</p>` : ''}</div>
-  <div class="sec"><h2>${esc(t.tasks)}</h2><span>${(S.tasks || []).length}</span></div>
-  ${(S.tasks || []).length ? S.tasks.map(task).join('') : `<p class="muted">${esc(t.notasks)}</p>`}
+  ${cardView()}
+  <div class="sec"><h2>${esc(t.tasks)}</h2><span>${TK.length}</span></div>
+  ${TK.length ? TK.map(task).join('') : `<p class="muted">${esc(t.notasks)}</p>`}
   <div class="sec"><h2>${esc(t.prog)}</h2><span>${act.length ? done + '/' + act.length : ''}</span></div>
   <div class="card">${Ls.length ? Ls.map(l => `<div class="lesson"><span class="ic">${ic[l.status] || '⚪'}</span><div><b>${esc(l.n)}. ${esc(l.title)}</b> <span class="pill ${l.status === 'done' ? 'ok' : l.status === 'now' ? 'wait' : ''}">${esc(t.st[l.status] || l.status)}</span>${l.date && l.status === 'done' ? ` <span class="small muted">${dt(l.date)}</span>` : ''}
       ${l.goal ? `<div class="small">${esc(l.goal)}</div>` : ''}${l.result ? `<div class="small muted">${esc(t.result)}: ${esc(l.result)}</div>` : ''}${safeUrl(l.link) ? `<div class="small"><a href="${esc(l.link)}" target="_blank" rel="noopener">📎 ${esc(t.mat)}</a></div>` : ''}</div></div>`).join('') : `<p class="muted">${esc(t.nolessons)}</p>`}</div>
@@ -135,7 +178,7 @@ async function submitTask(id){
     ls.set(draftKey(id), ''); await load(); const m2 = document.getElementById('m-' + id); if(m2){ m2.className = 'msg ok'; m2.textContent = t.sentok; } else alert(t.sentok); }
   catch(e){ b.disabled = false; m.className = 'msg err'; m.textContent = (e.message && e.message !== 'Failed to fetch' ? e.message + ' — ' : '') + t.neterr; }
 }
-window.addEventListener('hashchange', () => location.reload());
+window.addEventListener('hashchange', () => { if(location.hash) location.reload(); });
 load();
 </script>
 </body>
