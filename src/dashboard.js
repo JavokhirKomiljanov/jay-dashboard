@@ -147,6 +147,7 @@ function renderDashboard(){
     <div class="src">${srcAt}<br>облако: календарь ${CD && CD.at ? hmTxt(CD.at) : '—'} · обучение ${typeof LD !== 'undefined' && LD.synced ? hmTxt(LD.synced) : '—'} · финансы ${typeof M !== 'undefined' && M.synced ? hmTxt(M.synced) : '—'}</div></div>
 
   ${typeof askBlock === 'function' ? askBlock() : ''}
+  ${(L.meeting_files || []).length ? `<div class="sect-h"><h3>📎 Файлы к встрече</h3><span class="tag">открываются с любого устройства</span></div><div class="chip-row" style="margin:0 0 16px">${L.meeting_files.map(f => `<a class="btn" href="${esc(f.u)}" target="_blank">${f.ic} ${esc(f.t)} ↗</a>`).join('')}</div>` : ''}
   <div class="sect-h"><h3>Нужно от тебя</h3><span class="tag">${A.filter(a => a.sev > 0).length ? A.filter(a => a.sev === 2).length + ' срочных · ' + A.filter(a => a.sev === 1).length + ' в работу' : 'ничего не горит'}</span></div>
   <div class="dash-act">${A.length ? A.map(a => `<a class="${a.sev === 2 ? 'hot' : a.sev === 1 ? 'warn' : ''}" ${go(a.tab)}><span class="ic">${a.ic}</span><span class="t">${a.text}${a.sub ? `<small>${a.sub}</small>` : ''}</span>${a.n !== '' && a.n != null ? `<span class="n">${a.n}</span>` : ''}<span class="go">→</span></a>`).join('') : '<div class="ok">✓ Всё чисто — очередей нет, просрочек нет.</div>'}</div>
 
