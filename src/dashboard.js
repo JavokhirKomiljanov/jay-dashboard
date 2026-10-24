@@ -163,7 +163,7 @@ function renderDashboard(){
   </div>
 
   <div class="sect"><div class="sect-h"><h3>Ближайшие дедлайны</h3><span class="tag">из решений и ворот стратегии</span></div>
-    <div class="dl">${dls.length ? dls.map(x => `<div class="d ${x.n <= 3 ? 'hot' : ''} ${x.n < 0 ? 'past' : ''}"><div class="when">${dateRu(x.date)} · ${esc(x.src)}</div><div class="days">${x.n < 0 ? 'просрочено' : x.n === 0 ? 'сегодня' : x.n + ' дн'}</div><div class="what">${esc(x.what.length > 90 ? x.what.slice(0, 88) + '…' : x.what)}</div></div>`).join('') : '<p class="small muted">Дедлайнов в ближайшее время нет.</p>'}</div></div>
+    <div class="dl">${dls.length ? dls.map(x => `<div class="d ${x.n <= 3 ? 'hot' : ''} ${x.n < 0 ? 'past' : ''}"><div class="when">${dateRu(x.date)} · ${esc(x.src)}</div><div class="days">${x.n < 0 ? 'просрочено' : x.n === 0 ? 'сегодня' : x.n + ' дн'}</div><div class="what">${esc(brief(x.what).t)}</div><div class="lt-s">${srcChips(x.ref)}</div></div>`).join('') : '<p class="small muted">Дедлайнов в ближайшее время нет.</p>'}</div></div>
 
   <div class="sect"><div class="sect-h"><h3>Ритм недели</h3><span class="tag">org.cadence · 20 ч/нед, 10 из них продажи</span></div>
     <div class="week">${week.map(w => `<div class="day ${w.i === dow ? 'today' : ''}"><h5>${w.n}</h5>${w.ev.map(e => `<div class="ev ${e.cls}">${esc(e.txt)}</div>`).join('')}</div>`).join('')}</div></div>

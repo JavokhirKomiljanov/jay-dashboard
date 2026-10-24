@@ -520,8 +520,8 @@ try { const t = localStorage.getItem('jos-theme') || 'dark'; /* Jay: dark by def
     <button class="btn pref-btn" id="btn-theme" onclick="PREFS.theme()" title="Тёмная / светлая тема">🌙</button>
     <button class="btn pref-btn" id="btn-lang" onclick="PREFS.lang()" title="Язык интерфейса: русский / English">EN</button>
     <button class="btn" id="btn-edit" onclick="JOS.toggleEdit()">✏️ Править</button>
-    <button class="btn" onclick="JOS.exportEdits()">⬇ Экспорт</button>
-    <button class="btn" onclick="JOS.resetEdits()">↺ Сброс</button>
+    <button class="btn x-tool" onclick="JOS.exportEdits()">⬇ Экспорт</button>
+    <button class="btn x-tool" onclick="JOS.resetEdits()">↺ Сброс</button>
   </div>
   <div class="editbar">Режим правки: кликни на любой текст с пунктиром и пиши. Галочки и правки живут в этом браузере (localStorage) и переживают пересборку страницы. «Экспорт» — JSON для переноса в data/jos.</div>
 
@@ -590,16 +590,18 @@ function allTasks(){
 }
 function deadlines(){
   const seen = new Set(), out = [];
-  const push = (date, what, src) => { const k = date+what.slice(0,40); if(seen.has(k)) return; seen.add(k); out.push({date, what, src, n: daysTo(date)}); };
-  (S.decisions.first_week||[]).forEach(d => push(d.deadline, `${d.no}: ${d.title}`, 'решение'));
-  (S.decisions.spine||[]).forEach(d => push(d.deadline, `№${d.no}: ${d.title}`, 'решение'));
-  (S.targets.gates||[]).forEach(g => push(g.date, `Ворота · ${g.kind}`, 'ворота'));
+  const push = (date, what, src, ref) => { const k = date+what.slice(0,40); if(seen.has(k)) return; seen.add(k); out.push({date, what, src, ref, n: daysTo(date)}); };
+  (S.decisions.first_week||[]).forEach(d => push(d.deadline, `${d.no}: ${d.title}`, 'решение', 'first_week '+d.no));
+  (S.decisions.spine||[]).forEach(d => push(d.deadline, `№${d.no}: ${d.title}`, 'решение', 'decisions_for_jay №'+d.no));
+  (S.targets.gates||[]).forEach((g,i) => push(g.date, `Ворота · ${g.kind}`, 'ворота', `targets.gates[${i}]`));
   return out.filter(x => x.n != null && x.n >= -3).sort((a,b)=>a.n-b.n);
 }
 function renderToday(){ renderDashboard(); }  // «🏠 Главная» lives in src/dashboard.js (inlined at the DASH marker)
 function taskRow(t){
   const n = daysTo(t.due); const cls = n==null?'':n<=0?'today':n<=3?'soon':'';
-  return `<label class="task ${E.done[t.id]?'done':''}"><input type="checkbox" data-done="${t.id}" ${E.done[t.id]?'checked':''}><div class="t">${E_('task.'+t.id, esc(t.text))}<div><span class="who">${t.emoji||''} ${esc(t.who||'')}</span> <span class="src">${esc(t.src||'')}</span></div></div><div class="d ${cls}">${dateRu(t.due)}${n!=null?'<br>'+dl(n):''}</div></label>`;
+  // 2026-10-24: short title + one line, full (editable) text on click, sources as links
+  const txt = E.text['task.'+t.id] != null ? ltStrip(E.text['task.'+t.id]) : t.text;
+  return `<div class="task ${E.done[t.id]?'done':''}" data-hk="task:${esc(t.id)}"><input type="checkbox" data-done="${t.id}" ${E.done[t.id]?'checked':''}><div class="t">${ltItem(txt, t.src, {full: E_('task.'+t.id, esc(t.text)), extra: t.who ? `<span class="who">${t.emoji||''} ${esc(t.who)}</span>` : ''})}</div><div class="d ${cls}">${dateRu(t.due)}${n!=null?'<br>'+dl(n):''}</div></div>`;
 }
 function bindTasks(){
   document.querySelectorAll('[data-done]').forEach(cb => cb.onchange = () => { E.done[cb.dataset.done] = cb.checked; if(!cb.checked) delete E.done[cb.dataset.done]; save(); cb.closest('.task').classList.toggle('done', cb.checked); const c=document.getElementById('cnt-today'); if(c) c.textContent = allTasks().filter(t=>!E.done[t.id]).length; });
@@ -636,7 +638,7 @@ function renderStrategy(){
   </div>
 
   <div class="sect"><div class="sect-h"><h3>Восемь ворот</h3><span class="tag">следующие: ${nextGate?dateRu(nextGate.date)+' · '+dl(daysTo(nextGate.date)):'—'}</span></div>
-    <div class="gates">${gates.map(g=>{const n=daysTo(g.date);return `<div class="gate ${n<0?'past':(g===nextGate?'next':'')}"><div class="dot"></div><div class="dt">${esc(g.date)}</div><div class="k">${esc(g.kind)}</div><div class="c">${esc(g.check).slice(0,120)}…</div></div>`;}).join('')}</div>
+    <div class="gates">${gates.map((g,i)=>{const n=daysTo(g.date);return `<div class="gate ${n<0?'past':(g===nextGate?'next':'')}"><div class="dot"></div><div class="dt">${esc(g.date)}</div><div class="k">${esc(g.kind)}</div><div class="c">${esc(brief(g.check).t)}</div><div class="lt-s">${srcChips('targets.gates['+i+']')}</div></div>`;}).join('')}</div>
   </div>
 
   <div class="grid g2 sect">
@@ -661,12 +663,12 @@ function renderStrategy(){
 
   <div class="grid g2 sect">
     <div class="card white"><div class="sect-h"><h3>Решения Jay</h3><span class="tag">сессия до ${esc(S.decisions.session.deadline)} · ${esc(S.decisions.session.format)}</span></div>
-      <ul class="clean">${S.decisions.spine.filter(d=>d.tier==='session').map(d=>`<li><b>№${d.no}</b> ${esc(d.title)} <span class="pill ${daysTo(d.deadline)<=7?'bad':'grey'}">${dateRu(d.deadline)}</span><div class="small muted">по умолчанию: ${esc(d.default)}</div></li>`).join('')}</ul>
-      <details><summary>Остальные ${S.decisions.spine.filter(d=>d.tier!=='session').length} решений (идут по умолчанию)</summary><div class="in"><ul class="clean small">${S.decisions.spine.filter(d=>d.tier!=='session').map(d=>`<li><b>№${d.no}</b> ${esc(d.title)} <span class="mono muted">${esc(d.deadline)}</span><div class="muted">${esc(d.default)}</div></li>`).join('')}</ul></div></details>
-      <details><summary>Первая неделя из планов (${S.decisions.first_week.length})</summary><div class="in"><ul class="clean small">${S.decisions.first_week.map(d=>`<li><b>${esc(d.no)}</b> ${esc(d.title)} <span class="mono muted">${esc(d.deadline)}</span></li>`).join('')}</ul></div></details>
+      <ul class="clean">${S.decisions.spine.filter(d=>d.tier==='session').map(d=>`<li data-hk="dec:${d.no}">${ltItem('№'+d.no+' '+d.title, 'decisions_for_jay №'+d.no, {extra:`<span class="pill ${daysTo(d.deadline)<=7?'bad':'grey'}">${dateRu(d.deadline)}</span>`, full: esc(d.title)+'<br><span class="muted">по умолчанию: '+esc(d.default)+'</span>'})}</li>`).join('')}</ul>
+      <details><summary>Остальные ${S.decisions.spine.filter(d=>d.tier!=='session').length} решений (идут по умолчанию)</summary><div class="in"><ul class="clean small">${S.decisions.spine.filter(d=>d.tier!=='session').map(d=>`<li data-hk="dec:${d.no}">${ltItem('№'+d.no+' '+d.title, 'decisions_for_jay №'+d.no, {extra:`<span class="mono muted">${dateRu(d.deadline)}</span>`, full: esc(d.title)+'<br><span class="muted">по умолчанию: '+esc(d.default)+'</span>'})}</li>`).join('')}</ul></div></details>
+      <details><summary>Первая неделя из планов (${S.decisions.first_week.length})</summary><div class="in"><ul class="clean small">${S.decisions.first_week.map(d=>`<li data-hk="dec:${esc(d.no)}">${ltItem(d.no+': '+d.title, 'first_week '+d.no, {extra:`<span class="mono muted">${dateRu(d.deadline)}</span>`})}</li>`).join('')}</ul></div></details>
     </div>
     <div class="card white"><div class="sect-h"><h3>План 30 / 60 / 90</h3><span class="tag">${S.plan_90d.length} действий · галочки сохраняются</span></div>
-      <div style="max-height:520px;overflow:auto">${S.plan_90d.map((p,i)=>taskRow({id:'p90-'+i, text:p.action, due:p.due, who:p.owner, src:p.window})).join('')}</div>
+      <div>${S.plan_90d.map((p,i)=>taskRow({id:'p90-'+i, text:p.action, due:p.due, who:p.owner, src:'plan_90d · '+(p.window||'')})).join('')}</div>
     </div>
   </div>
 
@@ -686,7 +688,7 @@ function renderAdvisors(){
   document.getElementById('v-advisors').innerHTML = `
   <div class="eyebrow">Совет директоров Jay · 4 AI-советника</div>
   <h2 class="h2">Каждый держит <span class="hl">одну зону</span> и даёт задачи с дедлайном</h2>
-  <p class="lead">${E_('adv.lead','Построены из болей последних 18 месяцев: перегруз, долги по именам, воронка без встреч, касса без учёта. Промпты и раннер лежат в репозитории (agents/advisors); работают на сервере по расписанию; говорить с ними — в Jay AI (/cos /hr /mkt /fin /jos).')}</p>
+  <p class="lead">${E_('adv.lead','Четыре зоны, где болело 18 месяцев: перегруз, долги людям, воронка, касса. Говорить — в Jay AI: /cos /hr /mkt /fin.')}</p>
   <div class="grid g2 sect">${ADV.map(advCard).join('')}</div>
 
   <div class="grid g2 sect">
@@ -698,8 +700,8 @@ function renderAdvisors(){
       <div class="eyebrow" style="margin-top:12px">Делает сам</div><ul class="small" style="margin:0;padding-left:18px">${jr.does_himself.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
     </div>
   </div>
-  <div class="card mint" style="margin-bottom:12px"><h4>💬 Поговорить с советником — в Telegram</h4><p class="small">В <a href="${esc(L.crm_bot)}" target="_blank">Jay AI</a>: <code>/cos</code> <code>/hr</code> <code>/mkt</code> <code>/fin</code> — чат с советником (он читает свою страницу и задачи, может добавить или закрыть задачу); <code>/jos</code> — оператор всей системы; <code>/tasks</code> — открытые задачи; <code>/done cos-3</code> — закрыть; <code>/run fin</code> — перезапустить советника на сервере; <code>/publish</code> — обновить эту страницу.</p></div>
-  <div class="card soft"><h4>Как работает агент-советник</h4><p class="small">Раз в неделю (или по расписанию зоны) советник читает свои источники — strategy.json, vault, CRM, календарь — и пишет одну страницу: что изменилось, 3–5 задач с дедлайном, что просрочено. Страница идёт в Telegram Jay и в <code>data/jos/advisors.json</code>, откуда попадает сюда при пересборке. Советник не действует сам: не пишет клиентам, не двигает деньги, не правит календарь без команды.</p></div>`;
+  <div class="card mint" style="margin-bottom:12px"><h4>💬 Команды в <a href="${esc(L.crm_bot)}" target="_blank">Jay AI ↗</a></h4><div class="chip-row small"><code>/cos /hr /mkt /fin</code> чат · <code>/tasks</code> открытые · <code>/done cos-3</code> закрыть · <code>/run fin</code> перезапуск · <code>/publish</code> обновить JOS</div></div>
+  <div class="card soft"><h4>Как работает советник</h4><p class="small">Раз в неделю читает свои источники и пишет одну страницу: что изменилось + 3–5 задач со сроком. Сам ничего не делает.</p><div class="lt-s">${srcChips('jay-dashboard/agents/advisors/run_advisors.ps1; strategy.json → decisions')}</div></div>`;
   bindTasks();
   document.querySelectorAll('.adv-tabs button').forEach(b => b.onclick = () => { const card = b.closest('.adv'); card.querySelectorAll('.adv-tabs button').forEach(x=>x.classList.toggle('on', x===b)); card.querySelectorAll('.pane').forEach(p=>p.style.display = p.dataset.p===b.dataset.p?'':'none'); });
 }
@@ -716,7 +718,7 @@ function advCard(a){
       <div class="pane" data-p="pain" style="display:none"><ul class="small" style="margin:0;padding-left:18px">${a.pains.map(p=>`<li>${esc(p)}</li>`).join('')}</ul></div>
       <div class="pane" data-p="src" style="display:none"><ul class="small" style="margin:0;padding-left:18px">${a.watches.map(p=>`<li>${esc(p)}</li>`).join('')}</ul></div>
     </div>
-    <div class="foot">промпт: <code>agents/advisors/${a.id}/SKILL.md</code></div>
+    <div class="foot">промпт ${srcChips('jay-dashboard/agents/advisors/'+a.id+'/SKILL.md')}${a.report_path ? ' · отчёт ' + srcChips('jay-dashboard/'+a.report_path) : ''}</div>
   </div>`;
 }
 
@@ -741,7 +743,7 @@ function renderBrain(){
     <div><div class="eyebrow">Company Brain · второй мозг W2W</div><h2>${E_('brain.h', esc(BR.pitch.headline))}</h2>
       <ul class="small" style="padding-left:18px;margin:0 0 12px">${BR.pitch.lines.map(l=>`<li>${esc(l)}</li>`).join('')}</ul>
       <div class="srcs">${BR.sources.map(s=>`<span class="s">${s.emoji} ${esc(s.name)}</span>`).join('')}</div>
-      <p class="small muted" style="margin:12px 0 0">Снимок ${esc(BR.snapshot)} из мозга, который собрал ${esc(BR.owner)}. Это то же самое, что мы продаём клиентам — на наших данных.</p>
+      <p class="small muted" style="margin:12px 0 0">Снимок ${esc(BR.snapshot)} · собрал ${esc(BR.owner)} · ${srcChips('jay-dashboard/data/jos/brain.json')}</p>
     </div>
     <div>
       <div class="grid g2" style="gap:8px;margin-bottom:10px">
@@ -786,7 +788,7 @@ function renderW2W(){
   document.getElementById('v-w2w').innerHTML = `
   <div class="eyebrow">Win to Win · IT-аутсорс → AI-агенты → Company Brain</div>
   <h2 class="h2">Клиенты, оффер, команда</h2>
-  <p class="lead">${E_('w2w.lead','Установленная база — 80% денег плана. Новый вход — агент на один процесс. Крупные КП (> $10 000) не делаем: только оплачиваемая BA-фаза и партнёр-исполнитель.')}</p>
+  <p class="lead">${E_('w2w.lead','80% денег плана — установленная база. Вход — агент на один процесс. КП > $10 000 не делаем.')}</p>
   <div class="chip-row" style="margin:-8px 0 18px"><a class="btn" href="${esc(L.w2w_map)}" target="_blank">🗺 Карта компании ↗</a><a class="btn" href="${esc(L.site)}" target="_blank">w2w.uz ↗</a><a class="btn" href="${esc(L.crm_bot)}" target="_blank">📇 CRM-бот ↗</a><a class="btn" href="${esc(L.meet)}" target="_blank">📅 /meet ↗</a></div>
 
   <div class="sect"><div class="sect-h"><h3>Установленная база</h3><span class="tag">spine-A34 · первый оффер: сбор и акт → Care → доработка → агент</span></div>
@@ -834,7 +836,7 @@ function renderAgents(){
   document.getElementById('v-agents').innerHTML = `
   <div class="eyebrow">Agents House · где живут агенты</div>
   <h2 class="h2">${AG.agents.filter(a=>a.state==='running').length} работают сейчас, ${AG.agents.filter(a=>a.state==='ready').length} по расписанию, ${AG.agents.filter(a=>a.state==='planned').length} ждут доступов</h2>
-  <p class="lead">${E_('ag.lead','Все агенты живут на сервере WIN-26VA5TE5144 (ноутбук — только пульт). Кликни на агента — что делает, когда ходит, где лежит. Проверено '+esc(AG.checked)+'.')}</p>
+  <p class="lead">${E_('ag.lead','Все агенты — на сервере. Клик по агенту — что делает и когда.')} <span class="lt-s" style="display:inline-flex">${srcChips('jay-dashboard/data/jos/agents.json')}<span class="srcx">проверено ${esc(AG.checked)}</span></span></p>
   <div class="house-wrap">
     <div><div class="house" id="house">${AG.rooms.map(r=>`<div class="room ${r.id}" style="left:${r.x}%;top:${r.y}%;width:${r.w}%;height:${r.h}%"><div class="rn">${esc(r.name)}</div><div class="rs">${esc(r.sub)}</div></div>`).join('')}</div>
       <div class="legend"><span><i style="background:#22c55e"></i>работает</span><span><i style="background:#05a884"></i>по расписанию</span><span><i style="background:#f5a623"></i>сделано</span><span><i style="background:#b5b7ba"></i>выключен</span><span><i style="background:#fff;border:1.5px solid #05a884"></i>ждёт доступов</span></div></div>
@@ -1580,8 +1582,9 @@ function calEvRow(e, now){
 }
 function calTaskRow(t, k){
   const list = (CD.lists || []).find(l => l.id === t.list), done = t.status === 'completed', late = !done && t.due && t.due < k;
-  const sub = [list ? '✅ ' + esc(list.title) : '✅ задача', late ? `<span style="color:var(--coral-dark);font-weight:600">просрочено с ${dateRu(t.due)}</span>` : '', t.notes ? esc(t.notes.replace(/\s+/g, ' ').slice(0, 120)) : ''].filter(Boolean).join(' · ');
-  return `<label class="cal-ev${done ? ' done' : ''}"><div class="bar task"></div><input type="checkbox" ${done ? 'checked' : ''} onchange="calTick('${esc(t.list)}','${esc(t.id)}',this.checked)"><div class="t">${esc(t.title)}<div class="sub">${sub}</div></div></label>`;
+  const sub = [list ? '✅ ' + esc(list.title) : '✅ задача', late ? `<span style="color:var(--coral-dark);font-weight:600">просрочено с ${dateRu(t.due)}</span>` : '', gRef(t.notes) ? srcChips(gRef(t.notes)) : '', t.link ? `<a href="${esc(t.link)}" target="_blank" onclick="event.stopPropagation()">Google ↗</a>` : ''].filter(Boolean).join(' · ');
+  const b = brief(t.title);  // 2026-10-24: notes are no longer echoed (they repeated the title) — short title + where it came from
+  return `<label class="cal-ev${done ? ' done' : ''}"><div class="bar task"></div><input type="checkbox" ${done ? 'checked' : ''} onchange="calTick('${esc(t.list)}','${esc(t.id)}',this.checked)"><div class="t"><span title="${esc(t.title)}">${esc(b.t)}</span><div class="sub">${sub}</div></div></label>`;
 }
 function renderCal(){
   const k0 = tzDay(Date.now()), now = Date.now(), ev = calEvents(), open = calOpen(), all = CD.tasks || [];
@@ -1600,7 +1603,7 @@ function renderCal(){
   document.getElementById('v-cal').innerHTML = `
   <div class="card mint cal-link"><b>🔗 Запись ко мне на встречу:</b><a class="u" href="${esc(MEET_URL)}" target="_blank">${esc(MEET_URL.replace(/^https?:\/\//, '').replace(/\/$/, ''))}</a>
     <button class="btn sm" onclick="calCopy()">📋 Скопировать</button><a class="btn sm" href="${esc(MEET_URL)}" target="_blank">Открыть ↗</a>
-    <span class="small muted">клиент сам выбирает 30/45/60 мин, онлайн или офлайн; свободные слоты берутся из этого же календаря</span></div>
+    <span class="small muted">клиент сам выбирает время из твоих свободных слотов</span></div>
   ${conn.length ? `<div class="card soft small" style="margin-bottom:14px">⚙️ ${conn.join(' · ')}</div>` : ''}
   <div class="cal-bar">
     ${[[1, 'Сегодня'], [3, '3 дня'], [7, 'Неделя'], [14, '2 недели']].map(([n, l]) => btn(CU.range === n, l, `CU.range=${n}`)).join('')}
@@ -1616,8 +1619,7 @@ function renderCal(){
   ${over.length ? `<div class="card white cal-day sect"><h4>⏰ Просрочено <span class="pill bad">${over.length}</span></h4>${over.map(t => calTaskRow(t, k0)).join('')}</div>` : ''}
   ${days.join('')}
   ${nodue.length ? `<details class="card white cal-day"><summary style="cursor:pointer;font-weight:600;font-size:13px">Задачи без даты · ${nodue.length}</summary>${nodue.map(t => calTaskRow(t, k0)).join('')}</details>` : ''}
-  <p class="small muted" style="margin-top:14px">Встречи: личный календарь + javokhir.k@alliancevs.io · отклонённые скрыты. Задачи: все списки Google Tasks (вкл. «JOS»), галочка здесь = галочка в Google.
-    Обновляется при открытии вкладки и каждые 5 минут. Копия в Obsidian: <span class="mono">Jay/Calendar/Календарь.md</span> (3 раза в день).</p>`;
+  <p class="small muted" style="margin-top:14px">Галочка здесь = галочка в Google · обновляется каждые 5 мин · <a href="obsidian://open?vault=Javokhir&file=Jay%2FCalendar%2F%D0%9A%D0%B0%D0%BB%D0%B5%D0%BD%D0%B4%D0%B0%D1%80%D1%8C">копия в Obsidian ↗</a></p>`;
 }
 setInterval(() => { if(!document.hidden && document.getElementById('v-cal').classList.contains('on')) calPull(); }, 5 * 60 * 1000);
 
@@ -1637,10 +1639,10 @@ function kbItems(){
   if(KU.src !== 'adv') (CD.tasks || []).forEach(t => { if(KU.list && t.list !== KU.list) return; const done = t.status === 'completed';
     if(done && t.completed && Date.parse(t.completed) < since) return;
     const l = (CD.lists || []).find(x => x.id === t.list);
-    out.push({k: 'g', id: t.id, list: t.list, title: t.title, notes: t.notes || '', due: t.due || '', done, at: done ? (t.completed || '') : '', link: t.link, tag: '✅ ' + (l ? l.title : 'Google Tasks')}); });
+    out.push({k: 'g', id: t.id, list: t.list, title: t.title, notes: t.notes || '', ref: gRef(t.notes), due: t.due || '', done, at: done ? (t.completed || '') : '', link: t.link, tag: '✅ ' + (l ? l.title : 'Google Tasks')}); });
   if(KU.src !== 'g' && !KU.list) allTasks().forEach(t => { const v = E.done[t.id], done = !!v, at = typeof v === 'string' ? v : '';
     if(done && at && Date.parse(at) < since) return;
-    out.push({k: 'a', id: t.id, list: '', title: t.text, notes: t.src || '', due: t.due || '', done, at, link: '', tag: (t.emoji || '🧑‍💼') + ' ' + (t.who || 'советник')}); });
+    out.push({k: 'a', id: t.id, list: '', title: t.text, notes: t.src || '', ref: t.src || '', due: t.due || '', done, at, link: '', tag: (t.emoji || '🧑‍💼') + ' ' + (t.who || 'советник')}); });
   return out.filter(x => !q || (x.title + ' ' + x.notes + ' ' + x.tag).toLowerCase().includes(q))
     .map(x => ({...x, col: x.done ? 'done' : !x.due ? 'nodue' : x.due < k0 ? 'late' : x.due === k0 ? 'today' : x.due <= wk ? 'week' : 'later'}));
 }
@@ -1649,7 +1651,7 @@ function kbCard(x, k0){
   const meta = [`<span>${esc(x.tag)}</span>`, x.due ? `<span class="${late ? 'late' : ''}">📅 ${dateRu(x.due)}</span>` : '',
     x.done && x.at ? `<span>✓ ${dateRu(tzDay(x.at))} ${tzHM(x.at)}</span>` : '', x.link ? `<a href="${esc(x.link)}" target="_blank" onclick="event.stopPropagation()">Google ↗</a>` : ''].filter(Boolean).join('');
   return `<div class="kb-card k-${x.k}" draggable="true" data-k="${x.k}" data-id="${esc(x.id)}" data-list="${esc(x.list)}" data-done="${x.done ? 1 : ''}"${x.notes ? ` title="${esc(x.notes.slice(0, 300))}"` : ''}>
-    <div class="t">${esc(x.title)}</div><div class="m">${meta}</div>
+    <div class="t">${ltItem(x.title, x.ref, {extra: ''})}</div><div class="m">${meta}</div>
     <button class="x" title="${x.done ? 'Вернуть в работу' : 'Готово'}" onclick="kbMove('${x.k}','${esc(x.id)}','${esc(x.list)}',${!x.done})">${x.done ? '↩' : '✓'}</button></div>`;
 }
 function kbBoard(){
@@ -1679,7 +1681,7 @@ function renderKanban(){
       <button class="btn sm" onclick="calPull()">↻ обновить</button>
       <span class="small muted">${CD.at ? 'Google Tasks: ' + tzHM(CD.at) : 'Google Tasks ещё не загружены'}${calErr.length ? ' · ⚠ ' + esc(calErr.join(' · ')) : ''}</span></div>
     <div id="kb-board">${kbBoard()}</div>
-    <p class="kb-hint">Перетащи карточку в «✅ Готово» или нажми ✓ — задача закроется в Google Tasks. ↩ возвращает её в работу. Срок меняется в Google Tasks / Календаре.</p>`;
+    <p class="kb-hint">✓ или перетащи в «Готово» — закроется в Google Tasks · ↩ вернуть · 🗄 убрать с доски</p>`;
   const qi = document.getElementById('kb-q'); qi.oninput = () => { KU.q = qi.value; kbUi(); document.getElementById('kb-board').innerHTML = kbBoard(); kbBind(); };
   kbBind();
 }
@@ -1716,6 +1718,315 @@ function renderDepts(){
     return `<div class="dept-card"><h3>${h.querySelector('.ic').textContent} ${esc(navLabel(h))}</h3><p>${esc(DEPT_INFO[d.dataset.d] || '')}</p>
       ${[...d.querySelectorAll('.nav[data-v]')].map(n => `<a class="dept-row" onclick="JOS.go('${n.dataset.v}')"><span class="ic">${n.querySelector('.ic').textContent}</span>${esc(navLabel(n))}<span class="cnt">${esc((n.querySelector('.cnt') || {}).textContent || '')}</span></a>`).join('')}</div>`; }).join('')}</div>`;
 }
+
+/* ---------- 🧭 меньше текста · источники · архив (2026-10-24) ----------
+   Jay 10-24: «JOS writes too much text… less text but more explanation, everything clickable so I know where it came from»
+   + «archive or compact what I don't need».
+   brief(text)  → short title (≤ ~8 words) + one-line remainder; the full text opens on click (edits still go to the full text).
+   srcChips(ref) → internal refs become links to the exact place: «decisions_for_jay №6» / «F1» → strategy page #summary / #dec-F1,
+     «A05» → #as-A05, «targets.gates[0]» → #targets, «org.pay_scheme» → #org, CRM / Brain / календарь → that JOS tab,
+     w2w.uz → site, «repo/path.md» → copyable server path. Nothing recognised → a visible «нет источника».
+   LT.apply(root) runs after every render (MutationObserver on .wrap + same-origin iframe panels): long text → 2 lines (click = all),
+     long lists/tables → first N + «ещё N», 🗄 on every card/section/tab. Done/past items archive themselves.
+   Hidden = H (localStorage jos7-hide), synced through the JOS Tasks bridge ns 'ui' (last write per key wins). Nothing is deleted:
+     «🗄 Архив» in the top bar lists what is hidden on this tab, with ↩. */
+const LT_CSS = `
+.lt-t{display:block;color:var(--ink);font-weight:600;font-size:13.5px;line-height:1.35}
+.lt-w{display:block;color:var(--muted);font-size:12px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:400}
+details.lt{border:0;padding:0;margin:0;background:none;border-radius:0;min-width:0}
+details.lt>summary{padding:0;display:block;font-weight:inherit;cursor:pointer}details.lt>summary::before,details.lt>summary::-webkit-details-marker{display:none;content:none}
+details.lt[open] .lt-w{white-space:normal}
+.lt-full{font-size:12.5px;color:var(--body);margin:6px 0 2px;padding:8px 10px;background:var(--card);border-radius:8px;line-height:1.5}
+.lt-s{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;align-items:center}
+.srcl{display:inline-flex;align-items:center;gap:3px;font:500 10.5px var(--text,Inter,system-ui,sans-serif);padding:1px 8px;border-radius:999px;border:1px solid #b9dbff;background:#eaf4ff;color:#0a5fc0;white-space:nowrap;cursor:pointer;text-decoration:none!important;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:middle;line-height:1.6}
+.srcl:hover{border-color:#0a5fc0}
+.srcl.path{border-color:var(--line-2);background:var(--card);color:var(--body)}
+.srcl.none{border:1px dashed #ffc4b0;background:transparent;color:var(--coral-dark);cursor:default}
+.srcx{font-size:10.5px;color:var(--faint)}
+.lt-clamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
+.lt-clamp.lt-1{-webkit-line-clamp:1}
+.lt-clamp.lt-open{display:block;-webkit-line-clamp:unset;overflow:visible}
+.lt-cut{display:none!important}
+.lt-hid,.lt-auto{display:none!important}
+.lt-more{display:block;width:100%;margin:6px 0 0;padding:6px 10px;border:1px dashed var(--line-2);border-radius:10px;background:transparent;color:var(--muted);font:600 12px var(--text,Inter,system-ui,sans-serif);cursor:pointer;text-align:center}
+.lt-more:hover{color:var(--ink);border-color:var(--ink)}
+.lt-h{position:relative}
+.lt-x{position:absolute!important;top:6px;right:6px;z-index:3;margin:0!important;width:24px;height:24px;border-radius:7px;border:1px solid var(--line-2);background:var(--surface,#fff);color:var(--muted);font-size:12px;line-height:1;padding:0;cursor:pointer;opacity:0;transition:opacity .12s}
+.lt-h:hover>.lt-x{opacity:.85}.lt-x:hover{opacity:1!important;border-color:var(--ink);color:var(--ink)}
+.kb-card>.lt-x{right:34px}
+.kb-col.c-done .lt-w,.kb-col.c-done .lt-s,.kb-col.c-done details.lt .lt-full{display:none}
+.kb-card .lt-t{font-size:13px}.kb-card .lt-s{gap:3px}.kb-card .srcl{font-size:10px;padding:0 6px}
+li.lt-h>.lt-x,.task>.lt-x{top:4px}
+@media (hover:none){.lt-x{opacity:.45}}
+html[data-theme=dark] .srcl{background:#10233a;border-color:#1f4a7a;color:#8cc4ff}
+html[data-theme=dark] .srcl.path{background:var(--card-2);border-color:var(--line-2);color:var(--body)}
+html[data-theme=dark] .srcl.none{background:transparent;border-color:#6b2e1f;color:#ff9a7a}
+`;
+document.head.insertAdjacentHTML('beforeend', `<style id="lt-css">${LT_CSS}
+.nav{position:relative}.nav>.lt-x{top:50%;right:4px;transform:translateY(-50%);width:22px;height:22px}
+.nav:hover>.lt-x{opacity:.8}.nav:hover>.cnt{visibility:hidden}
+.side .hid-tabs{display:none}.side .hid-tabs.on{display:block}
+.side .hid-tabs .nav{opacity:.65}
+#btn-arch .n{font:500 10.5px var(--mono);color:var(--muted)}
+.lt-drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100vw);z-index:60;background:var(--bg);border-left:1px solid var(--line);box-shadow:-12px 0 30px rgba(0,0,0,.12);display:flex;flex-direction:column;transform:translateX(102%);transition:transform .18s}
+.lt-drawer.on{transform:none}
+.lt-drawer .hd{display:flex;align-items:center;gap:8px;padding:calc(14px + env(safe-area-inset-top,0px)) 16px 12px;border-bottom:1px solid var(--line)}
+.lt-drawer .hd h3{font-size:16px;font-weight:800;flex:1}
+.lt-drawer .bd{overflow-y:auto;padding:12px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+.lt-drawer h4{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px;font-weight:700}
+.lt-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px;color:var(--ink)}
+.lt-row .l{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lt-row small{display:block;color:var(--muted);font-size:11px}
+.lt-shade{position:fixed;inset:0;z-index:59;background:rgba(0,0,0,.25);display:none}.lt-shade.on{display:block}
+/* comfort pass 10-24: one-line sub-lines, compact top bar on phones */
+.top>div:nth-child(2){min-width:0;flex:1 1 320px}.top .sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.top .sp{display:none}
+.dash-act .t small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dash-act a{min-height:44px}
+@media(max-width:700px){.top{padding:10px 16px;gap:8px}.top .sub{display:none}.top .btn{padding:6px 9px}.top .x-tool{display:none}.wrap{padding:16px}
+  .dash-top .src{font-size:10.5px;text-align:left;margin-left:0}.h2{font-size:19px}.lead{font-size:13.5px}}
+</style>`);
+
+/* ----- short title + one-line remainder ----- */
+const ltStrip = h => { const d = document.createElement('div'); d.innerHTML = String(h || ''); return d.textContent; };
+function brief(raw){
+  const s = String(raw || '').replace(/\s+/g, ' ').trim(), words = s.split(' ');
+  if(words.length <= 9 && s.length <= 80) return {t: s, w: '', cut: false};
+  let best = -1, bestN = 0;
+  for(const re of [/\s[—–]\s/g, /;\s/g, /\.\s/g, /\s\(/g, /:\s/g, /,\s(?=[^\d\s])/g]){
+    let m; re.lastIndex = 0;
+    while((m = re.exec(s))){ const left = s.slice(0, m.index), n = left.split(' ').length; if(n > 9) break;
+      if(n >= 3 && n > bestN && (left.match(/\(/g) || []).length <= (left.match(/\)/g) || []).length){ best = m.index; bestN = n; } }  // never cut inside brackets
+  }
+  let t, w;
+  if(best > 0){ t = s.slice(0, best); w = s.slice(best).replace(/^[\s—–;.:,]+/, ''); }
+  else { t = words.slice(0, 8).join(' ') + '…'; w = words.slice(8).join(' '); }
+  t = t.replace(/\s*\([^)]*\)?/g, '').replace(/[\s,:;—–]+$/, '');
+  if(t.length > 90) t = t.slice(0, 88).replace(/\s\S*$/, '') + '…';
+  return {t, w, cut: true};
+}
+
+/* ----- refs → links ----- */
+const LT_SEC = [  // [prefix regexp, strategy page anchor, readable label]
+  [/^(strategy\.json\s*→\s*)?decisions(_for_jay)?/, 'summary', 'Решения Jay'], [/^first_week/, 'summary', 'Решения недели'],
+  [/^open_questions/, 'summary', 'Открытые вопросы'], [/^plan_90d/, 'plan', 'План 90 дн'], [/^targets/, 'targets', 'Цели'],
+  [/^org-structure/, 'org', 'Оргструктура'], [/^org\b/, 'org', 'Оргструктура'], [/^finance-plan/, 'finance', 'Финплан'], [/^(finance|ceiling_table)\b/, 'finance', 'Финансы'],
+  [/^marketing/, 'marketing', 'Маркетинг'], [/^sales\b/, 'sales', 'Продажи'], [/^strategy\b/, 'strategy', 'Каркас'],
+  [/^product/, 'product', 'Продукт'], [/^(retro|retrospective)/, 'retro', 'Ретро'], [/^installed_base/, 'strategy', 'Установленная база'],
+  [/^assumptions/, 'assumptions', 'Допущения'], [/^spine\b/, 'assumptions', 'Допущения'], [/^facts\//, 'sources', 'Факты']];
+const LT_TABS = [[/\b(CRM|crm\.sqlite|jay-crm|лид)/i, 'sales', 'CRM'], [/\bBrain\b/, 'brain', 'Company Brain'], [/(Google Calendar|календар)/i, 'cal', 'Календарь'],
+  [/^запуск (cos|hr|mkt|fin)\b/, 'advisors', 'Отчёт советника'], [/Instagram|IG_/, 'instagram', 'Instagram']];
+const ltStrat = a => (typeof L !== 'undefined' && L.strategy_page ? L.strategy_page : 'w2w-strategy.html') + '#' + a;
+const ltGo = v => `href="#${v}" onclick="(window.JOS||parent.JOS).go('${v}');return false"`;
+function ltChip(c){
+  const tt = c.raw ? ` title="откуда: ${esc(c.raw)}"` : '';
+  if(c.tab) return `<a class="srcl" ${ltGo(c.tab)}${tt}>↪ ${esc(c.label)}</a>`;
+  if(c.path) return `<button type="button" class="srcl path" data-p="${esc(c.path)}" onclick="LT.copy(this)" title="${esc(c.path)} — нажми, чтобы скопировать путь">📄 ${esc(c.label)}</button>`;
+  return `<a class="srcl" href="${esc(c.href)}" target="_blank" rel="noopener"${tt}>🔗 ${esc(c.label)}</a>`;
+}
+function ltParse(seg){
+  const s = seg.trim(), out = []; if(!s) return out;
+  let u = s.match(/^(?:(.+?)\s+[—–-]\s+)?(https?:\/\/\S+)$/);  // «label — URL» written by the sync / a bare URL
+  if(u){ const url = u[2], lab = (u[1] || '').trim(), t = url.match(/jay-dashboard\/(?:index\.html)?#([a-z]+)$/), a = url.match(/w2w-strategy\.html#([\w-]+)/);
+    return [t ? {tab: t[1], label: lab || t[1], raw: s} : {href: a ? ltStrat(a[1]) : url, label: lab || (a ? 'Стратегия · ' + a[1] : url.replace(/^https?:\/\//, '').slice(0, 32)), raw: s}]; }
+  const sec = ' ' + (s.match(/§\s?[\d.]+(\s?п\.\s?[\d–-]+)?/) || [''])[0];
+  let m;
+  if((m = s.match(/targets\.gates\[(\d+)\]/))){ const g = (S.targets.gates || [])[+m[1]]; out.push({href: ltStrat('targets'), label: 'Ворота ' + (g ? dateRu(g.date) : +m[1] + 1), raw: s}); }
+  for(const x of s.matchAll(/№\s?(\d+)/g)) out.push({href: ltStrat('summary'), label: 'Решение №' + x[1], raw: s});
+  if(/first_week|decisions|^[FPMO]\d{1,2}\b/.test(s)) for(const x of s.matchAll(/\b([FPMO]\d{1,2}|S-[A-F])\b/g)) out.push({href: ltStrat('dec-' + x[1]), label: 'Решение ' + x[1], raw: s});
+  for(const x of s.matchAll(/\b(spine-)?A(\d{2})\b/g)) out.push({href: ltStrat(x[1] ? 'as-spine-A' + x[2] : +x[2] <= 33 ? 'as-A' + x[2] : 'assumptions'), label: 'Допущение A' + x[2], raw: s});
+  if(!out.length){ const hit = LT_SEC.find(([re]) => re.test(s)); if(hit) out.push({href: ltStrat(hit[1]), label: hit[2] + (sec.trim() ? sec : ''), raw: s}); }
+  else if(/^(org-structure|finance-plan)/.test(s)){ const hit = LT_SEC.find(([re]) => re.test(s)); out.push({href: ltStrat(hit[1]), label: hit[2] + sec, raw: s}); }
+  const tab = LT_TABS.find(([re]) => re.test(s)); if(tab && !out.length) out.push({tab: tab[1], label: tab[2], raw: s});
+  if((m = s.match(/\b(w2w\.uz|t\.me\/[\w_]+|https?:\/\/\S+)/))) out.push({href: /^http/.test(m[1]) ? m[1] : 'https://' + m[1], label: m[1].replace(/^https?:\/\//, '').slice(0, 32), raw: s});
+  if((m = s.match(/((?:[\w.-]+\/)+[\w.-]+\.(?:md|log|json|py|ogg|xlsx|ps1|sqlite))/))){ const p = m[1];
+    const full = /^(F:|C:)/.test(p) ? p : /^(facts|strategy)\//.test(p) ? 'C:\\Users\\user\\Dev\\w2w-strategy\\' + p : /^(content|logs)\//.test(p) ? 'C:\\Users\\user\\Dev\\jay-channel-publisher\\' + p : /^out\//.test(p) ? 'C:\\Users\\user\\Dev\\jay-dashboard\\agents\\advisors\\' + p : 'C:\\Users\\user\\Dev\\' + p;
+    out.push({path: full.replace(/\//g, '\\'), label: p.split('/').pop(), raw: s}); }
+  return out;
+}
+/* ref (string, '; '-separated) → chips html; nothing recognised → «нет источника» */
+function srcChips(ref, opt = {}){
+  const R = String(ref || ''), segs = R.split(/https?:\/\//.test(R) ? /;\s*|\n/ : /;\s*|\s+·\s+/).filter(x => x.trim()), chips = [], seen = new Set(), rest = [];
+  segs.forEach(sg => { const cs = ltParse(sg); if(!cs.length) rest.push(sg.trim()); cs.forEach(c => { const k = (c.href || c.tab || c.path) + c.label; if(!seen.has(k)){ seen.add(k); chips.push(c); } }); });
+  let h = chips.map(ltChip).join('');
+  if(!chips.length && !opt.soft) h = `<span class="srcl none" title="${esc(ref || 'у пункта нет ссылки на первоисточник')}">нет источника</span>`;
+  const r = rest.filter(x => x.length <= 28); if(r.length && opt.rest !== false) h += r.map(x => `<span class="srcx">${esc(x)}</span>`).join(' ');
+  return h;
+}
+/* where a Google Task came from: the JOS sync writes «Источник: … — URL» (since 10-24) or «Советник: … · срок … · <ref>» (before) */
+function gRef(notes){ const n = String(notes || ''); let m;
+  if((m = n.match(/Источник:\s*([^\n]*?https?:\/\/\S+)/))) return m[1];
+  if((m = n.match(/Советник:[^\n]*?· срок [\d-]+ · ([^\n]+)/))) return m[1];
+  if((m = n.match(/https?:\/\/\S+/))) return m[0];
+  return /Источник: JOS · (решения|ворота)/.test(n) ? 'decisions_for_jay' : /Источник: JOS · ритм/.test(n) ? 'org.cadence' : null; }
+/* one item: short title, one-line remainder, full text on click, sources always visible */
+function ltItem(text, ref, {key, extra = '', full} = {}){  // ref null = the item is its own source (e.g. a Google Task with its ↗ link)
+  const b = brief(ltStrip(text));
+  const body = full != null ? full : esc(text);
+  return `${b.cut ? `<details class="lt"><summary><span class="lt-t">${esc(b.t)}</span>${b.w ? `<span class="lt-w">${esc(b.w)}</span>` : ''}</summary><div class="lt-full">${body}</div></details>`
+    : `<span class="lt-t">${full != null ? full : esc(b.t)}</span>`}${extra || ref !== null ? `<div class="lt-s">${extra}${ref === null ? '' : srcChips(ref)}</div>` : ''}`;
+}
+
+/* ----- hide / archive state (LWW map, synced via bridge ns 'ui') ----- */
+const HKEY = 'jos7-hide';
+let H; try{ H = JSON.parse(localStorage.getItem(HKEY) || 'null'); }catch(e){ H = null; }
+H = Object.assign({m: {}, rev: null, dirty: false}, H || {});
+let ltSync = ['', 'grey'], ltTimer = null;
+const ltHash = s => { let h = 5381; for(let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return (h >>> 0).toString(36); };
+const hHidden = k => !!(H.m[k] && H.m[k].hid);
+const hKeep = k => !!(H.m[k] && H.m[k].keep);
+function hSave(){ try{ localStorage.setItem(HKEY, JSON.stringify(H)); }catch(e){} }
+function hSet(k, o){ H.m[k] = Object.assign({}, H.m[k] || {}, o, {at: new Date().toISOString()}); H.dirty = true; hSave(); ltQueue(); LT.refresh(); }
+const LT_SYNC = (typeof D !== 'undefined' && D.finsync && D.finsync.url) ? D.finsync : null;
+async function ltApi(body){ const r = await fetch(LT_SYNC.url, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(Object.assign({secret: LT_SYNC.secret, ns: 'ui'}, body))}); return r.json(); }
+function ltMerge(a, b){ const o = Object.assign({}, a); Object.entries(b || {}).forEach(([k, v]) => { if(!o[k] || String(v.at || '') > String(o[k].at || '')) o[k] = v; }); return o; }
+function ltStatus(t, c){ ltSync = [t, c]; const el = document.getElementById('lt-sync'); if(el){ el.textContent = t; el.className = 'pill ' + c; } }
+async function ltPull(){
+  if(!LT_SYNC){ ltStatus('только этот браузер', 'grey'); return; }
+  try{ const d = await ltApi({fin: 'get'}); if(!d.ok) throw new Error(d.error || 'ошибка');
+    const srv = (d.state && d.state.m) || {}; const before = JSON.stringify(H.m); H.m = ltMerge(H.m, srv); H.rev = d.rev; hSave();
+    if(H.dirty) await ltPush(); else ltStatus('☁ синхронно', 'mint');
+    if(JSON.stringify(H.m) !== before) LT.refresh();
+  }catch(e){ ltStatus(/bad ns/.test(e.message) ? 'только этот браузер · облако ждёт обновления моста' : 'офлайн · сохранено в браузере', 'grey'); }
+}
+async function ltPush(){
+  if(!LT_SYNC) return;
+  for(let i = 0; i < 2; i++){
+    const d = await ltApi({fin: 'put', rev: H.rev, state: {m: H.m}});
+    if(d.ok){ H.rev = d.rev; H.dirty = false; hSave(); ltStatus('☁ синхронно', 'mint'); return; }
+    if(d.error === 'conflict'){ H.m = ltMerge(H.m, (d.state && d.state.m) || {}); H.rev = d.rev; continue; }
+    throw new Error(d.error || 'ошибка');
+  }
+}
+function ltQueue(){ clearTimeout(ltTimer); ltTimer = setTimeout(() => ltPush().catch(e => ltStatus(/bad ns/.test(e.message) ? 'только этот браузер · облако ждёт обновления моста' : 'офлайн · сохранено в браузере', 'grey')), 1200); }
+
+/* ----- DOM pass ----- */
+const LT_BOX = '.sect,.card,.adv,.cl,.tile,.kb-card,.task,.cal-day,.dept-card,.ask-c,ul.clean>li,.dash-act>a,.step';
+const LT_AUTO = '.task.done,.cal-ev.past,.cal-ev.done,.gate.past,.dl .d.past';
+const LT_CLAMP = 'p,.sm,.st,.what,.c,dd,.s,.lead,li,td,.kpi-line .m,.kpi-line .r,.ru,.meta>span,.desc,.note';
+function ltLabel(el){
+  const h = el.querySelector('.lt-t,h3,h4,.nm,.hd,.t,b,strong'); let s = (h && h.textContent.trim()) || el.textContent.trim();
+  return s.replace(/\s+/g, ' ').replace(/[🗄↩✓]/g, '').trim().slice(0, 90);
+}
+function ltKey(el, view){ if(el.dataset.hk) return view + ':' + el.dataset.hk; return view + ':' + ltHash((el.className || '').split(' ')[0] + '|' + ltLabel(el)); }
+function ltViewOf(el){ const v = el.closest && el.closest('.view'); return v ? v.id.slice(2) : (el.ownerDocument.defaultView.frameElement && el.ownerDocument.defaultView.frameElement.dataset.page) || 'x'; }
+const LT = {
+  view: 'today', items: {},
+  apply(root, view){
+    if(!root || document.body.classList.contains('editing')) return;
+    const doc = root.ownerDocument, inFrame = doc !== document;
+    if(view === 'finance' || view === 'me') return this.boxes(root, view, true);
+    // auto-archive: done ticks, past events/gates
+    root.querySelectorAll(LT_AUTO).forEach(el => { const k = ltKey(el, view); el.dataset.ltk = k; if(!hKeep(k)) el.classList.add('lt-auto'); else el.classList.remove('lt-auto'); this.items[k] = {t: ltLabel(el), v: view, auto: 1}; });
+    // long text → 2 lines (1 line for muted footnotes), click opens
+    root.querySelectorAll(LT_CLAMP).forEach(el => {
+      if(el._lt || el.closest('.lt-full,summary,.lt-drawer,.tile .v,svg,.kb-bar,.cal-bar,.me-quick,form,[contenteditable="true"]') || el.querySelector('input,select,textarea,details,table,.tbl,ul,ol,.lt-x,.btn,button:not(.srcl)')) return;
+      const txt = el.textContent.trim(); if(txt.length < 150) return;
+      el._lt = 1;
+      let tgt = el;
+      if(/^(TD|LI|DD)$/.test(el.tagName)){ const w = doc.createElement('div'); while(el.firstChild){ if(el.firstChild.classList && el.firstChild.classList.contains('lt-x')) break; w.appendChild(el.firstChild); } el.insertBefore(w, el.firstChild); tgt = w; }
+      tgt.classList.add('lt-clamp'); if(el.classList.contains('muted') || el.classList.contains('lead') || el.matches('.meta>span')) tgt.classList.add('lt-1');
+      tgt.title = 'нажми — показать полностью';
+      tgt.addEventListener('click', e => { if(e.target.closest('a,button,input,label')) return; tgt.classList.toggle('lt-open'); LT.fit(doc); });
+    });
+    // long lists → first N + «ещё N»
+    const cap = (box, kids, n, after) => { if(box._ltc) return; const vis = kids.filter(k => !k.classList.contains('lt-hid') && !k.classList.contains('lt-auto')); if(vis.length <= n + 1) return;
+      box._ltc = 1; vis.slice(n).forEach(k => k.classList.add('lt-cut'));
+      const b = doc.createElement('button'); b.type = 'button'; b.className = 'lt-more'; const lab = () => b.textContent = b._open ? 'свернуть ▴' : `ещё ${vis.length - n} ▾`; lab();
+      b.onclick = () => { b._open = !b._open; vis.slice(n).forEach(k => k.classList.toggle('lt-cut', !b._open)); lab(); LT.fit(doc); };
+      (after || box).insertAdjacentElement(after ? 'afterend' : 'beforeend', b); };
+    root.querySelectorAll('ul,ol').forEach(u => { if(u.closest('.lt-full,.lt-drawer,.side') || u.querySelector('input,select')) return; cap(u, [...u.children].filter(x => x.tagName === 'LI'), u.closest('.adv,.rep') ? 5 : 6); });
+    root.querySelectorAll('tbody').forEach(tb => { if(tb.querySelector('input,select,textarea') || tb.closest('.lt-full')) return; const tbl = tb.closest('.tbl') || tb.closest('table'); cap(tb, [...tb.children], 8, tbl); });
+    root.querySelectorAll('.grid').forEach(g => { const ks = [...g.children].filter(x => x.matches('.card,.cl,.adv')); if(ks.length === g.children.length) cap(g, ks, 6, g); });
+    root.querySelectorAll('.kb-col').forEach(c => cap(c, [...c.querySelectorAll(':scope>.kb-card')], c.classList.contains('c-done') ? 3 : 6));
+    root.querySelectorAll('.cal-day').forEach(c => { const ks = [...c.querySelectorAll(':scope>.cal-ev')]; cap(c, ks, 6); });
+    root.querySelectorAll('.dash-act').forEach(c => cap(c, [...c.querySelectorAll(':scope>a')], 5));
+    root.querySelectorAll('div').forEach(c => { if(c._ltc || c.children.length <= 12 || c.closest('.lt-drawer,.kb,.house,svg')) return;  // any long run of same-class blocks (files by day, feeds)
+      const cnt = {}; [...c.children].forEach(k => { const f = k.tagName === 'DIV' ? k.className.split(' ')[0] : ''; if(f) cnt[f] = (cnt[f] || 0) + 1; });
+      const [k0, n] = Object.entries(cnt).sort((x, y) => y[1] - x[1])[0] || ['', 0];
+      if(!k0 || n <= 12 || n < c.children.length * .7 || /^(lt-|btn|pill|kb-|cal-|tile)/.test(k0) || c.querySelector(':scope>div input')) return;
+      cap(c, [...c.children].filter(k => k.tagName === 'DIV' && k.className.split(' ')[0] === k0), 10); });
+    [...new Set([...root.querySelectorAll('.task')].map(t => t.parentElement))].forEach(c => { if(!c.closest('.lt-full')) cap(c, [...c.querySelectorAll(':scope>.task')], c.closest('.adv') ? 5 : 6); });
+    root.querySelectorAll('[class*="-list"]').forEach(c => { if(c.closest('.lt-drawer') || c.querySelector(':scope>* input')) return; const ks = [...c.children].filter(x => x.tagName !== 'BUTTON'); if(ks.length > 10) cap(c, ks, 8); });
+    root.querySelectorAll('.dl').forEach(c => cap(c, [...c.querySelectorAll(':scope>.d')], 4, c));
+    this.boxes(root, view, false);
+    if(!inFrame) root.querySelectorAll('.tag,.src,.task .src').forEach(el => this.linkify(el));
+    else root.querySelectorAll('.src,.tag').forEach(el => this.linkify(el));
+  },
+  boxes(root, view, light){
+    root.querySelectorAll(light ? '.sect,.card' : LT_BOX).forEach(el => {
+      if(el.closest('.lt-drawer,.lt-full,.side') || el.classList.contains('lt-auto')) return;
+      const k = el.dataset.ltk || ltKey(el, view); el.dataset.ltk = k;
+      this.items[k] = Object.assign(this.items[k] || {}, {t: ltLabel(el), v: view});
+      el.classList.toggle('lt-hid', hHidden(k));
+      if(!el.querySelector(':scope>.lt-x')){ const b = el.ownerDocument.createElement('button'); b.type = 'button'; b.className = 'lt-x'; b.textContent = '🗄'; b.title = 'Убрать в архив (вернуть — «🗄 Архив» сверху)';
+        b.onclick = e => { e.preventDefault(); e.stopPropagation(); hSet(k, {hid: 1, keep: 0, t: ltLabel(el), v: view}); };
+        el.classList.add('lt-h'); el.appendChild(b); }
+    });
+  },
+  linkify(el){
+    if(el._ll || el.querySelector('a,button')) return; const t = el.textContent;
+    if(!/\b(A\d{2}|[a-z_]+\.[a-z_]+|targets\.|decisions|№\s?\d+|first_week|plan_90d|org-structure|finance-plan)\b/.test(t)) return;
+    el._ll = 1; const h = srcChips(t, {soft: true, rest: false}); if(h) el.innerHTML = esc(t.replace(/\s*[a-z_]+(\.[a-z_\[\]\d]+)+.*$/i, '').replace(/A\d{2}(,\s*)?/g, '').replace(/[\s·,—–-]+$/, '')) + ' ' + h;
+  },
+  fit(doc){ const fr = doc.defaultView && doc.defaultView.frameElement; if(!fr) return;  // content height, not scrollHeight (that never drops below the frame)
+    const cs = doc.defaultView.getComputedStyle(doc.body), h = doc.body.getBoundingClientRect().height + parseFloat(cs.marginTop || 0) + parseFloat(cs.marginBottom || 0);
+    if(h > 50) fr.style.height = Math.ceil(h + 8) + 'px'; },
+  refresh(){ document.querySelectorAll('.view.on').forEach(v => this.apply(v, v.id.slice(2)));
+    document.querySelectorAll('.view.on iframe.panel').forEach(f => { try{ const d = f.contentDocument; if(d && d.body){ this.apply(d.body, f.dataset.page); this.fit(d); } }catch(e){} });
+    this.tabs(); this.badge(); if(document.querySelector('.lt-drawer.on')) this.drawer(true); },
+  tabs(){
+    const side = document.getElementById('side'); if(!side) return;
+    let box = side.querySelector('.hid-wrap');
+    if(!box){ box = document.createElement('div'); box.className = 'hid-wrap'; box.innerHTML = `<div class="sec" style="cursor:pointer" onclick="this.nextElementSibling.classList.toggle('on')">Скрытые вкладки <span class="n"></span> ▾</div><div class="hid-tabs"></div>`;
+      const anchor = [...side.querySelectorAll('.sec')].find(s => /Окна/.test(s.textContent)); side.insertBefore(box, anchor || side.querySelector('.side-foot')); }
+    const hid = box.querySelector('.hid-tabs'); hid.innerHTML = '';
+    side.querySelectorAll('.dept .nav[data-v], :scope>.nav[data-v]').forEach(n => {
+      const k = 'tab:' + n.dataset.v, off = hHidden(k);
+      n.classList.toggle('lt-hid', off);
+      if(!n.querySelector('.lt-x')){ const b = document.createElement('button'); b.type = 'button'; b.className = 'lt-x'; b.textContent = '🗄'; b.title = 'Скрыть вкладку (вернуть — «Скрытые вкладки» внизу меню)';
+        b.onclick = e => { e.stopPropagation(); hSet(k, {hid: 1, t: navLabel(n), v: 'tab'}); }; n.appendChild(b); }
+      if(off){ const c = document.createElement('div'); c.className = 'nav'; c.innerHTML = `<span class="ic">${n.querySelector('.ic').textContent}</span>${esc(navLabel(n))}<span class="cnt">↩ вернуть</span>`;
+        c.onclick = () => hSet(k, {hid: 0}); hid.appendChild(c); }
+    });
+    box.style.display = hid.children.length ? '' : 'none'; box.querySelector('.n').textContent = hid.children.length ? '· ' + hid.children.length : '';
+    side.querySelectorAll('.dept').forEach(d => d.classList.toggle('lt-hid', ![...d.querySelectorAll('.nav[data-v]')].some(n => !n.classList.contains('lt-hid'))));
+  },
+  arch(view){ const it = Object.entries(this.items).filter(([k, x]) => x.v === view);
+    const man = Object.entries(H.m).filter(([k, x]) => x.hid && x.v === view).map(([k, x]) => [k, x]);
+    const auto = it.filter(([k, x]) => x.auto && !hKeep(k));
+    const keep = it.filter(([k, x]) => x.auto && hKeep(k));
+    return {man, auto, keep}; },
+  badge(){ const b = document.getElementById('btn-arch'); if(!b) return; const a = this.arch(this.view), n = a.man.length + a.auto.length; b.querySelector('.n').textContent = n ? n : ''; },
+  drawer(keepOpen){
+    let d = document.getElementById('lt-drawer');
+    if(!d){ document.body.insertAdjacentHTML('beforeend', `<div class="lt-shade" id="lt-shade" onclick="LT.close()"></div><aside class="lt-drawer" id="lt-drawer"></aside>`); d = document.getElementById('lt-drawer'); }
+    const a = this.arch(this.view), tabs = Object.entries(H.m).filter(([k, x]) => x.hid && /^tab:/.test(k));
+    const row = (k, x, btn, js) => `<div class="lt-row"><div class="l">${esc(x.t || k)}<small>${x.at ? 'с ' + dateRu(x.at.slice(0, 10)) : x.auto ? 'сделано / прошло' : ''}</small></div><button class="btn sm" onclick="${js}">${btn}</button></div>`;
+    d.innerHTML = `<div class="hd"><h3>🗄 Архив · ${esc(document.getElementById('top-title').textContent)}</h3><span class="pill ${ltSync[1]}" id="lt-sync">${esc(ltSync[0] || '…')}</span><button class="btn sm" onclick="LT.close()">✕</button></div>
+      <div class="bd"><p class="small muted" style="margin:0 0 6px">Ничего не удаляется — только прячется. ↩ возвращает на место на всех устройствах.</p>
+      <h4>Убрано тобой · ${a.man.length}</h4>${a.man.map(([k, x]) => row(k, x, '↩ вернуть', `hSet('${k}',{hid:0})`)).join('') || '<p class="small muted">пусто</p>'}
+      <h4>Само ушло в архив — сделано или прошло · ${a.auto.length}</h4>${a.auto.map(([k, x]) => row(k, x, 'показать', `hSet('${k}',{keep:1})`)).join('') || '<p class="small muted">пусто</p>'}
+      ${a.keep.length ? `<h4>Сделано, но оставлено на виду · ${a.keep.length}</h4>${a.keep.map(([k, x]) => row(k, x, 'в архив', `hSet('${k}',{keep:0})`)).join('')}` : ''}
+      <h4>Скрытые вкладки · ${tabs.length}</h4>${tabs.map(([k, x]) => row(k, x, '↩ вернуть', `hSet('${k}',{hid:0})`)).join('') || '<p class="small muted">все вкладки на месте</p>'}
+      <h4>Правки</h4><div class="chip-row"><button class="btn sm" onclick="JOS.exportEdits()">⬇ Экспорт правок</button><button class="btn sm" onclick="JOS.resetEdits()">↺ Сброс правок</button></div></div>`;
+    d.classList.add('on'); document.getElementById('lt-shade').classList.add('on');
+  },
+  close(){ const d = document.getElementById('lt-drawer'); if(d) d.classList.remove('on'); const s = document.getElementById('lt-shade'); if(s) s.classList.remove('on'); },
+  copy(b){ const p = b.dataset.p; const ok = () => { const o = b.textContent; b.textContent = '✓ путь скопирован'; setTimeout(() => b.textContent = o, 1400); };
+    try{ navigator.clipboard.writeText(p).then(ok, () => prompt('Путь к файлу:', p)); }catch(e){ prompt('Путь к файлу:', p); } },
+  frame(fr){ try{ const doc = fr.contentDocument; if(!doc || !doc.body || !doc.querySelector('.sect,.card,table,.wrap')) return;
+      if(!doc.getElementById('lt-css')){ const st = doc.createElement('style'); st.id = 'lt-css'; st.textContent = LT_CSS; doc.head.appendChild(st);
+        const W = doc.defaultView; W.LT = LT; W.hSet = hSet;
+        let t = null; new W.MutationObserver(() => { clearTimeout(t); t = setTimeout(() => { this.apply(doc.body, fr.dataset.page); this.fit(doc); }, 120); }).observe(doc.body, {childList: true, subtree: true}); }
+      this.apply(doc.body, fr.dataset.page); this.fit(doc); }catch(e){} }
+};
+/* run after every render of the open view (debounced; our own changes are idempotent) */
+(function(){ let t = null; const run = () => { const v = document.querySelector('.view.on'); if(!v) return; LT.view = v.id.slice(2); LT.apply(v, LT.view); LT.badge(); };
+  new MutationObserver(() => { clearTimeout(t); t = setTimeout(run, 60); }).observe(document.querySelector('.wrap'), {childList: true, subtree: true, attributes: true, attributeFilter: ['class']});
+  document.querySelectorAll('iframe.panel').forEach(fr => fr.addEventListener('load', () => setTimeout(() => LT.frame(fr), 300)));
+  window.addEventListener('message', e => { const m = e.data; if(!m || m.jos !== 'h') return; const fr = document.querySelector(`iframe.panel[data-page="${m.page}"]`); if(fr) setTimeout(() => LT.frame(fr), 80); });
+  document.querySelector('.top .sp').insertAdjacentHTML('afterend', `<button class="btn" id="btn-arch" onclick="LT.drawer()" title="Что убрано с этой вкладки — вернуть одним кликом">🗄 Архив <span class="n"></span></button>`);
+  setTimeout(() => { LT.tabs(); run(); }, 0); ltPull(); setInterval(() => { if(document.visibilityState === 'visible') ltPull(); }, 5 * 60000);
+})();
 
 /*__LEARN__*/
 /*__DASH__*/
