@@ -17,10 +17,10 @@ document.head.insertAdjacentHTML('beforeend', `<style>
 #v-assist .as-models button.on{background:var(--ink);color:var(--bg)}
 #v-assist .as-log{display:flex;flex-direction:column;gap:10px;min-height:40vh;padding:0 0 12px}
 #v-assist .as-m{max-width:min(760px,92%);min-width:min(220px,70%);border-radius:16px;padding:10px 14px;font-size:14px;line-height:1.5;overflow-wrap:break-word;word-break:break-word;position:relative}
-#v-assist .as-m.jay{align-self:flex-end;background:var(--mint-tint);border:1px solid var(--mint-light);color:var(--ink);white-space:pre-wrap}
-#v-assist .as-m.jay.wait{opacity:.6}
-#v-assist .as-m.bot{align-self:flex-start;background:var(--card);border:1px solid var(--line);color:var(--ink)}
-#v-assist .as-m.note{align-self:center;background:transparent;border:0;color:var(--muted);font-size:12px;padding:2px 8px;text-align:center}
+#v-assist .as-m.as-r-jay{align-self:flex-end;background:var(--mint-tint);border:1px solid var(--mint-light);color:var(--ink);white-space:pre-wrap}
+#v-assist .as-m.as-r-jay.as-wait{opacity:.6}
+#v-assist .as-m.as-r-bot{align-self:flex-start;background:var(--card);border:1px solid var(--line);color:var(--ink);margin:0}
+#v-assist .as-m.as-r-note{align-self:center;background:transparent;border:0;color:var(--muted);font-size:12px;padding:2px 8px;text-align:center;min-width:0}
 #v-assist .as-m .ts{display:block;font:500 10.5px var(--mono);color:var(--muted);margin-top:6px}
 #v-assist .as-m p{margin:0 0 8px}#v-assist .as-m p:last-child{margin:0}
 #v-assist .as-m pre{background:var(--surface,#fff);border:1px solid var(--line);border-radius:10px;padding:10px 12px;overflow:auto;font:12px/1.45 var(--mono);margin:6px 0}
@@ -44,7 +44,7 @@ document.head.insertAdjacentHTML('beforeend', `<style>
 @media(max-width:700px){#v-assist .as-m{max-width:94%;font-size:14.5px}
   body.has-mbar #v-assist .as-in{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
   #v-assist .as-top .btn{padding:5px 9px;font-size:12px}}
-html[data-theme=dark] #v-assist .as-m.jay{background:#0f2a24;border-color:#1f8f73}
+html[data-theme=dark] #v-assist .as-m.as-r-jay{background:#0f2a24;border-color:#1f8f73}
 </style>`);
 const ASB = D.finsync && D.finsync.url ? D.finsync : null, ASKEY = 'jos7-assist', AS_KEEP = 150, AS_ONLINE = 90;
 let AS = (() => { try { return Object.assign({items: [], unread: 0}, JSON.parse(localStorage.getItem(ASKEY) || '{}')); } catch (e) { return {items: [], unread: 0}; } })();
@@ -126,8 +126,8 @@ function asRender(){
   const st = !ASB ? '<i></i>мост не настроен' : !asOnline() ? `<i></i>${asErr ? esc(asErr) : (asSt.at ? 'сервер не отвечает ' + Math.round((Date.now() / 1000 - asSt.at) / 60) + ' мин' : 'подключаюсь…')}` :
     (asSt.busy || asPending.length) ? `<i class="work"></i>работает${jobs.map(j => ` #${j.n} · ${j.mins} мин${j.tool ? ' · <code>' + esc(j.tool) + '</code>' : ''}`).join(',') || (asPending.length ? ' · сервер забирает запрос' : '')}` : '<i class="on"></i>онлайн · сервер';
   const mdl = Object.keys(models).length ? `<div class="as-models">${Object.entries(models).map(([k, n]) => `<button type="button" data-tier="${k}" class="${k === asSt.model ? 'on' : ''}" title="${esc(n)}">${k}</button>`).join('')}</div>` : '';
-  const log = AS.items.length ? AS.items.map(it => it.role === 'note' ? `<div class="as-m note">${asMd(it.text)}</div>` :
-      `<div class="as-m ${it.role}${it.local ? ' wait' : ''}">${it.role === 'jay' ? esc(it.text) : asMd(it.text)}${asFiles(it.files)}<span class="ts">${asTime(it.t)}${it.local ? ' · отправляется' : ''}</span></div>`).join('')
+  const log = AS.items.length ? AS.items.map(it => it.role === 'note' ? `<div class="as-m as-r-note">${asMd(it.text)}</div>` :
+      `<div class="as-m as-r-${it.role === 'jay' ? 'jay' : 'bot'}${it.local ? ' as-wait' : ''}">${it.role === 'jay' ? esc(it.text) : asMd(it.text)}${asFiles(it.files)}<span class="ts">${asTime(it.t)}${it.local ? ' · отправляется' : ''}</span></div>`).join('')
     : '<div class="as-empty">Тот же ассистент, что в Jay AI боте: Claude Code на сервере — задачи, код, файлы, видео, твои проекты и vault.<br>Напиши, что сделать.</div>';
   const jl = jobs.map(j => `<div class="as-job">⏳ #${j.n} · ${j.mins} мин · ${esc(j.text)}${j.tool ? ' · <code>' + esc(j.tool) + '</code>' : ''} <button type="button" data-stop="${j.n}">🛑 стоп</button></div>`).join('')
     + queue.map(j => `<div class="as-job">🕓 #${j.n} ждёт место · ${esc(j.text)}</div>`).join('');
