@@ -530,6 +530,7 @@ try { const t = localStorage.getItem('jos-theme') || 'dark'; /* Jay: dark by def
     <div class="nav on" data-v="today"><span class="ic">🏠</span>Главная<span class="cnt" id="cnt-today"></span></div>
     <div class="nav" data-v="tasks"><span class="ic">🗂</span>Задачи<span class="cnt" id="cnt-tasks"></span></div>
     <div class="nav" data-v="ask"><span class="ic">✋</span>Решения<span class="cnt" id="cnt-ask"></span></div>
+    <div class="nav" data-v="assist"><span class="ic">🤖</span>Ассистент<span class="cnt" id="cnt-assist"></span></div>
     <div class="nav" data-v="cal"><span class="ic">📅</span>Календарь<span class="cnt" id="cnt-cal"></span></div>
     <div class="nav" data-v="me"><span class="ic">👛</span>Мои финансы<span class="cnt" id="cnt-me"></span></div>
     <div class="nav" data-v="claude"><span class="ic">🧠</span>Claude Pro<span class="cnt" id="cnt-claude"></span></div>
@@ -587,6 +588,7 @@ try { const t = localStorage.getItem('jos-theme') || 'dark'; /* Jay: dark by def
   <div class="wrap">
     <section class="view on" id="v-today"></section>
     <section class="view" id="v-ask"></section>
+    <section class="view" id="v-assist"></section>
     <section class="view" id="v-tasks"></section>
     <section class="view" id="v-depts"></section>
     <section class="view" id="v-cal"></section>
@@ -1942,7 +1944,7 @@ function ltStatus(t, c){ ltSync = [t, c]; const el = document.getElementById('lt
 async function ltPull(){
   if(!LT_SYNC){ ltStatus('только этот браузер', 'grey'); return; }
   try{ const d = await ltApi({fin: 'get'}); if(!d.ok) throw new Error(d.error || 'ошибка');
-    const srv = (d.state && d.state.m) || {}; const before = JSON.stringify(H.m); H.m = ltMerge(H.m, srv); H.rev = d.rev; hSave();
+    const srv = (d.state && d.state.m) || {}; H.extra = Object.fromEntries(Object.entries(d.state || {}).filter(([k]) => k !== 'm')); const before = JSON.stringify(H.m); H.m = ltMerge(H.m, srv); H.rev = d.rev; hSave();
     if(H.dirty) await ltPush(); else ltStatus('☁ синхронно', 'mint');
     if(JSON.stringify(H.m) !== before) LT.refresh();
   }catch(e){ ltStatus(/bad ns/.test(e.message) ? 'только этот браузер · облако ждёт обновления моста' : 'офлайн · сохранено в браузере', 'grey'); }
@@ -1950,7 +1952,7 @@ async function ltPull(){
 async function ltPush(){
   if(!LT_SYNC) return;
   for(let i = 0; i < 2; i++){
-    const d = await ltApi({fin: 'put', rev: H.rev, state: {m: H.m}});
+    const d = await ltApi({fin: 'put', rev: H.rev, state: Object.assign({}, H.extra || {}, {m: H.m})});
     if(d.ok){ H.rev = d.rev; H.dirty = false; hSave(); ltStatus('☁ синхронно', 'mint'); return; }
     if(d.error === 'conflict'){ H.m = ltMerge(H.m, (d.state && d.state.m) || {}); H.rev = d.rev; continue; }
     throw new Error(d.error || 'ошибка');
@@ -2091,10 +2093,11 @@ const LT = {
 /*__LEARN__*/
 /*__DASH__*/
 /*__ASK__*/
+/*__ASSIST__*/
 /* ---------- app ---------- */
 const JOS = {
   go(v){ document.querySelectorAll('.nav[data-v]').forEach(n=>n.classList.toggle('on', n.dataset.v===v)); document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on', x.id==='v-'+v));
-    const titles = {nyc:['NYC Leads','Apollo Software Services → New York: two pipelines (our research + partner cold calls), proposals, preview sites, market analysis'], tasks:['Задачи','канбан всех задач: Google Tasks + советники — что горит, что в работе и что ты уже закрыл'], depts:['Все отделы','Jay OS по отделам: у каждого отдела свои вкладки'], server:['Сервер','все агенты и задачи сервера: что работает, что упало, когда следующий запуск — обновляется каждые 10 минут, публикуется 3× в день'], today:['Главная','все отделы на одном экране: что требует тебя, цифры и свежесть данных'], ask:['Решения','всё, где агентам нужно твоё решение · ответ здесь или кнопками в Jay AI'], cal:['Календарь','встречи из личного и рабочего календаря + задачи Google Tasks'], files:['Файлы','история: что создано и где лежит — ноутбук и сервер, поиск по имени и пути'], strategy:['Стратегия','Q4 2026 – Q4 2027 · база, модель, допущения'], advisors:['Советники','Chief of Staff · HR · Маркетинг · Финансы'], brain:['Company Brain','второй мозг W2W — то, что продаём'], w2w:['W2W','клиенты, оффер, команда'], sales:['Продажи','Jay CRM · лиды Telegram @ceo_w2w'], instagram:['Instagram','@javohir_w2w · AI-блог и его агенты'], marketing:['Маркетинг','LinkedIn · Telegram · Threads · YouTube · Google · сайт — один отдел'], auto:['Автоматизации','Instagram: комментарий → ссылка в директ'], backup:['Бэкап и восстановление','код на GitHub, шифрованный бэкап, восстановление сервера, рецепты для друзей'], security:['Безопасность','GitHub, почта, сервер и ноутбук — что изменилось и что с этим делать'], finance:['Финансы W2W','расходы и долги W2W · копия Notion, правится здесь'], learn:['Обучение','ученики, программы, задания и проверка ТЗ'], claude:['Claude Pro','моя программа: как устроен Claude Code — уровни, скилы, MCP, автоматизация, агенты'], me:['Мои финансы','личные деньги: расходы, неожиданные траты, план, долги · с телефона'], agents:['Agents House','все агенты на сервере']};
+    const titles = {assist:['Ассистент','Claude Code на сервере — тот же, что в Jay AI боте: задачи, код, файлы, видео'], nyc:['NYC Leads','Apollo Software Services → New York: two pipelines (our research + partner cold calls), proposals, preview sites, market analysis'], tasks:['Задачи','канбан всех задач: Google Tasks + советники — что горит, что в работе и что ты уже закрыл'], depts:['Все отделы','Jay OS по отделам: у каждого отдела свои вкладки'], server:['Сервер','все агенты и задачи сервера: что работает, что упало, когда следующий запуск — обновляется каждые 10 минут, публикуется 3× в день'], today:['Главная','все отделы на одном экране: что требует тебя, цифры и свежесть данных'], ask:['Решения','всё, где агентам нужно твоё решение · ответ здесь или кнопками в Jay AI'], cal:['Календарь','встречи из личного и рабочего календаря + задачи Google Tasks'], files:['Файлы','история: что создано и где лежит — ноутбук и сервер, поиск по имени и пути'], strategy:['Стратегия','Q4 2026 – Q4 2027 · база, модель, допущения'], advisors:['Советники','Chief of Staff · HR · Маркетинг · Финансы'], brain:['Company Brain','второй мозг W2W — то, что продаём'], w2w:['W2W','клиенты, оффер, команда'], sales:['Продажи','Jay CRM · лиды Telegram @ceo_w2w'], instagram:['Instagram','@javohir_w2w · AI-блог и его агенты'], marketing:['Маркетинг','LinkedIn · Telegram · Threads · YouTube · Google · сайт — один отдел'], auto:['Автоматизации','Instagram: комментарий → ссылка в директ'], backup:['Бэкап и восстановление','код на GitHub, шифрованный бэкап, восстановление сервера, рецепты для друзей'], security:['Безопасность','GitHub, почта, сервер и ноутбук — что изменилось и что с этим делать'], finance:['Финансы W2W','расходы и долги W2W · копия Notion, правится здесь'], learn:['Обучение','ученики, программы, задания и проверка ТЗ'], claude:['Claude Pro','моя программа: как устроен Claude Code — уровни, скилы, MCP, автоматизация, агенты'], me:['Мои финансы','личные деньги: расходы, неожиданные траты, план, долги · с телефона'], agents:['Agents House','все агенты на сервере']};
     const nav = document.querySelector(`.nav[data-v="${v}"]`), tt = titles[v] || [nav ? nav.textContent.replace(/\d.*$/, '').trim() : v, ''];  // a tab without a title must still load
     document.getElementById('top-title').textContent = tt[0]; document.getElementById('top-sub').textContent = tt[1];
     if(v === 'finance') finPull();
@@ -2102,6 +2105,7 @@ const JOS = {
     if(v === 'cal') calPull();
     if(v === 'learn') learnPull();
     if(v === 'ask') askPull();
+    if(v === 'assist' && typeof assistOpen === 'function') assistOpen();
     if(v === 'tasks'){ renderKanban(); calPull(); }
     if(v === 'depts') renderDepts();
     { const dp = deptOf(v); document.getElementById('top-crumb').textContent = dp ? dp.name : ''; if(dp && dp.el.classList.contains('closed')) dp.el.classList.remove('closed'); }
@@ -2130,7 +2134,7 @@ document.getElementById('cnt-today').textContent = allTasks().filter(t=>!E.done[
 document.getElementById('cnt-brain').textContent = BR.totals.clients; document.getElementById('cnt-w2w').textContent = S.installed_base.accounts.length + ' акк.'; document.getElementById('cnt-agents').textContent = AG.agents.filter(a=>a.state==='running').length + ' live';
 deptInit(); kbBadge(); renderToday(); renderStrategy(); renderAdvisors(); renderBrain(); renderW2W(); renderFinance(); renderMe(); renderAgents(); finPull(); mePull(); meBadge(); renderCal(); calBadge(); calPull(); renderLearn(); learnBadge(); learnPull(); kpiLoad(); askRender(); askPull();
 (function claudeBadge(){ const f = () => { try { const s = JSON.parse(localStorage.getItem('jos-claude-learn-v1') || '{}'); document.getElementById('cnt-claude').textContent = s.total ? (s.doneN || 0) + '/' + s.total : ''; } catch (e) {} }; f(); window.addEventListener('storage', f); window.addEventListener('message', e => { if (e.data && e.data.jos === 'h' && e.data.page === 'claude') f(); }); })();
-const VIEWS = ['today','tasks','depts','ask','cal','files','learn','claude','strategy','advisors','brain','w2w','sales','marketing','instagram','auto','server','backup','security','finance','me','agents'];
+const VIEWS = ['today','tasks','depts','ask','assist','cal','files','learn','claude','strategy','advisors','brain','w2w','sales','marketing','instagram','auto','server','backup','security','finance','me','agents'];
 const h = (location.hash||'').slice(1); if(VIEWS.includes(h)) JOS.go(h); else JOS.applyEdit();
 window.addEventListener('hashchange', () => { const v = (location.hash||'').slice(1); if(VIEWS.includes(v) && !document.getElementById('v-'+v).classList.contains('on')) JOS.go(v); });
 
@@ -2180,7 +2184,7 @@ const JOS_M = window.JOS_M = (() => {   // explicit window property: a top-level
   const UA = navigator.userAgent || '';
   const isApp = /JOSApp\//.test(UA) || typeof JOSApp !== 'undefined';
   const phone = () => matchMedia('(max-width:700px)').matches;
-  const TABS = [['today', '🏠', 'Главная'], ['tasks', '🗂', 'Задачи'], ['ask', '✋', 'Решения'], ['sales', '📇', 'Продажи'], ['menu', '☰', 'Меню']];
+  const TABS = [['today', '🏠', 'Главная'], ['tasks', '🗂', 'Задачи'], ['assist', '🤖', 'Ассистент'], ['ask', '✋', 'Решения'], ['menu', '☰', 'Меню']];
   const cur = () => { const v = document.querySelector('.view.on'); return v ? v.id.slice(2) : 'today'; };
   const menuOpen = () => document.body.classList.contains('menu');
   const closeMenu = () => document.body.classList.remove('menu');
