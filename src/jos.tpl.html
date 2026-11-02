@@ -2176,7 +2176,7 @@ const PREFS = (() => {
    Data stays live because this IS the live page: index.html is rebuilt+published from the server, panels 3×/day by
    \Jay\jos-sales-ig-refresh, and the cloud tabs (tasks/finance/calendar/learn/ask) pull on every view switch.
    Source of truth: C:\Users\user\Dev\jos-mobile\tools\mobile.js → patch_jos_mobile.py writes it into src/jos.tpl.html. */
-const JOS_M = (() => {
+const JOS_M = window.JOS_M = (() => {   // explicit window property: a top-level const is NOT reachable as window.JOS_M from the app
   const UA = navigator.userAgent || '';
   const isApp = /JOSApp\//.test(UA) || typeof JOSApp !== 'undefined';
   const phone = () => matchMedia('(max-width:700px)').matches;
