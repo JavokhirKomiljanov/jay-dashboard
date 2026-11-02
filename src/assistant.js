@@ -16,7 +16,7 @@ document.head.insertAdjacentHTML('beforeend', `<style>
 #v-assist .as-models button+button{border-left:1px solid var(--line-2)}
 #v-assist .as-models button.on{background:var(--ink);color:var(--bg)}
 #v-assist .as-log{display:flex;flex-direction:column;gap:10px;min-height:40vh;padding:0 0 12px}
-#v-assist .as-m{max-width:min(760px,92%);border-radius:16px;padding:10px 14px;font-size:14px;line-height:1.5;overflow-wrap:anywhere;position:relative}
+#v-assist .as-m{max-width:min(760px,92%);min-width:min(220px,70%);border-radius:16px;padding:10px 14px;font-size:14px;line-height:1.5;overflow-wrap:break-word;word-break:break-word;position:relative}
 #v-assist .as-m.jay{align-self:flex-end;background:var(--mint-tint);border:1px solid var(--mint-light);color:var(--ink);white-space:pre-wrap}
 #v-assist .as-m.jay.wait{opacity:.6}
 #v-assist .as-m.bot{align-self:flex-start;background:var(--card);border:1px solid var(--line);color:var(--ink)}
@@ -94,8 +94,9 @@ async function asSend(){
   const ta = document.getElementById('as-text'); const text = (ta.value || '').trim().slice(0, 4000); if(!text || asSending) return;
   asSending = true; asErr = ''; asRender();
   const it = {id: Math.random().toString(36).slice(2, 12), t: Date.now() / 1000, text, role: 'jay', local: true};
-  try { await asWrite(chat => { chat.in.push({id: it.id, t: it.t, text}); }); AS.items.push(it); asPending.push(it.id); ta.value = ''; asSave(); }
-  catch (e) { asErr = 'Не отправилось: ' + e.message; }
+  AS.items.push(it); asPending.push(it.id); ta.value = ''; asRender(); asScroll();   // optimistic: show at once, the bridge write takes ~4 s
+  try { await asWrite(chat => { chat.in.push({id: it.id, t: it.t, text}); }); asSave(); }
+  catch (e) { asErr = 'Не отправилось: ' + e.message; AS.items = AS.items.filter(x => x !== it); asPending = asPending.filter(x => x !== it.id); ta.value = text; }
   asSending = false; asBusy = true; asRender(); asScroll(); asLast = 0; if(!matchMedia('(max-width:700px)').matches){ const t = document.getElementById('as-text'); if(t) t.focus(); }
 }
 async function asCmd(op, extra){ try { await asWrite(chat => { chat.cmd.push(Object.assign({id: Math.random().toString(36).slice(2, 12), t: Date.now() / 1000, op}, extra || {})); }); asLast = 0; } catch (e) { asErr = e.message; asRender(); } }
