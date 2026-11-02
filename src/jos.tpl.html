@@ -2195,7 +2195,9 @@ const JOS_M = window.JOS_M = (() => {   // explicit window property: a top-level
   bar.addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return;
     if(b.dataset.v === 'menu'){ document.body.classList.toggle('menu'); if(menuOpen() && side) side.scrollTop = 0; return; }
     closeMenu(); JOS.go(b.dataset.v); });
-  const go0 = JOS.go.bind(JOS); JOS.go = v => { go0(v); mark(v); };
+  /* own tab history for the app's hardware back (the WebView's history does not see hash changes after staticrypt's document.write) */
+  const stack = []; let popping = false;
+  const go0 = JOS.go.bind(JOS); JOS.go = v => { const prev = cur(); go0(v); mark(v); if(!popping && prev !== v && stack[stack.length - 1] !== prev) stack.push(prev); if(stack.length > 30) stack.shift(); };
   mark(cur());
   /* badges = the sidebar counters (cnt-tasks, cnt-ask …) */
   const syncBadges = () => bar.querySelectorAll('button').forEach(b => { const c = document.getElementById('cnt-' + b.dataset.v), n = b.querySelector('.n');
@@ -2283,7 +2285,9 @@ const JOS_M = window.JOS_M = (() => {   // explicit window property: a top-level
   /* ----- hardware back (app): close menu / long-text drawer / toast first, else the WebView goes back ----- */
   function back(){ if(menuOpen()){ closeMenu(); return 1; }
     const d = document.getElementById('lt-drawer'); if(d && d.classList.contains('on')){ if(window.LT && LT.close) LT.close(); else d.classList.remove('on'); return 1; }
-    if(tst.classList.contains('on')){ tst.classList.remove('on'); return 1; } return 0; }
+    if(tst.classList.contains('on')){ tst.classList.remove('on'); return 1; }
+    if(stack.length){ popping = true; try{ JOS.go(stack.pop()); } finally{ popping = false; } return 1; }
+    return 0; }
 
   return {isApp, phone, reload, check, resume, back, toast, bar, cur};
 })();
