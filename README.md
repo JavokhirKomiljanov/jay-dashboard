@@ -25,6 +25,8 @@ unlocks the others.
 - **Mobile layer** in `src/jos.tpl.html` between markers `MOBILE:HEAD` / `MOBILE:CSS` / `MOBILE:JS` (source of truth:
   `jos-mobile/tools/mobile.css|js`, applied by `jos-mobile/tools/patch_jos_mobile.py`): bottom tab bar, drawer, kanban swipe,
   pull-to-refresh, freshness check (`HEAD index.html` → «Данные обновились»), `window.JOS_M` for the app, service worker.
+- **🤖 Ассистент tab** (`src/assistant.js`): chat with Claude Code on the server — the Jay AI bot's engine — over the cloud bridge
+  (ns `ui`, key `chat`); server side `Jay-Telegram-Automation/jos_assistant.py` (task `\Jay\jos-assistant`). No new public endpoint.
 - **PWA:** `manifest.webmanifest`, `sw.js` (network-first, cache only as offline fallback), `icons/`. «Install app» in Chrome works as a fallback.
 - After changing the template: `python scripts/build_jos.py && bash scripts/publish.sh -m "jos: …" index`; panels pick the
   CSS up on their next rebuild (`python scripts/refresh_sales_ig.py --force` does it now).
