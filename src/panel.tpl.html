@@ -128,7 +128,9 @@ function renderSales(){
   const tg = l => l.username ? `<a href="https://t.me/${esc(l.username)}" target="_blank">@${esc(l.username)}</a>` : '';
   const waitCls = h => h>=72?'bad':h>=24?'warn':'';
   document.getElementById('root').innerHTML = `
-  <div class="subtabs" id="subtabs"><button data-t="clients">🏢 Клиенты${D.clients?' · '+D.clients.kpi.total:''}</button><button data-t="leads">📇 Лиды Telegram · ${fmt(k.active)}</button></div>
+  <div class="subtabs" id="subtabs"><button data-t="crm">🗂 Канбан CRM</button><button data-t="clients">🏢 Клиенты${D.clients?' · '+D.clients.kpi.total:''}</button><button data-t="leads">📇 Лиды Telegram · ${fmt(k.active)}</button></div>
+  <div id="t-crm"><p class="small muted" style="margin:0 0 10px">AmoCRM-стиль: канбан по стадиям, карточки лидов ISAEV Dastur 24/25 + Telegram/Instagram, задачи, заметки. Вход по личному логину (у каждого в команде свой). <a href="crm.html" target="_blank">Открыть отдельной страницей ↗</a></p>
+    <iframe src="crm.html" title="Jay CRM" style="width:100%;height:calc(100vh - 150px);min-height:620px;border:1px solid var(--line);border-radius:var(--r);background:#fff" loading="lazy"></iframe></div>
   <div id="t-clients"></div>
   <div id="t-leads">
   <div class="eyebrow">Jay CRM · Telegram @ceo_w2w · обновлено ${dmy(C.generated)}</div>
@@ -198,10 +200,10 @@ function renderSales(){
   document.getElementById('foot').innerHTML = `<span>Источник: CRM на сервере (jay-crm/data/crm.sqlite), снимок ${dmy(C.generated)}</span><span>Копия в Obsidian: W2W/CRM/ (сводка, Лиды/ с перепиской, Клиенты/ с досье)</span>`;
   if (D.clients) renderClients(D.clients);
   const ST = 'jos7-sales-tab', tabs = document.getElementById('subtabs');
-  let cur = 'clients'; try{ cur = localStorage.getItem(ST) || 'clients'; }catch(e){}
-  if (!D.clients) cur = 'leads';
+  let cur = 'crm'; try{ cur = localStorage.getItem(ST) || 'crm'; }catch(e){}
+  if (cur === 'clients' && !D.clients) cur = 'leads';
   const show = t => { tabs.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.t===t));
-    document.getElementById('t-clients').style.display = t==='clients'?'':'none'; document.getElementById('t-leads').style.display = t==='leads'?'':'none';
+    for (const k of ['crm','clients','leads']) document.getElementById('t-'+k).style.display = t===k?'':'none';
     try{ localStorage.setItem(ST, t); }catch(e){} post(); };
   tabs.onclick = e => { const b = e.target.closest('button'); if(b) show(b.dataset.t); };
   show(cur);

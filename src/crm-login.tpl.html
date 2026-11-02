@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Jay CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#131313;--body:#5c5d5f;--mint:#07e7b7;--card:#f6f7f8;--line:#e6e8ea;--bg:#fff;--err:#e5484d}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#f2f3f4;--body:#b9bcc0;--card:#1b1d1f;--line:#2a2d30;--bg:#111213}}
+:root[data-theme="dark"]{--ink:#f2f3f4;--body:#b9bcc0;--card:#1b1d1f;--line:#2a2d30;--bg:#111213}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);color:var(--body);font:15px/1.5 Inter,sans-serif;padding:16px}
+form{width:min(380px,100%);background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px}
+h1{font:800 24px Manrope,sans-serif;color:var(--ink);margin:6px 0 4px}h1 em{font-style:normal;background:var(--mint);color:#131313;padding:0 8px;border-radius:8px}
+.eb{color:#05a884;letter-spacing:2.5px;font-size:11px;font-weight:700;text-transform:uppercase}
+label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-top:14px}
+input[type=text],input[type=password]{width:100%;margin-top:6px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+.rm{display:flex;gap:8px;align-items:center;font-weight:400;color:var(--body)}
+button{margin-top:18px;width:100%;border:0;border-radius:999px;padding:13px;background:var(--mint);color:#131313;font:700 15px Inter;cursor:pointer}
+button:disabled{opacity:.6}#err{color:var(--err);min-height:20px;margin-top:10px;font-size:13px}
+</style></head><body>
+<form id="f" autocomplete="on">
+<div class="eb">W2W · Отдел продаж</div>
+<h1>Jay <em>CRM</em></h1>
+<p style="margin:0">Лиды ISAEV Dastur 24/25, Telegram и Instagram. Вход по логину и паролю от Jay.</p>
+<label>Логин<input type="text" id="u" name="username" autocomplete="username" autocapitalize="off" spellcheck="false" required></label>
+<label>Пароль<input type="password" id="p" name="password" autocomplete="current-password" required></label>
+<label class="rm"><input type="checkbox" id="r" checked> Запомнить на этом устройстве</label>
+<button id="b">Войти</button>
+<div id="err"></div>
+</form>
+<script>
+const B=/*__BLOB__*/null, AK='jay-crm-auth';
+const u8=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0)), b64=a=>btoa(String.fromCharCode(...a));
+const sub=crypto.subtle;
+async function open_(raw,name){
+  const k=await sub.importKey('raw',raw,'AES-GCM',false,['decrypt']);
+  const gz=await sub.decrypt({name:'AES-GCM',iv:u8(B.i)},k,u8(B.c));
+  let html=await new Response(new Blob([gz]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
+  html=html.replace('/*__USER__*/null',JSON.stringify(name)).replace('<script>','<script>window.CRM_LOGOUT=()=>{try{localStorage.removeItem("'+AK+'")}catch(_){}location.reload()};</'+'script><script>');
+  document.open();document.write(html);document.close();
+}
+async function login(user,pw){
+  const mat=await sub.importKey('raw',new TextEncoder().encode(user.trim().toLowerCase()+'\n'+pw),'PBKDF2',false,['deriveKey']);
+  for(const a of B.a){
+    const kek=await sub.deriveKey({name:'PBKDF2',hash:'SHA-256',salt:u8(a.s),iterations:B.n},mat,{name:'AES-GCM',length:256},false,['decrypt']);
+    try{const out=new Uint8Array(await sub.decrypt({name:'AES-GCM',iv:u8(a.i)},kek,u8(a.w)));return[out.slice(0,32),new TextDecoder().decode(out.slice(32))]}catch(_){}
+  }
+  return null;
+}
+(async()=>{try{const s=JSON.parse(localStorage.getItem(AK)||'null');if(s)await open_(u8(s.k),s.n)}catch(_){try{localStorage.removeItem(AK)}catch(_){}}})();
+document.getElementById('f').onsubmit=async ev=>{ev.preventDefault();const b=document.getElementById('b'),e=document.getElementById('err');
+  b.disabled=true;b.textContent='Проверяю…';e.textContent='';
+  try{const r=await login(document.getElementById('u').value,document.getElementById('p').value);
+    if(!r){e.textContent='Неверный логин или пароль';return}
+    if(document.getElementById('r').checked){try{localStorage.setItem(AK,JSON.stringify({k:b64(r[0]),n:r[1]}))}catch(_){}}
+    await open_(r[0],r[1]);
+  }catch(x){e.textContent='Ошибка: '+x}finally{b.disabled=false;b.textContent='Войти'}};
+</script></body></html>
