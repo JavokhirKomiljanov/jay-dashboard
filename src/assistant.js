@@ -92,11 +92,11 @@ function asBadge(){ const el = document.getElementById('cnt-assist'); if(!el) re
 function assistOpen(){ AS.unread = 0; asSave(); asBadge(); asRender(); asPull().then(() => { asRender(); asScroll(); }); asLoopRun(); }
 async function asSend(){
   const ta = document.getElementById('as-text'); const text = (ta.value || '').trim().slice(0, 4000); if(!text || asSending) return;
-  asSending = true; asErr = ''; asRender();
+  ta.value = '';   // clear BEFORE the re-render (asRender re-creates the textarea and keeps its current value as the draft)
   const it = {id: Math.random().toString(36).slice(2, 12), t: Date.now() / 1000, text, role: 'jay', local: true};
-  AS.items.push(it); asPending.push(it.id); ta.value = ''; asRender(); asScroll();   // optimistic: show at once, the bridge write takes ~4 s
+  asSending = true; asErr = ''; AS.items.push(it); asPending.push(it.id); asRender(); asScroll();   // optimistic: show at once, the bridge write takes ~4 s
   try { await asWrite(chat => { chat.in.push({id: it.id, t: it.t, text}); }); asSave(); }
-  catch (e) { asErr = 'Не отправилось: ' + e.message; AS.items = AS.items.filter(x => x !== it); asPending = asPending.filter(x => x !== it.id); ta.value = text; }
+  catch (e) { asErr = 'Не отправилось: ' + e.message; AS.items = AS.items.filter(x => x !== it); asPending = asPending.filter(x => x !== it.id); const t2 = document.getElementById('as-text'); if(t2) t2.value = text; }
   asSending = false; asBusy = true; asRender(); asScroll(); asLast = 0; if(!matchMedia('(max-width:700px)').matches){ const t = document.getElementById('as-text'); if(t) t.focus(); }
 }
 async function asCmd(op, extra){ try { await asWrite(chat => { chat.cmd.push(Object.assign({id: Math.random().toString(36).slice(2, 12), t: Date.now() / 1000, op}, extra || {})); }); asLast = 0; } catch (e) { asErr = e.message; asRender(); } }
