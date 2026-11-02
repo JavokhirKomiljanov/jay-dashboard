@@ -16,7 +16,7 @@ document.head.insertAdjacentHTML('beforeend', `<style>
 #v-assist .as-models button+button{border-left:1px solid var(--line-2)}
 #v-assist .as-models button.on{background:var(--ink);color:var(--bg)}
 #v-assist .as-log{display:flex;flex-direction:column;gap:10px;min-height:40vh;padding:0 0 12px}
-#v-assist .as-m{max-width:min(760px,92%);min-width:min(220px,70%);border-radius:16px;padding:10px 14px;font-size:14px;line-height:1.5;overflow-wrap:break-word;word-break:break-word;position:relative}
+#v-assist .as-m{max-width:min(760px,92%);min-width:min(220px,70%);border-radius:16px;padding:10px 14px;font-size:14px;line-height:1.5;overflow-wrap:break-word;word-break:break-word;position:relative;scroll-margin-bottom:110px}
 #v-assist .as-m.as-r-jay{align-self:flex-end;background:var(--mint-tint);border:1px solid var(--mint-light);color:var(--ink);white-space:pre-wrap}
 #v-assist .as-m.as-r-jay.as-wait{opacity:.6}
 #v-assist .as-m.as-r-bot{align-self:flex-start;background:var(--card);border:1px solid var(--line);color:var(--ink);margin:0}
