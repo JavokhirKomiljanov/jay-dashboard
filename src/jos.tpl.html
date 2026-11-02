@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- MOBILE:HEAD --><link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#131313">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png"><!-- /MOBILE:HEAD -->
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
 <meta name="googlebot" content="noindex,nofollow">
 <title>Jay OS — W2W</title>
@@ -359,6 +366,57 @@ body.me-hide .mv{filter:blur(7px);user-select:none}
   .top,.wrap,.editbar{padding-left:16px;padding-right:16px;margin-left:0;margin-right:0}
   .dl .d{flex-basis:160px}
 }
+/* MOBILE:CSS */
+/* ===== mobile layer (phone ≤700px + Android app «Jay OS», 2026-11-03) =====
+   Desktop is untouched. Panel pages (sales, instagram, server…) get the kanban/table rules via jos_css(). */
+.mbar{display:none}
+.ptr{position:fixed;top:-60px;left:50%;transform:translateX(-50%);z-index:70;background:var(--ink);color:var(--bg);border-radius:999px;padding:8px 14px;font:600 12.5px var(--text);display:flex;gap:8px;align-items:center;box-shadow:0 8px 24px rgba(0,0,0,.22);transition:top .18s;pointer-events:none;white-space:nowrap}
+.ptr.on{top:calc(12px + env(safe-area-inset-top,0px))}
+.ptr i{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:ptr-spin .8s linear infinite}
+@keyframes ptr-spin{to{transform:rotate(360deg)}}
+.m-toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:70;background:var(--ink);color:var(--bg);border-radius:14px;padding:10px 10px 10px 14px;font:500 13px var(--text);display:none;gap:10px;align-items:center;max-width:94vw;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.m-toast.on{display:flex}
+.m-toast span{min-width:0}
+.m-toast button{border:0;border-radius:9px;padding:7px 11px;font:600 12.5px var(--text);background:var(--mint);color:#131313;cursor:pointer;white-space:nowrap}
+.m-toast button.x{background:transparent;color:inherit;opacity:.7;padding:7px 6px}
+@media(min-width:701px){.m-toast{bottom:24px}}
+@media(max-width:700px){
+  .mbar{position:fixed;left:0;right:0;bottom:0;z-index:45;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid var(--line)}
+  .mbar button{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:52px;padding:4px 0;border-radius:12px;font:600 10.5px var(--text);color:var(--muted);-webkit-tap-highlight-color:transparent;position:relative;cursor:pointer}
+  .mbar button .ic{font-size:21px;line-height:1}
+  .mbar button.on{color:var(--ink)}
+  .mbar button.on::after{content:'';position:absolute;top:1px;width:22px;height:3px;border-radius:3px;background:var(--mint)}
+  .mbar button .n{position:absolute;top:1px;left:calc(50% + 6px);min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:var(--coral-dark);color:#fff;font:700 10px var(--mono);display:none;align-items:center;justify-content:center;line-height:1}
+  .mbar button .n.on{display:inline-flex}
+  body.has-mbar .main{padding-bottom:calc(86px + env(safe-area-inset-bottom,0px))}
+  body.has-mbar .side{padding-bottom:calc(86px + env(safe-area-inset-bottom,0px))}
+  body.has-mbar .lt-drawer .bd{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  .side{width:min(312px,88vw)}
+  .nav{padding:11px 12px;font-size:14.5px;min-height:44px}
+  .nav>.lt-x{display:none}body.editing .nav>.lt-x{display:inline-flex}  /* «hide tab» buttons only in edit mode on phones */
+  .dept-h{padding:14px 12px 6px}
+  .btn{min-height:38px}
+  .kb{grid-auto-columns:min(86vw,330px);scroll-snap-type:x mandatory;scroll-padding:0 6px;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+  .kb-col{scroll-snap-align:start}
+  .kb-card{padding:10px 36px 10px 12px}
+  .tbl table{min-width:540px}
+  .tbl{overscroll-behavior-x:contain}
+  th,td{padding:9px 10px}
+  .top{padding:10px 12px 8px;gap:8px}
+  .top h1{font-size:18px}
+  .top .pref-btn{padding:6px 8px}
+  .top #btn-edit{padding:6px 9px}
+  .editbar{margin:0 12px}
+  .crumb{font-size:10px}
+  iframe.panel{min-height:70vh}
+  .lt-drawer{width:100vw}
+  input,select,textarea{font-size:16px!important}  /* no zoom-jump on focus in Android/iOS */
+  .kb-bar input,.kb-bar select,.flt input{font-size:16px!important}
+}
+html[data-theme=dark] .mbar{background:rgba(17,20,22,.94)}
+html.app .mbar button{-webkit-user-select:none;user-select:none}
+html.app ::-webkit-scrollbar{width:0;height:0}
+/* /MOBILE:CSS */
 footer{padding:18px 28px;border-top:1px solid var(--line);color:var(--muted);font-size:11.5px;font-family:var(--mono);display:flex;gap:14px;flex-wrap:wrap}
 
 /* ===== departments in the sidebar + «🏢 Все отделы» (2026-10-24) ===== */
@@ -2110,5 +2168,126 @@ const PREFS = (() => {
   return { theme(){ setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); }, lang(){ setLang(lang === 'en' ? 'ru' : 'en'); }, tr };
 })();
 </script>
+<!-- MOBILE:JS -->
+<script>
+/* ---------- mobile layer (2026-11-03): bottom bar, drawer, pull-to-refresh, freshness, app bridge, PWA ----------
+   Works on phones (≤700px) and inside the Android app «Jay OS» (WebView; UA has JOSApp/x.y, bridge window.JOSApp).
+   Desktop: only the freshness toast («Данные обновились») is added.
+   Data stays live because this IS the live page: index.html is rebuilt+published from the server, panels 3×/day by
+   \Jay\jos-sales-ig-refresh, and the cloud tabs (tasks/finance/calendar/learn/ask) pull on every view switch.
+   Source of truth: C:\Users\user\Dev\jos-mobile\tools\mobile.js → patch_jos_mobile.py writes it into src/jos.tpl.html. */
+const JOS_M = (() => {
+  const UA = navigator.userAgent || '';
+  const isApp = /JOSApp\//.test(UA) || typeof JOSApp !== 'undefined';
+  const phone = () => matchMedia('(max-width:700px)').matches;
+  const TABS = [['today', '🏠', 'Главная'], ['tasks', '🗂', 'Задачи'], ['ask', '✋', 'Решения'], ['sales', '📇', 'Продажи'], ['menu', '☰', 'Меню']];
+  const cur = () => { const v = document.querySelector('.view.on'); return v ? v.id.slice(2) : 'today'; };
+  const menuOpen = () => document.body.classList.contains('menu');
+  const closeMenu = () => document.body.classList.remove('menu');
+  const side = document.getElementById('side');
+  if(isApp) document.documentElement.classList.add('app');
+
+  /* ----- bottom bar ----- */
+  const bar = document.createElement('nav'); bar.className = 'mbar'; bar.setAttribute('aria-label', 'Разделы');
+  bar.innerHTML = TABS.map(([v, ic, l]) => `<button type="button" data-v="${v}"><span class="ic">${ic}</span>${l}<span class="n"></span></button>`).join('');
+  document.body.appendChild(bar); document.body.classList.add('has-mbar');
+  const mark = v => bar.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+  bar.addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return;
+    if(b.dataset.v === 'menu'){ document.body.classList.toggle('menu'); if(menuOpen() && side) side.scrollTop = 0; return; }
+    closeMenu(); JOS.go(b.dataset.v); });
+  const go0 = JOS.go.bind(JOS); JOS.go = v => { go0(v); mark(v); };
+  mark(cur());
+  /* badges = the sidebar counters (cnt-tasks, cnt-ask …) */
+  const syncBadges = () => bar.querySelectorAll('button').forEach(b => { const c = document.getElementById('cnt-' + b.dataset.v), n = b.querySelector('.n');
+    const m = c ? (c.textContent.trim().match(/^\d+/) || [])[0] : ''; n.textContent = m || ''; n.classList.toggle('on', !!m && +m > 0); });
+  syncBadges(); if(side) new MutationObserver(syncBadges).observe(side, {childList: true, subtree: true, characterData: true});
+
+  /* ----- drawer: a tap outside the menu only closes it ----- */
+  document.addEventListener('click', e => { if(menuOpen() && phone() && !e.target.closest('#side') && !e.target.closest('.menu-btn') && !e.target.closest('.mbar')){ closeMenu(); e.preventDefault(); e.stopPropagation(); } }, true);
+
+  /* ----- toast ----- */
+  const tst = document.createElement('div'); tst.className = 'm-toast'; document.body.appendChild(tst); let tstT = null;
+  function toast(text, btn, fn, ms){ clearTimeout(tstT);
+    tst.innerHTML = `<span></span>${btn ? '<button type="button" class="act"></button>' : ''}<button type="button" class="x" aria-label="закрыть">✕</button>`;
+    tst.querySelector('span').textContent = text; if(btn){ const a = tst.querySelector('.act'); a.textContent = btn; a.onclick = () => { tst.classList.remove('on'); fn && fn(); }; }
+    tst.querySelector('.x').onclick = () => tst.classList.remove('on'); tst.classList.add('on');
+    if(ms) tstT = setTimeout(() => tst.classList.remove('on'), ms); }
+
+  /* ----- reload (hash = current tab survives; edits live in localStorage/cloud) ----- */
+  function reload(){ try{ sessionStorage.setItem('jos-m-reload', String(Date.now())); }catch(e){} location.reload(); }
+  try{ if(sessionStorage.getItem('jos-m-reload')){ sessionStorage.removeItem('jos-m-reload');
+    toast('Обновлено · ' + new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'}), null, null, 2500); } }catch(e){}
+
+  /* ----- pull-to-refresh: touch, page at the very top, vertical pull ≥ 90px; off while editing / menu open ----- */
+  const ptr = document.createElement('div'); ptr.className = 'ptr'; ptr.innerHTML = '<i></i><span>Потяни, чтобы обновить</span>'; document.body.appendChild(ptr);
+  const ptrText = t => { ptr.querySelector('span').textContent = t; };
+  let y0 = null, x0 = 0, armed = false, pulling = false;
+  const atTop = (el, doc) => { for(let n = el; n && n !== doc.documentElement; n = n.parentElement){ if(n.scrollTop > 0) return false; }
+    return (document.scrollingElement || document.documentElement).scrollTop <= 0; };
+  function bindTouch(doc){
+    doc.addEventListener('touchstart', e => { if(e.touches.length !== 1 || document.body.classList.contains('editing') || menuOpen() || !atTop(e.target, doc)){ y0 = null; return; }
+      y0 = e.touches[0].clientY; x0 = e.touches[0].clientX; armed = true; pulling = false; }, {passive: true});
+    doc.addEventListener('touchmove', e => { if(y0 === null || !armed) return; const t = e.touches[0], dy = t.clientY - y0, dx = Math.abs(t.clientX - x0);
+      if(dx > 30 && dx > dy){ armed = false; pulling = false; ptr.classList.remove('on'); return; }
+      pulling = dy > 90; ptr.classList.toggle('on', dy > 24); ptrText(pulling ? 'Отпусти — обновлю' : 'Потяни, чтобы обновить'); }, {passive: true});
+    const end = () => { if(y0 === null) return; if(pulling){ ptrText('Обновляю…'); reload(); } else ptr.classList.remove('on'); y0 = null; armed = pulling = false; };
+    doc.addEventListener('touchend', end); doc.addEventListener('touchcancel', end);
+  }
+  bindTouch(document);
+  document.querySelectorAll('iframe.panel').forEach(fr => fr.addEventListener('load', () => { try{ const d = fr.contentDocument; if(d && d.body) bindTouch(d); }catch(e){} }));
+
+  /* ----- freshness: index.html is static → compare the server's ETag/Last-Modified with the one we loaded.
+     Open: every 10 min → toast «Данные обновились». Back from background: reload at once (not while editing).
+     Panels are rebuilt 3×/day: after ≥20 min away the open panel reloads; cloud tabs re-pull after ≥1 min away. ----- */
+  const http = /^https?:/.test(location.protocol);
+  const SELF = new URL(/plaintext/.test(location.pathname) ? location.pathname.split('/').pop() : 'index.html', location.href).href;
+  let stamp = null, hiddenAt = 0, lastCheck = 0, lastResume = 0;
+  const head = () => fetch(SELF, {method: 'HEAD', cache: 'no-store'}).then(r => r.ok ? (r.headers.get('etag') || r.headers.get('last-modified') || '') : null).catch(() => null);
+  async function check(resume){ if(!http) return false; const now = Date.now(); if(!resume && now - lastCheck < 60000) return false; lastCheck = now;
+    const t = await head(); if(t === null) return false;
+    if(stamp === null){ stamp = t; return false; } if(t === stamp) return false;
+    if(resume && !document.body.classList.contains('editing')){ reload(); return true; }
+    toast('Данные обновились', 'Обновить', reload); return true; }
+  const PULL = {finance: 'finPull', me: 'mePull', cal: 'calPull', learn: 'learnPull', ask: 'askPull', tasks: 'calPull'};
+  function resume(){ const now = Date.now(); if(now - lastResume < 3000) return; lastResume = now;
+    const away = hiddenAt ? now - hiddenAt : 0; hiddenAt = 0;
+    check(true).then(reloaded => { if(reloaded) return;
+      const fn = PULL[cur()]; if(fn && typeof window[fn] === 'function' && away > 60000){ try{ window[fn](); }catch(e){} }
+      if(away > 20 * 60000) document.querySelectorAll('.view.on iframe.panel[src]').forEach(f => { try{ f.contentWindow.location.reload(); }catch(e){ f.src = f.src; } }); }); }
+  if(http){ head().then(t => { if(t) stamp = t; }); setInterval(() => check(false), 10 * 60000);
+    document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'hidden') hiddenAt = Date.now(); else resume(); }); }
+
+  /* ----- Android app bridge ----- */
+  if(isApp){
+    /* same-origin «↗» links open inside the app (back returns); other hosts → system browser (WebView intent) */
+    document.addEventListener('click', e => { const a = e.target.closest('a[href]'); if(!a) return;
+      let u; try{ u = new URL(a.getAttribute('href'), location.href); }catch(err){ return; }
+      if(u.origin === location.origin && a.target === '_blank') a.target = '_self'; }, true);
+    /* downloads: the page builds blob:/data: links and calls a.click() → hand the bytes to the app (Загрузки/JayOS) */
+    const click0 = HTMLAnchorElement.prototype.click;
+    HTMLAnchorElement.prototype.click = function(){ const h = this.href || '';
+      if(this.hasAttribute('download') && /^(blob|data):/.test(h) && window.JOSApp && JOSApp.saveFile){ saveViaApp(this.getAttribute('download') || 'file', h); return; }
+      return click0.apply(this, arguments); };
+    async function saveViaApp(name, href){ try{ const b = await (await fetch(href)).blob(); const r = new FileReader();
+      r.onload = () => JOSApp.saveFile(name, b.type || 'application/octet-stream', String(r.result).split(',')[1] || ''); r.readAsDataURL(b); }
+      catch(e){ toast('Не удалось сохранить: ' + e.message, null, null, 4000); } }
+    /* page theme → system bars */
+    const pushTheme = () => { try{ JOSApp.setTheme(document.documentElement.dataset.theme || 'dark'); }catch(e){} };
+    pushTheme(); new MutationObserver(pushTheme).observe(document.documentElement, {attributes: true, attributeFilter: ['data-theme']});
+    try{ const f = document.querySelector('footer'); if(f){ const s = document.createElement('span'); s.textContent = '📱 приложение Jay OS ' + JOSApp.version(); f.appendChild(s); } }catch(e){}
+  }
+
+  /* ----- PWA: service worker (network-first, offline fallback) — https only, never for local previews ----- */
+  if('serviceWorker' in navigator && location.protocol === 'https:' && !/plaintext/.test(location.pathname)) navigator.serviceWorker.register('sw.js').catch(() => {});
+
+  /* ----- hardware back (app): close menu / long-text drawer / toast first, else the WebView goes back ----- */
+  function back(){ if(menuOpen()){ closeMenu(); return 1; }
+    const d = document.getElementById('lt-drawer'); if(d && d.classList.contains('on')){ if(window.LT && LT.close) LT.close(); else d.classList.remove('on'); return 1; }
+    if(tst.classList.contains('on')){ tst.classList.remove('on'); return 1; } return 0; }
+
+  return {isApp, phone, reload, check, resume, back, toast, bar, cur};
+})();
+</script>
+<!-- /MOBILE:JS -->
 </body>
 </html>
