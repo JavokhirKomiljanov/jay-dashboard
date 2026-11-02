@@ -19,6 +19,16 @@ unlocks the others.
 | `archive.html` | The whole previous JOS (v6, 20 tabs): HA, VS, Apollo/US, reports, ROI backlog, IT capacity… | former `index.plaintext.html` |
 | `strategy.html`, `pm.html`, `it-architecture.html` | older standalone pages (HA era), linked from the archive | — |
 
+## Mobile (2026-11-03)
+- **Android app «Jay OS»** — a native WebView shell around this site: repo `C:\Users\user\Dev\jos-mobile` on the server,
+  APK `android/app/build/outputs/apk/release/JayOS-<ver>-release.apk`. The app shows the live pages, so data never needs an app update.
+- **Mobile layer** in `src/jos.tpl.html` between markers `MOBILE:HEAD` / `MOBILE:CSS` / `MOBILE:JS` (source of truth:
+  `jos-mobile/tools/mobile.css|js`, applied by `jos-mobile/tools/patch_jos_mobile.py`): bottom tab bar, drawer, kanban swipe,
+  pull-to-refresh, freshness check (`HEAD index.html` → «Данные обновились»), `window.JOS_M` for the app, service worker.
+- **PWA:** `manifest.webmanifest`, `sw.js` (network-first, cache only as offline fallback), `icons/`. «Install app» in Chrome works as a fallback.
+- After changing the template: `python scripts/build_jos.py && bash scripts/publish.sh -m "jos: …" index`; panels pick the
+  CSS up on their next rebuild (`python scripts/refresh_sales_ig.py --force` does it now).
+
 ## Architecture
 - **Build:** `python scripts/build_jos.py` → `index.plaintext.html` (gitignored). Data is inlined as JSON (`/*__DATA__*/`).
 - **Edit layer:** every text with `data-e` is editable in the page (✏️ Править); checkboxes and edits persist in
