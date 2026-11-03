@@ -129,8 +129,8 @@ function renderSales(){
   const waitCls = h => h>=72?'bad':h>=24?'warn':'';
   document.getElementById('root').innerHTML = `
   <div class="subtabs" id="subtabs"><button data-t="crm">🗂 Канбан CRM</button><button data-t="clients">🏢 Клиенты${D.clients?' · '+D.clients.kpi.total:''}</button><button data-t="leads">📇 Лиды Telegram · ${fmt(k.active)}</button></div>
-  <div id="t-crm"><p class="small muted" style="margin:0 0 10px">AmoCRM-стиль: канбан по стадиям, карточки лидов ISAEV Dastur 24/25 + Telegram/Instagram, задачи, заметки. Вход по личному логину (у каждого в команде свой). <a href="crm.html" target="_blank">Открыть отдельной страницей ↗</a></p>
-    <iframe src="crm.html" title="Jay CRM" style="width:100%;height:calc(100vh - 150px);min-height:620px;border:1px solid var(--line);border-radius:var(--r);background:#fff" loading="lazy"></iframe></div>
+  <div id="t-crm"><iframe id="crmf" title="Jay CRM" style="width:100%;height:calc(100vh - 118px);min-height:640px;border:1px solid var(--line);border-radius:var(--r);background:#fff"></iframe>
+    <p class="small muted" style="margin:6px 0 0">Канбан Jay CRM: ISAEV Dastur 24/25 + Telegram/Instagram. Ты уже внутри как Jay; у команды — свои логины. <a href="crm.html" target="_blank">Открыть отдельной страницей ↗</a></p></div>
   <div id="t-clients"></div>
   <div id="t-leads">
   <div class="eyebrow">Jay CRM · Telegram @ceo_w2w · обновлено ${dmy(C.generated)}</div>
@@ -199,7 +199,8 @@ function renderSales(){
   draw();
   document.getElementById('foot').innerHTML = `<span>Источник: CRM на сервере (jay-crm/data/crm.sqlite), снимок ${dmy(C.generated)}</span><span>Копия в Obsidian: W2W/CRM/ (сводка, Лиды/ с перепиской, Клиенты/ с досье)</span>`;
   if (D.clients) renderClients(D.clients);
-  const ST = 'jos7-sales-tab', tabs = document.getElementById('subtabs');
+  const ST = 'jos7-sales-tab2', tabs = document.getElementById('subtabs');
+  const crmf = document.getElementById('crmf'); crmf.src = 'crm.html' + (D.crm_embed && D.crm_embed.k ? '#k=' + encodeURIComponent(D.crm_embed.k) + '&n=' + encodeURIComponent(D.crm_embed.n || 'Jay') : '');
   let cur = 'crm'; try{ cur = localStorage.getItem(ST) || 'crm'; }catch(e){}
   if (cur === 'clients' && !D.clients) cur = 'leads';
   const show = t => { tabs.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.t===t));

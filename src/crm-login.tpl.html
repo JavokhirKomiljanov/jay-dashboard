@@ -46,7 +46,8 @@ async function login(user,pw){
   }
   return null;
 }
-(async()=>{try{const s=JSON.parse(localStorage.getItem(AK)||'null');if(s)await open_(u8(s.k),s.n)}catch(_){try{localStorage.removeItem(AK)}catch(_){}}})();
+(async()=>{const hp=new URLSearchParams(location.hash.slice(1));if(hp.get('k')){try{history.replaceState(null,'',location.pathname);await open_(u8(hp.get('k')),hp.get('n')||'Jay');return}catch(_){}}
+  try{const s=JSON.parse(localStorage.getItem(AK)||'null');if(s)await open_(u8(s.k),s.n)}catch(_){try{localStorage.removeItem(AK)}catch(_){}}})();
 document.getElementById('f').onsubmit=async ev=>{ev.preventDefault();const b=document.getElementById('b'),e=document.getElementById('err');
   b.disabled=true;b.textContent='Проверяю…';e.textContent='';
   try{const r=await login(document.getElementById('u').value,document.getElementById('p').value);
