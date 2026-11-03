@@ -542,7 +542,8 @@ try { const t = localStorage.getItem('jos-theme') || 'dark'; /* Jay: dark by def
     <div class="nav" data-v="brain"><span class="ic">🧠</span>Company Brain<span class="cnt" id="cnt-brain"></span></div>
   </div>
   <div class="dept" data-d="sales"><div class="dept-h" data-d="sales"><span class="ic">💼</span>Отдел продаж<span class="chev">▾</span></div>
-    <div class="nav" data-v="sales"><span class="ic">📇</span>Продажи<span class="cnt">CRM</span></div>
+    <div class="nav" data-v="crm"><span class="ic">📇</span>Jay CRM</div>
+    <div class="nav" data-v="sales"><span class="ic">📊</span>Продажи<span class="cnt">отчёт</span></div>
     <div class="nav" data-v="nyc"><span class="ic">🗽</span>NYC Leads<span class="cnt">US</span></div>
   </div>
   <div class="dept" data-d="mkt"><div class="dept-h" data-d="mkt"><span class="ic">📣</span>Отдел маркетинга<span class="chev">▾</span></div>
@@ -600,6 +601,7 @@ try { const t = localStorage.getItem('jos-theme') || 'dark'; /* Jay: dark by def
     <section class="view" id="v-brain"></section>
     <section class="view" id="v-w2w"></section>
     <section class="view" id="v-nyc"><iframe class="panel" data-page="nyc-leads" title="NYC лиды" loading="lazy"></iframe><p class="small muted panel-foot"><a data-open="nyc-leads" target="_blank">Открыть отдельной страницей ↗</a></p></section>
+    <section class="view" id="v-crm"><iframe id="crmf" title="Jay CRM" style="width:100%;height:calc(100vh - 96px);min-height:640px;border:1px solid var(--line);border-radius:var(--r);background:#fff"></iframe><p class="small muted panel-foot">Одна CRM на всё: ISAEV 24/25, Telegram, Instagram, клиенты W2W (США — отдельно в NYC Leads). <a href="crm.html" target="_blank">Открыть отдельной страницей ↗</a></p></section>
     <section class="view" id="v-sales"><iframe class="panel" data-page="sales" title="Продажи · CRM" loading="lazy"></iframe><p class="small muted panel-foot"><a data-open="sales" target="_blank">Открыть отдельной страницей ↗</a></p></section>
     <section class="view" id="v-marketing"><iframe class="panel" data-page="marketing" title="Маркетинг" loading="lazy"></iframe><p class="small muted panel-foot"><a data-open="marketing" target="_blank">Открыть отдельной страницей ↗</a></p></section>
     <section class="view" id="v-instagram"><iframe class="panel" data-page="instagram" title="Instagram" loading="lazy"></iframe><p class="small muted panel-foot"><a data-open="instagram" target="_blank">Открыть отдельной страницей ↗</a></p></section>
@@ -2134,8 +2136,9 @@ document.getElementById('cnt-today').textContent = allTasks().filter(t=>!E.done[
 document.getElementById('cnt-brain').textContent = BR.totals.clients; document.getElementById('cnt-w2w').textContent = S.installed_base.accounts.length + ' акк.'; document.getElementById('cnt-agents').textContent = AG.agents.filter(a=>a.state==='running').length + ' live';
 deptInit(); kbBadge(); renderToday(); renderStrategy(); renderAdvisors(); renderBrain(); renderW2W(); renderFinance(); renderMe(); renderAgents(); finPull(); mePull(); meBadge(); renderCal(); calBadge(); calPull(); renderLearn(); learnBadge(); learnPull(); kpiLoad(); askRender(); askPull();
 (function claudeBadge(){ const f = () => { try { const s = JSON.parse(localStorage.getItem('jos-claude-learn-v1') || '{}'); document.getElementById('cnt-claude').textContent = s.total ? (s.doneN || 0) + '/' + s.total : ''; } catch (e) {} }; f(); window.addEventListener('storage', f); window.addEventListener('message', e => { if (e.data && e.data.jos === 'h' && e.data.page === 'claude') f(); }); })();
-const VIEWS = ['today','tasks','depts','ask','assist','cal','files','learn','claude','strategy','advisors','brain','w2w','sales','marketing','instagram','auto','server','backup','security','finance','me','agents'];
-const h = (location.hash||'').slice(1); if(VIEWS.includes(h)) JOS.go(h); else JOS.applyEdit();
+const VIEWS = ['today','tasks','depts','ask','assist','cal','files','learn','claude','strategy','advisors','brain','w2w','crm','sales','marketing','instagram','auto','server','backup','security','finance','me','agents'];
+{ const cf = document.getElementById('crmf'); if(cf) cf.src = 'crm.html' + (D.crmembed && D.crmembed.k ? '#k=' + encodeURIComponent(D.crmembed.k) + '&n=' + encodeURIComponent(D.crmembed.n || 'Jay') : ''); }
+const h = (location.hash||'').slice(1); if(VIEWS.includes(h)) JOS.go(h); else { JOS.go('crm'); JOS.applyEdit(); }  /* 2026-11-03: Jay CRM is the landing view */
 window.addEventListener('hashchange', () => { const v = (location.hash||'').slice(1); if(VIEWS.includes(v) && !document.getElementById('v-'+v).classList.contains('on')) JOS.go(v); });
 
 /* ---------- prefs: dark theme + RU/EN (2026-10-21) ----------

@@ -83,6 +83,7 @@ b{color:var(--ink)}
 .tag.src-isaev25{background:#e8e3ff;color:#4d33b3;border-color:#cfc3ff}
 .tag.src-telegram{background:#dcefff;color:#1d5fb3;border-color:#b6d8fb}
 .tag.src-instagram{background:#ffe1ec;color:#b31d5f;border-color:#f9b8d0}
+.tag.src-client{background:#e3f1ff;color:#1b4e8a;border-color:#b9d7f7}
 .tag.src-manual{background:var(--mint-tint);color:var(--mint-dark);border-color:var(--mint-light)}
 :root[data-theme="dark"] .tag.src-isaev24,:root[data-theme="dark"] .tag.src-isaev25,:root[data-theme="dark"] .tag.src-telegram,:root[data-theme="dark"] .tag.src-instagram{filter:brightness(.85) saturate(.9)}
 .dl .val{margin-left:auto;font:600 12px var(--mono);color:var(--ink)}
@@ -224,7 +225,7 @@ const STAGES=[
  {k:'won',n:'Успешно',c:'#05a884',closed:true},
  {k:'lost',n:'Отказ',c:'#d64545',closed:true}];
 const SN=Object.fromEntries(STAGES.map(s=>[s.k,s.n])),SC=Object.fromEntries(STAGES.map(s=>[s.k,s.c]));
-const SOURCES={isaev24:'ISAEV 24',isaev25:'ISAEV 25',telegram:'Telegram',instagram:'Instagram',manual:'Вручную'};
+const SOURCES={isaev24:'ISAEV 24',isaev25:'ISAEV 25',telegram:'Telegram',instagram:'Instagram',client:'Клиенты W2W',manual:'Вручную'};
 const USERS=D.users||[ME];
 const KEY='jaycrm-state',FKEY='jaycrm-feed',UI='jaycrm-ui';
 /* ---------- state: E[id] = overrides {st, own, val, nxt, due, tags[], tasks[], fields{}, at, by}; F[id] = feed ---------- */
