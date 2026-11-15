@@ -69,10 +69,39 @@ body.in-office .hud,body.in-office .top,body.in-office .legend,body.in-office .h
 .fail.on{display:flex}.fail h2{font-size:22px;margin:10px 0 8px}.fail p{font-size:14px;color:#ffe9c9;max-width:340px;margin:0 auto 18px;line-height:1.45}
 body[data-tod=night] .vig{background:radial-gradient(ellipse at 50% 45%,transparent 45%,#05081599 100%)}
 body[data-tod=night] .hud .eb{color:#7fe9df}
+/* v4: personas, families, Xo'ja aka */
+.panel{max-height:calc(100vh - 88px);overflow:auto;scrollbar-width:thin}
+.panel .em.tr{position:absolute;right:16px;top:12px;font-size:26px}
+.ph{display:flex;gap:11px;align-items:center;margin:2px 34px 8px 0}
+.av{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:var(--f);color:#fff;font:700 15px Manrope;letter-spacing:.02em;text-shadow:0 1px 2px #0006;box-shadow:inset 0 0 0 2px #ffffff30}
+.av.s{width:20px;height:20px;font-size:8.5px;box-shadow:none}.av.m{width:30px;height:30px;font-size:11px}
+.ph h3{font-size:19px;margin:0;line-height:1.15}.ph .sub{font-size:12px;color:#c7b58a;margin-top:2px}
+.xj{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;border:1px solid #9fd9c855;color:#cfeee4;background:#19d3c512;margin-left:6px;vertical-align:2px;white-space:nowrap}
+.bio{font-size:12.5px;line-height:1.45;color:#f3e6cf;margin:10px 0 8px}
+.trs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px}.trs span{font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid #ffffff38;color:#e9dcbd}
+.cph{font-style:italic;font-size:12.5px;color:#ffe9c9;border-left:3px solid var(--f);padding:3px 0 3px 10px;margin:4px 0 10px}
+.sec{margin-top:8px;border-top:1px solid #ffffff14;padding-top:8px}.sec>summary{list-style:none;cursor:pointer;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#c7b58a;margin-bottom:6px}
+.sec>summary::-webkit-details-marker{display:none}.sec>summary i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:0}
+.sec.acc>summary::after{content:'▾';float:right;color:#8f7d5c}.sec.acc:not([open])>summary::after{content:'▸'}
+.fr{display:grid;grid-template-columns:104px 1fr;gap:5px 8px;font-size:12px;align-items:start;margin-bottom:4px}.fr dt{color:#b89c72;padding-top:3px}.fr dd{display:flex;flex-wrap:wrap;gap:5px}
+.rc{display:inline-flex;align-items:center;gap:5px;padding:2px 8px 2px 2px;border-radius:999px;background:#ffffff10;border:1px solid #ffffff1c;cursor:pointer;font-size:12px;font-weight:700;color:#fff3dc}
+.rc:hover{background:#ffffff22}.rc em{font-style:normal;font-weight:600;color:#c7b58a;margin-right:2px}
+.lnk{display:grid;gap:5px}.hm{font-size:12px;line-height:1.5;color:#e9dcbd}.hm b{color:#b89c72;font-weight:600}
+.fic{font-size:10.5px;color:#8f7d5c;margin-top:10px}
+.fam{display:flex;gap:0;border-radius:12px;background:#ffffff0b;overflow:hidden;margin-bottom:7px}.fam .bar{width:5px;background:var(--f)}.fam .bd{flex:1;padding:8px 10px}
+.fam .hd{font-size:13.5px;font-weight:800;cursor:pointer}.fam .hd small{font-weight:600;color:#c7b58a;font-size:11.5px}.fam .hd:hover{text-decoration:underline}
+.fam .ms{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}.fam .ms .av{cursor:pointer;position:relative}.fam .ms .av:hover{transform:scale(1.1)}
+.av .cr{position:absolute;top:-3px;right:-3px;width:11px;height:11px;border-radius:50%;background:#ffd36a;border:2px solid #1b1612;font-size:0}
+.lbl.a .pn{display:none;font-size:11px;font-weight:600;color:#ffe9c9;margin-top:2px}.lbl.a:hover .pn,.lbl.a.hold .pn{display:block}
+.lbl.bub.nz{border-color:#9fd9c866;color:#e6f6f0;font-weight:600;letter-spacing:.02em}
+.lbl.bub.fd{border-color:#ffb54799;font-weight:800}
+.prl{display:inline-block;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;background:#1a1410b8;border:1px solid #9fd9c855;color:#e6f6f0;backdrop-filter:blur(8px);margin-top:7px;pointer-events:auto}
+.prl small{color:#9fbfb4;font-weight:600;margin-left:4px}
+@media(max-width:480px){.fr{grid-template-columns:88px 1fr}.ph h3{font-size:17px}}
 @media(max-width:700px){.hud h1{font-size:20px}.hud p{font-size:12px}.legend{display:none}.hint{display:none}.lbl.d{font-size:11px;padding:4px 8px}.lbl.d small{font-size:9px}
   .top{top:auto;bottom:12px;left:10px;right:10px;justify-content:space-between;gap:6px}.top .btn{padding:8px 9px;font-size:11.5px;white-space:nowrap}.panel{bottom:60px;max-height:48vh;overflow:auto;padding:12px 14px}.panel .em{font-size:26px}
   .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:calc(100vw - 28px);padding-bottom:2px}.chips::-webkit-scrollbar{display:none}.chip{flex:0 0 auto}
-  .modes{gap:4px;margin-top:7px}.mc{font-size:10.5px;padding:3px 7px}.panel dl{grid-template-columns:96px 1fr}.now .nh{font-size:12.5px}}
+  .modes{gap:4px;margin-top:7px}.mc{font-size:10.5px;padding:3px 7px}.prl{font-size:11px;padding:3px 8px;margin-top:5px}.prl small{display:none}.panel{max-height:58vh}.panel dl{grid-template-columns:96px 1fr}.now .nh{font-size:12.5px}}
 </style>
 <script>
 /* fallback: no WebGL / no import maps / module failed -> clear screen with a way back to JOS (spec §7) */
@@ -94,11 +123,12 @@ body[data-tod=night] .hud .eb{color:#7fe9df}
   <h1>Город агентов · Ташкент</h1>
   <p id="sum"></p>
   <div class="modes" id="modes"></div>
+  <div class="prl" id="pray" title="расчётное время намаза для Ташкента: MWL 18°/17°, Asr по ханафи"></div>
   <div class="chips" id="chips"></div>
 </div>
-<div class="top"><button class="btn ghost" id="tod" title="Время суток: авто по Ташкенту или демо">авто</button><button class="btn ghost" id="tour">▶ Облёт</button><button class="btn ghost" id="home">⌂ Весь город</button><a class="btn" href="index.html#agents" target="_top" style="text-decoration:none">← JOS</a></div>
+<div class="top"><button class="btn ghost" id="prdemo" title="Показать окно намаза сжато: проход 15 с, стояние 20 с, возвращение 15 с">🕌 демо</button><button class="btn ghost" id="tod" title="Время суток: авто по Ташкенту или демо">авто</button><button class="btn ghost" id="tour">▶ Облёт</button><button class="btn ghost" id="home">⌂ Весь город</button><a class="btn" href="index.html#agents" target="_top" style="text-decoration:none">← JOS</a></div>
 <div class="panel" id="panel"></div>
-<div class="legend"><span><i style="background:#22e07a"></i>работает сейчас</span><span><i style="background:#19d3c5"></i>по расписанию</span><span><i style="background:#f5a623"></i>разовая, сделано</span><span><i style="background:#8b8f99"></i>выключен</span><span class="md">🏢 в офисе · 🚶 идёт · 🍽 ест токены · 🏠 дома · 😴 спит · 🫖 сделано</span><span id="chk"></span></div>
+<div class="legend"><span><i style="background:#22e07a"></i>работает сейчас</span><span><i style="background:#19d3c5"></i>по расписанию</span><span><i style="background:#f5a623"></i>разовая, сделано</span><span><i style="background:#8b8f99"></i>выключен</span><span class="md">🏢 в офисе · 🚶 идёт · 🍽 ест токены · 🏠 дома · 😴 спит · 🫖 сделано · 🕌 Xo'ja aka на намазе</span><span class="md" id="lgf">цвет калитки и бейджа = семья</span><span id="chk"></span><span id="lgn" style="width:100%;font-size:10.5px;color:#c7b58a">Имена агентов вымышленные · это 🤖 агенты, не люди</span></div>
 <div class="hint">Крути мышью / пальцем · колесо — ближе · клик по зданию — офис · по роботу — что он сейчас делает</div>
 <div class="office" id="office"><div class="bar"><div><h2 id="oname"></h2><p id="odesc"></p></div><button class="btn" id="oback">← В город</button></div></div>
 
@@ -108,13 +138,29 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
-const D = /*__DATA__*/{};
+const D = await (async raw => { if(typeof raw!=='string') return raw;            /* the build ships the data zlib-compressed + base64 (page budget) */
+  const bin=Uint8Array.from(atob(raw),c=>c.charCodeAt(0)), st=new Blob([bin]).stream().pipeThrough(new DecompressionStream('deflate'));
+  return JSON.parse(await new Response(st).text()); })(/*__DATA__*/{});
 const ST = {running:['работает сейчас','#22e07a'], ready:['по расписанию','#19d3c5'], done:['сделано (разовая)','#f5a623'], off:['выключен','#8b8f99']};
 const esc = s => String(s??'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const cnt = s => D.agents.filter(a=>a.state===s).length;
 document.getElementById('sum').textContent = `${D.agents.length} агентов в ${D.districts.length} районах: ${cnt('running')} работают сейчас, ${cnt('ready')} по расписанию.`;
 document.getElementById('chk').textContent = 'проверено ' + D.checked;
 const MOBILE = Math.min(innerWidth, innerHeight) < 700;
+
+/* ---------- v4 personas (spec §1–§2): names, families, relations. Fictional names; always labelled «🤖 агент» ---------- */
+const PD = D.personas && Array.isArray(D.personas.personas) && D.personas.personas.length ? D.personas : null, HASP = !!PD;
+const FAM = {}, PER = {};
+(PD?PD.families:[]).forEach(f=>FAM[f.id]=f);
+FAM.guests = {id:'guests', name:'Mehmonlar', label:'Гости', color:'#9aa3ad', elder:null, members:[]};
+(PD?PD.personas:[]).forEach(p=>PER[p.id]=p);
+D.agents.forEach(a=>{ if(!PER[a.id]){ PER[a.id]={id:a.id, first:'Yangi mehmon', last:'', age:null, gender:'m', family_id:'guests', role_title:'новый агент', bio:a.does, traits:[], catchphrase:'', family:{spouse:null,parents:[],children:[],siblings:[]}, links:[], home_family:'', xoja:false, favorite_dish:'', hobby:'', guest:true}; if(HASP) FAM.guests.members.push(a.id); } });
+const AG = {}; D.agents.forEach(a=>AG[a.id]=a);
+const famOf = id => FAM[(PER[id]||{}).family_id] || FAM.guests;
+const fullName = p => (p.first+' '+(p.last||'')).trim();
+const callName = p => p.guest ? p.first : p.age>=50 ? p.first+(p.gender==='f'?' opa':' aka') : p.first;      /* §2.2: aka / opa from 50 */
+const initials = p => p.guest ? 'YM' : ((p.first||'?')[0]+((p.last||'')[0]||'')).toUpperCase();
+const avatar = (id, cls='', extra='') => { const p=PER[id]; return `<span class="av ${cls}" style="--f:${famOf(id).color}"${extra}>${esc(initials(p))}</span>`; };
 
 /* ---------- renderer, scene, camera ---------- */
 const canvas = document.getElementById('c');
@@ -260,7 +306,7 @@ const TREES = [];
   for(let i=0;i<140;i++){ const u=i/140, p=anhor.getPoint(u), t=anhor.getTangent(u), s=i%2?-1:1, off=9.5+rnd()*3; TREES.push([p.x-t.z*off*s, p.z+t.x*off*s, 1+rnd()*.5]); }
   for(let i=0;i<420;i++){ TREES.push([(rnd()-.5)*400,(rnd()-.5)*340,.7+rnd()*.7]); } }
 /* v3 areas (x0,z0,x1,z1): Token Street on the Anhor, Agent Mahalla by IT Park, Token Bank by Tashkent City — no random fill there */
-const RESERVE = [[-44,106,30,131],[37,38,111,99],[-83,-69,-55,-46]];
+const RESERVE = [[-44,106,30,131],[37,38,111,99],[-83,-69,-55,-46],[-139,53,-107,69]];   /* v4: + Minor mosque courtyard and the path to it */
 const inRes = (x,z,m=0) => RESERVE.some(([a,b,c,d])=>x>a-m && x<c+m && z>b-m && z<d+m);
 const treeFree = (x,z) => { if(inRes(x,z,1.5)) return false; for(const [rx,rz,w,d] of ROADS){ if(Math.abs(x-rx)<w/2+1.5 && Math.abs(z-rz)<d/2+1.5) return false; } if(anhorDist(x,z)<8.5) return false; for(const d of D.districts){ if(Math.hypot(x-d.x,z-d.z)<(d.id==='board'?38:33)) return false; } return true; };
 { const list=TREES.filter(([x,z])=>treeFree(x,z)), N=list.length, o=new THREE.Object3D(), col=new THREE.Color();
@@ -441,7 +487,9 @@ D.districts.forEach(d=>{
     body.userData.agent=a; pickables.push(body);
     if(a.state!=='off'){ const bm=new THREE.Mesh(new THREE.CylinderGeometry(.4,.4,34,8,1,true),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:a.state==='running'?.38:.14,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));
       bm.position.set(0,h+17,0); o.add(bm); beams.push({bm,run:a.state==='running',ph:Math.random()*6,id:a.id}); }
-    const al=label(`${a.emoji} ${esc(a.name)}<span class="st"></span>`,'a',()=>openAgent(a)); al.position.set(0,h+2.4,0); o.add(al); agentLabels.push({al,o,d:d.id,id:a.id});
+    const al=label(`${a.emoji} ${esc(a.name)}<span class="st"></span>${HASP?`<span class="pn">${esc(fullName(PER[a.id]))} · 🤖 агент</span>`:''}`,'a',()=>openAgent(a)); al.position.set(0,h+2.4,0); o.add(al); agentLabels.push({al,o,d:d.id,id:a.id});
+    if(HASP){ const el=al.element; let tm=null; el.addEventListener('pointerdown',e=>{ if(e.pointerType==='mouse') return; tm=setTimeout(()=>{ el.classList.add('hold'); el._held=true; setTimeout(()=>el.classList.remove('hold'),2600); },450); });
+      ['pointerup','pointerleave','pointercancel'].forEach(k=>el.addEventListener(k,()=>clearTimeout(tm))); el.addEventListener('click',e=>{ if(el._held){ el._held=false; e.stopImmediatePropagation(); } },true); }
     OFFICE[a.id]={o, body, d, r:L.r, ang, h, st:al.element.querySelector('.st')};
   });
 });
@@ -478,7 +526,8 @@ function Builder(){ const parts=[];
 function Atlas(cols,rows,cw,ch){ const cv=document.createElement('canvas'); cv.width=cols*cw; cv.height=rows*ch; const g=cv.getContext('2d');
   const tex=new THREE.CanvasTexture(cv); tex.colorSpace=THREE.SRGBColorSpace; tex.anisotropy=4; let k=0;
   return { tex, cols, rows,
-    cell(draw){ const i=k++, x=(i%cols)*cw, y=Math.floor(i/cols)*ch; g.save(); g.translate(x,y); g.beginPath(); g.rect(0,0,cw,ch); g.clip(); draw(g,cw,ch); g.restore(); tex.needsUpdate=true; return i; },
+    cell(draw){ const i=k++; this.redraw(i,draw); return i; },
+    redraw(i,draw){ const x=(i%cols)*cw, y=Math.floor(i/cols)*ch; g.save(); g.translate(x,y); g.beginPath(); g.rect(0,0,cw,ch); g.clip(); g.clearRect(0,0,cw,ch); draw(g,cw,ch); g.restore(); tex.needsUpdate=true; },
     plane(i,w,h){ const p=new THREE.PlaneGeometry(w,h), uv=p.attributes.uv, u0=(i%cols)/cols, v0=1-(Math.floor(i/cols)+1)/rows; for(let j=0;j<uv.count;j++) uv.setXY(j,u0+uv.getX(j)/cols,v0+uv.getY(j)/rows); return p; } }; }
 const fitFont = (g,txt,maxW,px,font) => { let s=px; do { g.font=font.replace('{}',s); s-=2; } while(g.measureText(txt).width>maxW && s>10); };
 const rrect = (g,x,y,w,h,r) => { g.beginPath(); g.moveTo(x+r,y); g.arcTo(x+w,y,x+w,y+h,r); g.arcTo(x+w,y+h,x,y+h,r); g.arcTo(x,y+h,x,y,r); g.arcTo(x,y,x+w,y,r); g.closePath(); };
@@ -522,30 +571,68 @@ function officeSpot(a){ const of=OFFICE[a.id]; if(!of) return null; const d=of.d
 /* ---------- Token Street: gastro promenade on the Anhor embankment, south of Chorsu and the centre ---------- */
 const TS={zb:109, zf:114.5, PZ:116.3, gate:-12};
 const VEN=[
-  {id:'osh', name:'Osh Markazi', x0:-40, x1:-31, h:4.8, body:'#efe3c6', trim:'#1fb2ad', awn:'#17676b', tokens:null},
-  {id:'bon', name:'Bon!', x0:-30.5, x1:-23, h:4.8, body:'#fff2b8', trim:'#3f9a3a', awn:'#7cc142', stripe:'#ffffff', tokens:'gemini'},
-  {id:'sofia', name:'Caffè SOFIA', x0:-22.5, x1:-14, h:5.6, body:'#fbf8f1', trim:'#cbb894', awn:'#e9e2d2', tokens:'max'},
-  {id:'novikov', name:'NOVIKOV', x0:-10, x1:1, h:6.6, body:'#1e2026', trim:'#d9b45a', awn:'#26282e', tokens:'max'},
-  {id:'blabla', name:'Bla Bla Bar', x0:1.5, x1:10.5, h:5.2, body:'#2a1745', trim:'#ff4fb3', awn:'#3b1d63', tokens:'max'},
-  {id:'evos', name:'EVOS', x0:11, x1:18.5, h:4.9, body:'#ff7a1a', trim:'#ffffff', awn:'#ff9a3c', tokens:'gemini'},   /* Jay said «Эвос»: rename here only if he meant another place */
-  {id:'kfc', name:'KFC', x0:19, x1:26.5, h:4.9, body:'#f6f1ea', trim:'#e4002b', awn:'#e4002b', stripe:'#ffffff', tokens:'gemini'},
+  {id:'osh', name:'Osh Markazi', x0:-40, x1:-31, h:4.8, body:'#efe3c6', trim:'#1fb2ad', awn:'#17676b', sbg:'#17676b', tokens:null},
+  {id:'bon', name:'Bon!', x0:-30.5, x1:-23, h:4.8, body:'#fff2b8', trim:'#3f9a3a', awn:'#7cc142', stripe:'#ffffff', sbg:'#ffe14d', tokens:'gemini'},
+  {id:'sofia', name:'Safia', x0:-22.5, x1:-14, h:5.6, body:'#fbf8f1', trim:'#1f3b5c', awn:'#e9e2d2', sbg:'#f7f1e3', tokens:'max'},   /* Jay said «София»: the Tashkent bakery-café chain is Safia */
+  {id:'novikov', name:'NOVIKOV', x0:-10, x1:1, h:6.6, body:'#1e2026', trim:'#d9b45a', awn:'#26282e', sbg:'#0e0f11', tokens:'max'},
+  {id:'blabla', name:'Bla Bla Bar', x0:1.5, x1:10.5, h:5.2, body:'#2a1745', trim:'#ff4fb3', awn:'#3b1d63', sbg:'#120820', tokens:'max'},
+  {id:'evos', name:'EVOS', x0:11, x1:18.5, h:4.9, body:'#1e9e50', trim:'#ffffff', awn:'#137a3b', sbg:'#1e9e50', tokens:'gemini'},   /* Jay said «Эвос»: rename here only if he meant another place */
+  {id:'kfc', name:'KFC', x0:19, x1:26.5, h:4.9, body:'#f6f1ea', trim:'#e4002b', awn:'#e4002b', stripe:'#ffffff', sbg:'#e4002b', tokens:'gemini'},
 ]; const VBY={}; VEN.forEach(v=>{ v.cx=(v.x0+v.x1)/2; v.w=v.x1-v.x0; v.seats=[]; v.eaters=0; VBY[v.id]=v; });
 const FAV={max:['novikov','sofia','blabla'], gemini:['kfc','evos','bon']};
 const dryTo = x => { let z=118; while(z<134 && anhorDist(x,z+.5)>6.4) z+=.5; return z; };     /* last dry metre of the embankment */
-const SIGNS = Atlas(2,6,512,144), signCell = {};
-{ const cell=(id,f)=>signCell[id]=SIGNS.cell(f);
-  cell('novikov',(g,w,h)=>{ g.fillStyle='#111214'; g.fillRect(0,0,w,h); g.strokeStyle='#d9b45a'; g.lineWidth=4; g.strokeRect(10,10,w-20,h-20); g.fillStyle='#e9c46a'; g.textAlign='center'; g.textBaseline='middle'; fitFont(g,'N O V I K O V',w-60,84,'600 {}px Georgia, serif'); g.fillText('N O V I K O V',w/2,h/2+4); });
-  cell('sofia',(g,w,h)=>{ g.fillStyle='#fbf7ef'; g.fillRect(0,0,w,h); g.strokeStyle='#cbb894'; g.lineWidth=3; g.strokeRect(8,8,w-16,h-16); g.textAlign='center'; g.textBaseline='middle'; g.fillStyle='#8a6a3c'; g.font='italic 44px Georgia, serif'; g.fillText('Caffè',w/2-140,h/2+6); g.fillStyle='#1f3b5c'; g.font='700 84px Georgia, serif'; g.fillText('SOFIA',w/2+70,h/2+6); });
-  cell('bon',(g,w,h)=>{ g.fillStyle='#ffe14d'; g.fillRect(0,0,w,h); g.fillStyle='#2f7d32'; g.textAlign='center'; g.textBaseline='middle'; g.font='800 112px Manrope, Arial'; g.fillText('Bon!',w/2,h/2+8); g.fillStyle='#7cc142'; g.fillRect(0,h-16,w,16); });
-  cell('blabla',(g,w,h)=>{ g.fillStyle='#140a22'; g.fillRect(0,0,w,h); g.textAlign='center'; g.textBaseline='middle'; g.font='800 78px Manrope, Arial'; g.shadowColor='#ff4fb3'; g.shadowBlur=22; g.fillStyle='#ffb3e0'; g.fillText('Bla Bla',w/2-62,h/2+4); g.shadowColor='#2ee6ff'; g.fillStyle='#b8f6ff'; g.fillText('Bar',w/2+170,h/2+4); });
-  cell('kfc',(g,w,h)=>{ g.fillStyle='#e4002b'; g.fillRect(0,0,w,h); g.fillStyle='#ffffff'; for(let x=0;x<w;x+=64) g.fillRect(x,0,32,14); g.textAlign='center'; g.textBaseline='middle'; g.font='900 104px "Arial Black", Arial'; g.fillText('KFC',w/2,h/2+10); });
-  cell('evos',(g,w,h)=>{ g.fillStyle='#ff7a1a'; g.fillRect(0,0,w,h); g.fillStyle='#ffffff'; g.textAlign='center'; g.textBaseline='middle'; g.font='900 100px Manrope, Arial'; g.fillText('EVOS',w/2,h/2+8); });
-  cell('osh',(g,w,h)=>{ g.fillStyle='#17676b'; g.fillRect(0,0,w,h); g.fillStyle='#f3ecdd'; for(let x=0;x<w;x+=24){ g.beginPath(); g.moveTo(x,0); g.lineTo(x+12,12); g.lineTo(x+24,0); g.fill(); g.beginPath(); g.moveTo(x,h); g.lineTo(x+12,h-12); g.lineTo(x+24,h); g.fill(); } g.textAlign='center'; g.textBaseline='middle'; fitFont(g,'OSH MARKAZI',w-50,72,'800 {}px Manrope, Arial'); g.fillText('OSH MARKAZI',w/2,h/2+4); });
+/* v4 §6: signs = our own wordmarks in the brands' colours + simple original geometric emblems (no logo artwork is copied).
+   §6.2 hook: an official logo file (only with the owner's permission) can replace a wordmark — see BRANDS below. */
+const SIGNS = Atlas(3,6,512,144), signCell = {};
+const BRANDS = Object.assign({
+  /* id = VEN[].id, e.g.  kfc:{img:'assets/brands/kfc.png'}  — refresh_agents_city.py embeds such files as data URIs (D.brands) */
+}, Object.fromEntries(Object.entries(D.brands||{}).map(([id,src])=>[id,{img:src}])));
+{ const cell=(id,f)=>signCell[id]=SIGNS.cell(f), ctr=g=>{ g.textAlign='center'; g.textBaseline='middle'; };
+  /* write a run of [text, font, colour, glow] pieces centred around cx */
+  const run=(g,parts,cx,cy,gap=16)=>{ g.textAlign='left'; g.textBaseline='middle'; const ws=parts.map(p=>{ g.font=p[1]; return g.measureText(p[0]).width; }), tot=ws.reduce((s,x)=>s+x,0)+gap*(parts.length-1); let x=cx-tot/2;
+    parts.forEach((p,i)=>{ g.font=p[1]; g.fillStyle=p[2]; if(p[3]){ g.shadowColor=p[3]; g.shadowBlur=22; } g.fillText(p[0],x,cy); g.shadowBlur=0; x+=ws[i]+gap; }); };
+  cell('novikov',(g,w,h)=>{ g.fillStyle='#0e0f11'; g.fillRect(0,0,w,h); g.strokeStyle='#d9b45a'; g.lineWidth=2.5; g.strokeRect(12,12,w-24,h-24); g.lineWidth=1; g.strokeRect(19,19,w-38,h-38);   /* thin brass frame */
+    ctr(g); g.fillStyle='#e2c06a'; fitFont(g,'N O V I K O V',w-130,70,'600 {}px Georgia, "Times New Roman", serif'); g.fillText('N O V I K O V',w/2,h/2+3);
+    g.fillStyle='#d9b45a'; [46,w-46].forEach(x=>{ g.beginPath(); g.arc(x,h/2,5,0,7); g.fill(); }); });                                                                    /* two brass points */
+  cell('sofia',(g,w,h)=>{ g.fillStyle='#f7f1e3'; g.fillRect(0,0,w,h); g.strokeStyle='#1f3b5c'; g.lineWidth=3; g.strokeRect(9,9,w-18,h-18);
+    const cx=88, cy=h/2+4; g.fillStyle='#1f3b5c'; g.beginPath(); g.arc(cx,cy-4,30,0,Math.PI); g.closePath(); g.fill(); g.fillRect(cx-42,cy+30,84,5);                 /* cup: half-circle + saucer */
+    g.lineWidth=6; g.strokeStyle='#1f3b5c'; g.beginPath(); g.arc(cx+31,cy+6,10,-Math.PI/2,Math.PI/2); g.stroke();
+    g.strokeStyle='#b08a4a'; g.lineWidth=3; g.lineCap='round'; for(const dx of [-10,8]){ g.beginPath(); g.moveTo(cx+dx,cy-14); g.bezierCurveTo(cx+dx-9,cy-26,cx+dx+9,cy-34,cx+dx,cy-48); g.stroke(); }
+    ctr(g); g.fillStyle='#1f3b5c'; fitFont(g,'SAFIA',300,78,'italic 700 {}px Georgia, "Times New Roman", serif'); g.fillText('SAFIA',316,h/2-8);
+    g.fillStyle='#8a6a3c'; g.font='600 18px Georgia, serif'; g.fillText('К А Ф Е   ·   П Е К А Р Н Я',316,h/2+42); });
+  cell('bon',(g,w,h)=>{ g.fillStyle='#ffe14d'; g.fillRect(0,0,w,h); g.fillStyle='#2f7d32'; g.fillRect(0,h-14,w,14);
+    const cx=w-88, cy=h/2-5; g.beginPath(); g.arc(cx,cy,46,0,7); g.fill(); g.strokeStyle='#ffe14d'; g.lineWidth=3; g.beginPath(); g.arc(cx,cy,39,0,7); g.stroke();   /* round baguette badge */
+    g.save(); g.translate(cx,cy); g.rotate(-.62); g.fillStyle='#eab45c'; rrect(g,-33,-11,66,22,11); g.fill(); g.strokeStyle='#a0682a'; g.lineWidth=3; for(const x of [-15,0,15]){ g.beginPath(); g.moveTo(x-5,-7); g.lineTo(x+5,7); g.stroke(); } g.restore();
+    g.save(); g.translate(196,h/2+2); g.transform(1,0,-.2,1,0,0); ctr(g); g.fillStyle='#2f7d32'; g.font='800 112px Manrope, "Arial Rounded MT Bold", Arial'; g.fillText('Bon!',0,0); g.restore(); });
+  cell('blabla',(g,w,h)=>{ g.fillStyle='#120820'; g.fillRect(0,0,w,h); g.lineWidth=4;
+    const bub=(x,y,r,c)=>{ g.strokeStyle=c; g.shadowColor=c; g.shadowBlur=16; g.beginPath(); g.ellipse(x,y,r,r*.72,0,0,7); g.stroke(); g.beginPath(); g.moveTo(x-r*.35,y+r*.66); g.lineTo(x-r*.7,y+r*1.08); g.lineTo(x+r*.05,y+r*.7); g.stroke(); g.shadowBlur=0; };
+    bub(50,h/2-4,28,'#ff4fb3'); bub(96,h/2-26,20,'#2ee6ff');                                                                                                          /* two neon speech bubbles */
+    run(g,[['Bla Bla','800 66px Manrope, Arial','#ffc2e8','#ff4fb3'],['Bar','800 66px Manrope, Arial','#c8f8ff','#2ee6ff']],316,h/2+4,18); });
+  cell('kfc',(g,w,h)=>{ g.fillStyle='#e4002b'; g.fillRect(0,0,w,h); g.fillStyle='#ffffff'; for(let x=0;x<w;x+=44) g.fillRect(x,0,22,16);                             /* white stripes */
+    const bx=84, by=h/2+12; g.beginPath(); g.moveTo(bx-32,by-34); g.lineTo(bx+32,by-34); g.lineTo(bx+24,by+36); g.lineTo(bx-24,by+36); g.closePath(); g.fill();        /* plain striped bucket */
+    g.fillStyle='#e4002b'; for(const dx of [-13,0,13]){ g.beginPath(); g.moveTo(bx+dx-4,by-34); g.lineTo(bx+dx+4,by-34); g.lineTo(bx+dx*.75+3,by+36); g.lineTo(bx+dx*.75-3,by+36); g.closePath(); g.fill(); }
+    ctr(g); g.fillStyle='#ffffff'; g.font='900 106px "Arial Black", "Arial Bold", Arial'; g.fillText('KFC',306,h/2+14); });
+  cell('evos',(g,w,h)=>{ const G1='#1e9e50', G2='#137a3b'; g.fillStyle=G1; g.fillRect(0,0,w,h); const cx=88, cy=h/2;
+    g.fillStyle=G2; g.beginPath(); g.arc(cx,cy,44,0,7); g.fill(); g.strokeStyle='#ffffff'; g.lineWidth=4; g.stroke();                                                 /* circle + white smile arc */
+    g.lineWidth=9; g.lineCap='round'; g.beginPath(); g.arc(cx,cy-8,25,.22*Math.PI,.78*Math.PI); g.stroke();
+    ctr(g); g.fillStyle='#ffffff'; g.font='800 104px Manrope, "Arial Rounded MT Bold", Arial'; g.fillText('EVOS',310,h/2+6); });
+  cell('osh',(g,w,h)=>{ g.fillStyle='#17676b'; g.fillRect(0,0,w,h); g.fillStyle='#f3ecdd'; for(let x=0;x<w;x+=24){ g.beginPath(); g.moveTo(x,0); g.lineTo(x+12,12); g.lineTo(x+24,0); g.fill(); g.beginPath(); g.moveTo(x,h); g.lineTo(x+12,h-12); g.lineTo(x+24,h); g.fill(); }
+    const cx=74, cy=h/2+10; g.fillStyle='#1b1b1d'; g.beginPath(); g.arc(cx,cy-6,34,0,Math.PI); g.closePath(); g.fill(); g.fillStyle='#e7b23e'; g.fillRect(cx-40,cy-10,80,7);      /* kazan with steam */
+    g.strokeStyle='#f3ecdd'; g.lineWidth=4; g.lineCap='round'; for(const dx of [-14,2,18]){ g.beginPath(); g.moveTo(cx+dx,cy-18); g.bezierCurveTo(cx+dx-9,cy-30,cx+dx+9,cy-38,cx+dx,cy-50); g.stroke(); }
+    ctr(g); g.fillStyle='#f3ecdd'; fitFont(g,'OSH MARKAZI',w-180,66,'800 {}px Manrope, Arial'); g.fillText('OSH MARKAZI',w/2+52,h/2+4); });
   cell('street',(g,w,h)=>{ const gr=g.createLinearGradient(0,0,w,0); gr.addColorStop(0,'#0c2a2e'); gr.addColorStop(.5,'#13434a'); gr.addColorStop(1,'#0c2a2e'); g.fillStyle=gr; g.fillRect(0,0,w,h); g.strokeStyle='#e9c46a'; g.lineWidth=5; g.strokeRect(8,8,w-16,h-16);
     g.textAlign='center'; g.textBaseline='middle'; g.fillStyle='#ffd36a'; g.font='800 64px Manrope, Arial'; g.fillText('TOKEN STREET',w/2,h/2-12); g.fillStyle='#bfeee8'; g.font='600 26px Manrope, Arial'; g.fillText('гастро-квартал · здесь едят токены',w/2,h/2+38); });
   cell('mahalla',(g,w,h)=>{ g.fillStyle='#f3ecdd'; g.fillRect(0,0,w,h); g.fillStyle='#1a3f8f'; g.fillRect(0,0,w,14); g.fillRect(0,h-14,w,14); g.fillStyle='#1fb2ad'; for(let x=8;x<w;x+=28){ g.beginPath(); g.arc(x,7,4,0,7); g.fill(); g.beginPath(); g.arc(x,h-7,4,0,7); g.fill(); }
     g.textAlign='center'; g.textBaseline='middle'; g.fillStyle='#1a3f8f'; g.font='800 60px Manrope, Arial'; g.fillText('AGENT MAHALLA',w/2,h/2-10); g.fillStyle='#8a5a2e'; g.font='600 26px Manrope, Arial'; g.fillText('махалля агентов · дома и отдых',w/2,h/2+38); });
-  cell('bank',(g,w,h)=>{ g.fillStyle='#14110c'; g.fillRect(0,0,w,h); g.strokeStyle='#d9b45a'; g.lineWidth=5; g.strokeRect(8,8,w-16,h-16); g.textAlign='center'; g.textBaseline='middle'; g.fillStyle='#ffd36a'; g.font='800 78px Georgia, serif'; g.fillText('TOKEN BANK',w/2,h/2+4); }); }
+  cell('bank',(g,w,h)=>{ g.fillStyle='#14110c'; g.fillRect(0,0,w,h); g.strokeStyle='#d9b45a'; g.lineWidth=5; g.strokeRect(8,8,w-16,h-16); g.textAlign='center'; g.textBaseline='middle'; g.fillStyle='#ffd36a'; g.font='800 78px Georgia, serif'; g.fillText('TOKEN BANK',w/2,h/2+4); });
+  /* v4 §4.2: one plate per family for the mahalla rows */
+  (PD?PD.families:[]).forEach(f=>cell('fam:'+f.id,(g,w,h)=>{ g.fillStyle='#f6ecd8'; g.fillRect(0,0,w,h); g.fillStyle=f.color; g.fillRect(0,0,w,24); g.fillRect(0,h-12,w,12);
+    g.fillStyle='#ffffffaa'; for(let x=10;x<w;x+=26){ g.beginPath(); g.arc(x,12,4,0,7); g.fill(); }
+    ctr(g); g.fillStyle='#1d2433'; fitFont(g,f.name,w-50,62,'800 {}px Manrope, Arial'); g.fillText(f.name,w/2,h/2+2); g.fillStyle='#8a5a2e'; g.font='700 21px Manrope, Arial'; g.fillText(`${f.label} · ${f.members.length} дом.`,w/2,h-36); })); }
+/* §6.2: official file -> drawn «contain» over the brand colour; no file / load error -> the wordmark stays (no console noise) */
+Object.entries(BRANDS).forEach(([id,b])=>{ const v=VEN.find(x=>x.id===id); if(!b||!b.img||signCell[id]==null||!v) return; const im=new Image();
+  im.onload=()=>SIGNS.redraw(signCell[id],(g,w,h)=>{ g.fillStyle=v.sbg||v.body; g.fillRect(0,0,w,h); const k=Math.min((w-24)/im.width,(h-20)/im.height); g.drawImage(im,(w-im.width*k)/2,(h-im.height*k)/2,im.width*k,im.height*k); });
+  im.onerror=()=>{}; im.src=b.img; });
 const SIGN_MAT = new THREE.MeshBasicMaterial({map:SIGNS.tex});
 const PLATES = Atlas(5,8,256,96), PLATE_MAT = new THREE.MeshBasicMaterial({map:PLATES.tex});
 const signB = Builder(), plateB = Builder();
@@ -567,7 +654,7 @@ const TSB=Builder(), TSG=Builder(), wires=[], POOLS=[], smokeSrc=[];
     const aw=w-.5, n=v.stripe?Math.round(aw/.55):1; for(let i=0;i<n;i++) S.box(aw/n,.1,1.7,(v.stripe&&i%2)?v.stripe:v.awn,x0+.25+aw/n*(i+.5),2.82,zf+.72,0,.42);
     sign(v.id,5,1.4,cx,Math.max(3.95,h-.95),zf+.2);
     /* terrace tables (2 rows where the embankment allows): 2 seats per table, a plate per seat; tokens appear when someone eats */
-    const rows=[119.4,122.6].filter(z=>z+.9<=zEnd), nTab=Math.max(rows.length>1?2:4, Math.floor(w/3.4)), sp=w/nTab, tcol={novikov:'#2a2a2e',sofia:'#f4f1ea',kfc:'#e4002b',evos:'#ff8a2a',bon:'#7cc142',blabla:'#ff4fb3',osh:'#8a5a34'}[v.id];
+    const rows=[119.4,122.6].filter(z=>z+.9<=zEnd), nTab=Math.max(rows.length>1?2:4, Math.floor(w/3.4)), sp=w/nTab, tcol={novikov:'#2a2a2e',sofia:'#f4f1ea',kfc:'#e4002b',evos:'#1e9e50',bon:'#7cc142',blabla:'#ff4fb3',osh:'#8a5a34'}[v.id];
     rows.forEach(tz=>{ for(let k=0;k<nTab;k++){ const tx=x0+(k+.5)*sp, off=Math.min(.85,sp*.38);
       if(v.id==='osh'){ S.box(sp*.86,.42,1.9,'#8a5a34',tx,.21,tz); S.box(sp*.8,.08,1.7,'#b3263a',tx,.46,tz); S.box(.6,.2,.6,'#5a3a22',tx,.6,tz); }
       else { S.cyl(.42,.42,.07,14,tcol,tx,.78,tz); S.cyl(.05,.07,.74,6,'#2b2b2b',tx,.38,tz); [-off,off].forEach(dx=>{ S.cyl(.24,.24,.07,10,v.trim==='#ffffff'?v.body:v.trim,tx+dx,.48,tz); S.cyl(.04,.05,.45,5,'#333333',tx+dx,.23,tz); }); }
@@ -596,7 +683,7 @@ const TSB=Builder(), TSG=Builder(), wires=[], POOLS=[], smokeSrc=[];
       S.box(3.6,1.05,.6,'#2a1745',cx+1.5,.53,zf+1.25); G.box(3.6,.08,.62,'#ff4fb3',cx+1.5,1.08,zf+1.25); }
     if(v.id==='kfc'){ const bx=cx, by=h+1.35, bz=zb+2.6; for(let i=0;i<12;i++) S.put(new THREE.CylinderGeometry(1.25,.95,2.1,1,1,true,i/12*Math.PI*2,Math.PI*2/12),i%2?'#ffffff':'#e4002b',bx,by,bz);   /* the bucket — full of Gemini tokens */
       S.put(new THREE.CylinderGeometry(.95,.95,.05,12),'#e4002b',bx,by-1.03,bz); for(let i=0;i<9;i++){ const a=i*.7, r=i<1?0:.6; G.put(new THREE.CylinderGeometry(.24,.24,.07,6),tok.gcol,bx+Math.cos(a)*r,by+1.08+(i%3)*.08,bz+Math.sin(a)*r,0,.4*(i%2),.3); } }
-    if(v.id==='evos'){ S.box(2.2,1.3,1.4,'#ffffff',cx,h+.65,zb+2.5); S.box(2.3,.9,1.5,'#ff7a1a',cx,h+.55,zb+2.5); }
+    if(v.id==='evos'){ S.box(2.2,1.3,1.4,'#ffffff',cx,h+.65,zb+2.5); S.box(2.3,.9,1.5,'#1e9e50',cx,h+.55,zb+2.5); }
     /* a lantern at the terrace edge */
     S.cyl(.07,.1,3.1,6,'#1d1d1f',x1-.2,1.55,pz); G.sph(.2,'#ffe7b0',x1-.2,3.25,pz,1,1.2,1,8);
   });
@@ -619,47 +706,78 @@ const smoke=(()=>{ const N=Math.max(1,smokeSrc.length*14), pos=new Float32Array(
   VEN.forEach(v=>v.seats.forEach((s,i)=>{ s.key='s:'+v.id+i; s.appr=[s.pos.clone(), V2(s.pos.x,TS.PZ+.2), NET.n[v.front]]; s.node=v.front; s.pose='sit'; })); }
 
 /* ---------- Agent Mahalla: 40 courtyard houses on two lanes (darvoza gate, ayvan, grapevine over a hauz, tapchan), one per agent ---------- */
-const MH={x0:40.5, step:6.6, lanes:[55,85]};
-const homeSlot = i => { const g=Math.floor(i/10), k=i%10, lane=MH.lanes[g>>1], north=g%2===0; return {i, cx:MH.x0+3.3+k*MH.step, cz:north?lane-6:lane+6, s:north?1:-1, lane}; };
+const MH={x0:40.5, step:6.6, lanes:[55,85], gap:2.2};
+/* v4 §1.4/§4.1: home index is family-grouped; rows snake (row 0 west→east, row 1 back east→west across the same lane, …) so a family that
+   wraps onto the next row stays next door; a 1.6 m gap between two families in a row */
+const HAGENT = i => D.agents.find(x=>x.home===i) || null;
+const houseFam = i => { const a=HAGENT(i); return a ? famOf(a.id).id : null; };
+const homeSlot = (()=>{ const cache={};
+  for(let g=0;g<4;g++){ const phys=[]; for(let p=0;p<10;p++) phys.push(g*10 + (g%2===0 ? p : 9-p)); let gaps=0;
+    phys.forEach((i,p)=>{ if(p>0 && HASP && houseFam(i)!==houseFam(phys[p-1])) gaps++; const lane=MH.lanes[g>>1], north=g%2===0;
+      cache[i]={i, row:g, p, cx:MH.x0+3.3+p*MH.step+gaps*MH.gap, cz:north?lane-6:lane+6, s:north?1:-1, lane}; }); }
+  return i => Object.assign({}, cache[i]); })();
 const HB=Builder(), HOUSE=[];
-{ const S=HB, wallC=['#d8bf94','#e2cba0','#cdb088','#e8d6b0'], houseC=['#f4ecdc','#efe0c2','#f7f0e2','#e9d7b4','#f1e6cf','#e6cfa6'];
-  MH.lanes.forEach(lz=>S.box(70,.07,3,'#e6d8bc',73,.09,lz));
+const GATE=new THREE.InstancedMesh(new THREE.BoxGeometry(.78,1.85,.12),new THREE.MeshStandardMaterial({roughness:.6,color:'#ffffff'}),80);   /* darvoza leaves: family colour, blink on focusFamily */
+{ const S=HB, wallC=['#d8bf94','#e2cba0','#cdb088','#e8d6b0'], houseC=['#f4ecdc','#efe0c2','#f7f0e2','#e9d7b4','#f1e6cf','#e6cfa6'], go=new THREE.Object3D();
+  MH.lanes.forEach(lz=>S.box(72,.07,3,'#e6d8bc',74,.09,lz));
   /* the green spine: chinars + a choyxona pavilion with tapchans and a samovar */
   S.box(68,.06,8.4,'#6f9a45',73,.08,70); for(let x=46;x<104;x+=9.5){ if(Math.abs(x-73)<6) continue; S.cyl(.22,.34,3.2,6,'#d9cdb4',x,1.6,70); S.sph(2.1,['#7fae3c','#c9a52a','#5f9a3e'][Math.round(x)%3],x,4.4,70,1.1,.9,1.1,8); }
   const c0=73; S.box(9,.3,6,'#c8a77a',c0,.15,70); [[-4.2,-2.7],[4.2,-2.7],[-4.2,2.7],[4.2,2.7]].forEach(([x,z])=>S.cyl(.15,.18,3,8,'#7a4a2a',c0+x,1.6,70+z)); S.box(9.6,.25,6.6,'#1fb2ad',c0,3.2,70); S.box(8.6,.2,5.6,'#17676b',c0,3.45,70);
   [-2.2,2.2].forEach(x=>{ S.box(3,.42,2.2,'#8a5a34',c0+x,.5,70); S.box(2.8,.08,2,'#b3263a',c0+x,.75,70); }); S.cyl(.3,.38,.9,10,'#d9b45a',c0,.9,72.2);
   sign('mahalla',7.2,2.02,46,5.4,70.12); S.box(7.5,2.3,.2,'#1a3f8f',46,5.4,70); S.cyl(.12,.12,4.4,6,'#1d1d1f',43.2,2.2,70); S.cyl(.12,.12,4.4,6,'#1d1d1f',48.8,2.2,70);
-  for(let i=0;i<40;i++){ const h=homeSlot(i), a=D.agents.find(x=>x.home===i); h.agent=a||null; HOUSE[i]=h; const P=(lx,lz)=>V2(h.cx+h.s*lx, h.cz+h.s*lz), ry=h.s>0?0:Math.PI;
+  for(let i=0;i<40;i++){ const h=homeSlot(i), a=HAGENT(i); h.agent=a; HOUSE[i]=h; const P=(lx,lz)=>V2(h.cx+h.s*lx, h.cz+h.s*lz), ry=h.s>0?0:Math.PI;
     const put=(geo,col,lx,y,lz,rx=0,rz=0,sx=1,sy=1,sz=1)=>{ const p=P(lx,lz); return S.put(geo,col,p.x,y,p.y,ry,rx,rz,sx,sy,sz); };
+    const fam=a&&HASP?famOf(a.id):null, fc=fam?fam.color:'#7a4a2a', per=a?PER[a.id]:null, elder=!!(fam&&fam.elder===a.id); h.fam=fam; h.elder=elder;
     put(new THREE.BoxGeometry(6.2,.06,8.8),'#dcc7a0',0,.07,0);
     const wc=wallC[i%4]; put(new THREE.BoxGeometry(6.4,1.5,.25),wc,0,.75,-4.35); put(new THREE.BoxGeometry(.25,1.5,9),wc,-3.1,.75,0); put(new THREE.BoxGeometry(.25,1.5,9),wc,3.1,.75,0);
     put(new THREE.BoxGeometry(2.4,1.5,.25),wc,-2.0,.75,4.35); put(new THREE.BoxGeometry(2.4,1.5,.25),wc,2.0,.75,4.35);
-    put(new THREE.BoxGeometry(.78,1.85,.12),'#7a4a2a',-.4,.93,4.36); put(new THREE.BoxGeometry(.78,1.85,.12),'#6e4226',.4,.93,4.36); put(new THREE.BoxGeometry(2.0,.28,.5),'#5a3a22',0,1.95,4.35);   /* carved darvoza gate */
-    const hc=houseC[(i*7)%6]; put(new THREE.BoxGeometry(5.6,2.8,3.2),hc,0,1.4,-2.8); put(new THREE.BoxGeometry(6.0,.22,3.6),'#b79d72',0,2.9,-2.8);
+    /* carved darvoza gate: leaves in the family colour (instanced, so they can blink), lintel = family colour */
+    [[-.4,0],[.4,1]].forEach(([lx,k])=>{ const p=P(lx,4.36); go.position.set(p.x,.93,p.y); go.rotation.set(0,ry,0); go.updateMatrix(); GATE.setMatrixAt(i*2+k,go.matrix); GATE.setColorAt(i*2+k,_c.set(fc).multiplyScalar(k?.82:1)); });
+    put(new THREE.BoxGeometry(2.0,.28,.5),fam?fc:'#5a3a22',0,1.95,4.35); if(fam){ put(new THREE.BoxGeometry(.12,1.85,.5),fc,-.86,.93,4.36); put(new THREE.BoxGeometry(.12,1.85,.5),fc,.86,.93,4.36); }
+    /* the house; the oqsoqol's house is a little bigger (×1.15) — the ayvan is where the evening chess happens */
+    const hc=houseC[(i*7)%6], E=elder?1.15:1; put(new THREE.BoxGeometry(5.6,2.8*E,3.2),hc,0,1.4*E,-2.8); put(new THREE.BoxGeometry(6.0,.22,3.6),'#b79d72',0,2.8*E+.1,-2.8);
+    if(elder){ put(new THREE.BoxGeometry(5.9,.12,3.8),fc,0,2.8*E+.27,-2.8); }
     put(new THREE.BoxGeometry(5.6,.16,1.9),'#8a6040',0,2.62,-.3); [-2.5,-.8,.8,2.5].forEach(x=>put(new THREE.CylinderGeometry(.09,.12,2.5,8),'#7a4a2a',x,1.3,.5));   /* ayvan with carved columns */
     put(new THREE.BoxGeometry(1.0,1.9,.08),'#5a3a22',1.65,.95,-1.16);
     put(new THREE.BoxGeometry(1.6,.42,2.2),'#8a5a34',-1.55,.21,1.4); put(new THREE.BoxGeometry(1.45,.1,2.0),['#b3263a','#1d4e9e','#c58b1c'][i%3],-1.55,.47,1.4);   /* tapchan + ko'rpacha */
     put(new THREE.BoxGeometry(1.5,.22,1.5),'#cfc3ad',1.6,.11,2.2); put(new THREE.BoxGeometry(1.2,.05,1.2),'#3fb4d9',1.6,.22,2.2);   /* hauz */
     [[.95,1.55],[2.25,1.55],[.95,2.85],[2.25,2.85]].forEach(([x,z])=>put(new THREE.CylinderGeometry(.05,.05,2.3,5),'#6e4a2a',x,1.15,z));
     put(new THREE.BoxGeometry(2.0,.14,2.0),i%2?'#5f9a3e':'#6fa646',1.6,2.35,2.2); [[1.2,1.9],[2.0,2.6],[1.5,2.7]].forEach(([x,z])=>{ const p=P(x,z); S.sph(.14,'#5b2a6e',p.x,2.15,p.y,1,1.4,1,6); });   /* grapevine (tok) */
-    /* nameplate on the gate wall: emoji + agent name + house number */
-    const cell=PLATES.cell((g,w,hh)=>{ g.fillStyle='#f6ecd8'; rrect(g,3,3,w-6,hh-6,14); g.fill(); g.strokeStyle='#1a3f8f'; g.lineWidth=5; g.stroke(); g.textAlign='left';
+    if(fam){ put(new THREE.CylinderGeometry(.04,.04,1.5,5),'#2a2420',-2.3,2.8*E+.85,-3.6); put(new THREE.BoxGeometry(.05,.6,1.1),fc,-2.3,2.8*E+1.1,-3.04); }   /* roof flag in the family colour */
+    /* nameplate on the gate wall: emoji + agent name + house number, under it the persona's call name (§4.2) */
+    const cell=PLATES.cell((g,w,hh)=>{ g.fillStyle='#f6ecd8'; rrect(g,3,3,w-6,hh-6,14); g.fill(); g.strokeStyle=fam?fc:'#1a3f8f'; g.lineWidth=5; g.stroke(); g.textAlign='left';
       if(a){ g.font=`46px ${EMOJI_FONT}`; g.textBaseline='middle'; g.fillText(a.emoji,14,hh/2+3); g.fillStyle='#1d2433'; fitFont(g,a.name,w-92,28,'800 {}px Manrope, Arial'); g.fillText(a.name,78,hh/2-10); }
-      g.fillStyle='#8a5a2e'; g.font='700 18px Manrope, Arial'; g.textBaseline='middle'; g.fillText('дом №'+(i+1),a?78:20,hh/2+24); });
+      g.fillStyle='#8a5a2e'; g.textBaseline='middle'; const sub='дом №'+(i+1)+(a&&HASP?' · '+callName(per):''); fitFont(g,sub,w-(a?92:30),18,'700 {}px Manrope, Arial'); g.fillText(sub,a?78:20,hh/2+24); });
     const pp=P(2.0,4.5); plateB.put(PLATES.plane(cell,1.9,.71),'#ffffff',pp.x,1.05,pp.y,ry);
+    /* family plate at the start of every family run in a row (§4.2), on a post by the gap */
+    const pj=h.p>0 ? h.row*10+(h.row%2===0 ? h.p-1 : 10-h.p) : -1, prevFam=pj>=0 ? houseFam(pj) : null;
+    if(fam && (pj<0 || prevFam!==fam.id) && signCell['fam:'+fam.id]!=null){ const sx=h.cx-3.3-(pj>=0?MH.gap/2:2.2), sz=h.cz+h.s*(pj>=0?4.9:5.6);
+      S.cyl(.08,.09,3.0,5,'#2a2420',sx-1.6,1.5,sz); S.cyl(.08,.09,3.0,5,'#2a2420',sx+1.6,1.5,sz);   /* A-frame plate on two posts: one face to each side of the lane */
+      [0,Math.PI].forEach(k=>{ const g=SIGNS.plane(signCell['fam:'+fam.id],5.2,1.46); signB.put(g,'#ffffff',sx,3.55,sz+Math.cos(ry+k)*.05,ry+k,k?.35:-.35); }); }
     /* spots */
     const sit=P(-1.6,1.35), gin=P(0,3.6), gout=P(0,5.4), laneN=V2(h.cx,h.lane);
     h.sit={key:'h:'+i, pos:sit, yaw:h.s>0?Math.PI/2:-Math.PI/2, pose:'sit', h:.52, appr:[sit,gin,gout,laneN]};
     h.lie={key:'h:'+i, pos:P(-1.55,1.4), yaw:h.s>0?0:Math.PI, pose:'lie', appr:h.sit.appr};
     h.in={key:'h:'+i, pos:P(1.65,-.9), yaw:0, pose:'hide', appr:[P(1.65,-.9),P(1.65,.6),gin,gout,laneN]};
+    /* §3.2 evening chess / nardy on the tapchan of the older rival: host faces the yard, the guest sits opposite */
+    h.chA={key:'h:'+i, pos:P(-1.55,.75), yaw:ry, pose:'sit', h:.52, appr:[P(-1.55,.75),gin,gout,laneN]};
+    h.chB={key:'hg:'+i, pos:P(-1.55,2.1), yaw:ry+Math.PI, pose:'sit', h:.52, appr:[P(-1.55,2.1),gin,gout,laneN]};
     h.win=P(-1.2,-1.13); h.roof=P(1.8,-2.9); h.ry=ry; }
-  /* lane nodes: gate on the x=32 avenue sidewalk + one node per house pair */
-  MH.lanes.forEach(lz=>{ const list=[attach('x',2,lz)]; for(let k=0;k<10;k++) list.push(nnode(MH.x0+3.3+k*MH.step,lz)); const byK=list.slice(1); chain(list,'x');
-    HOUSE.forEach(h=>{ if(h.lane===lz){ const n=byK[Math.round((h.cx-MH.x0-3.3)/MH.step)]; h.sit.node=h.lie.node=h.in.node=n; } }); });
+  GATE.instanceColor.needsUpdate=true; GATE.castShadow=true; scene.add(GATE);
+  /* lane nodes: gate on the x=32 avenue sidewalk + one node in front of every house */
+  MH.lanes.forEach(lz=>{ const list=[attach('x',2,lz)]; HOUSE.forEach(h=>{ if(h.lane===lz){ const n=nnode(h.cx,lz); list.push(n); h.sit.node=h.lie.node=h.in.node=h.chA.node=h.chB.node=n; } }); chain(list,'x'); });
   /* lane lanterns: carved post + warm lamp, light pool at night */
   const LG=Builder(); MH.lanes.forEach(lz=>{ for(let x=43.8;x<106;x+=13.2){ S.cyl(.07,.1,3,6,'#2a2420',x,1.5,lz+1.3); LG.sph(.22,'#ffe2a8',x,3.1,lz+1.3,1,1.2,1,8); POOLS.push([x,lz+.6,7,'#ffd9a0']); } });
   LG.sph(.3,'#ffe2a8',73,2.8,70,1,1,1,8); LG.build(GLOW_V,false);
   HB.build(STD_V); POOLS.push([73,70,12,'#ffd9a0']); }
+/* ---------- v4 §5: the Minor mosque courtyard — 6 standing points in a row facing the building (empty Object3D-like spots, no geometry) ---------- */
+const MOSQUE={x:-128, z:44, row:58, back:60.6};
+const MSPOT=(()=>{ const n=attach('x',0,MOSQUE.back), B=Builder();
+  B.box(17,.06,7.5,'#ece4d2',MOSQUE.x,.1,MOSQUE.row+.6); B.box(11,.05,3.2,'#e4dac4',-118.5,.09,MOSQUE.back); B.build(STD_V,false);   /* plain stone paving of the courtyard */
+  return Array.from({length:6},(_,j)=>{ const x=MOSQUE.x+(2.5-j)*1.8, pos=V2(x,MOSQUE.row); return {key:'m:'+j, j, pos, yaw:Math.PI, pose:'stand', appr:[pos,V2(x,MOSQUE.back),V2(-120.5,MOSQUE.back),NET.n[n]], node:n}; }); })();
+const namozLbl=label('🕌 namoz','bub nz'); namozLbl.position.set(MOSQUE.x,3.3,MOSQUE.row); scene.add(namozLbl);
+/* the sidewalk grid: link every avenue line end to end (v3 left them unlinked, so far walks cut straight through blocks) */
+lineX.forEach(l=>chain(l,'y')); lineZ.forEach(l=>chain(l,'x'));
 /* yard light: a warm pool in the courtyard when someone is home and awake, faint when asleep, none when away */
 const YARD=(()=>{ const m=new THREE.InstancedMesh(new THREE.PlaneGeometry(1,1),new THREE.MeshBasicMaterial({map:glowTex,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}),40), o=new THREE.Object3D();
   HOUSE.forEach((h,i)=>{ const p=V2(h.cx+h.s*-.4, h.cz+h.s*.6); o.position.set(p.x,.3,p.y); o.rotation.set(-Math.PI/2,0,0); o.scale.set(5.5,5.5,1); o.updateMatrix(); m.setMatrixAt(i,o.matrix); m.setColorAt(i,_c.set('#000000')); }); m.renderOrder=2; scene.add(m); return m; })();
@@ -724,15 +842,15 @@ const RB={ core:new THREE.InstancedMesh(robotCoreGeo,ROBOT_MAT,NA),
     }`}),NA) };
 const SEATN=VEN.reduce((s,v)=>s+v.seats.length,0);
 RB.coin=new THREE.InstancedMesh(new THREE.CylinderGeometry(.17,.17,.06,6),new THREE.MeshBasicMaterial({color:'#ffffff'}),SEATN*3+NA);   /* tokens glow a little: they are the food */
-{ const cells=new Float32Array(NA); D.agents.forEach((a,i)=>{ const dc=(D.districts.find(d=>d.id===a.district)||{color:'#19d3c5'}).color;
-    cells[i]=BADGES.cell((g)=>{ g.fillStyle=dc; g.beginPath(); g.arc(32,32,30,0,7); g.fill(); g.strokeStyle='#ffffff'; g.lineWidth=3; g.stroke(); g.font=`36px ${EMOJI_FONT}`; g.textAlign='center'; g.textBaseline='middle'; g.fillText(a.emoji,32,35); });
+{ const cells=new Float32Array(NA); D.agents.forEach((a,i)=>{ const dc=(D.districts.find(d=>d.id===a.district)||{color:'#19d3c5'}).color, bc=HASP?famOf(a.id).color:dc;   /* v4 §2.2: chest badge = family colour */
+    cells[i]=BADGES.cell((g)=>{ g.fillStyle=bc; g.beginPath(); g.arc(32,32,30,0,7); g.fill(); g.strokeStyle='#ffffff'; g.lineWidth=3; g.stroke(); g.font=`36px ${EMOJI_FONT}`; g.textAlign='center'; g.textBaseline='middle'; g.fillText(a.emoji,32,35); });
     RB.core.setColorAt(i,_c.set('#ffffff').lerp(new THREE.Color(dc),.16)); });
   RB.badge.geometry.setAttribute('cell',new THREE.InstancedBufferAttribute(cells,1)); }
 Object.values(RB).forEach(m=>{ m.frustumCulled=false; m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(m); }); RB.core.castShadow=true;
 for(let i=0;i<RB.eye.count;i++) RB.eye.setColorAt(i,_c.set('#19d3c5')); for(let i=0;i<RB.coin.count;i++) RB.coin.setColorAt(i,_c.set(tok.ccol));
 
 /* ---------- modes (spec §3), recomputed every minute from next/last in Tashkent time ---------- */
-const MODE={ work:['🏢','работает','#22e07a'], walk:['🚶','идёт в офис','#19d3c5'], eat:['🍽','ест токены','#ffb547'], home:['🏠','дома','#e9c27a'], sleep:['😴','спит','#9aa6ff'], done:['🫖','сделано, отдыхает','#f5a623'], off:['⏻','выключен','#8b8f99'] };
+const MODE={ work:['🏢','работает','#22e07a'], walk:['🚶','идёт в офис','#19d3c5'], eat:['🍽','ест токены','#ffb547'], home:['🏠','дома','#e9c27a'], sleep:['😴','спит','#9aa6ff'], done:['🫖','сделано, отдыхает','#f5a623'], off:['⏻','выключен','#8b8f99'], namoz:['🕌','на намазе','#9fd9c8'] };
 let todMode='auto';
 const tashHour = () => new Date(Date.now()+TZ_MS).getUTCHours();
 const effHour = () => todMode==='auto' ? tashHour() : {day:13, evening:20, night:1}[todMode];
@@ -747,67 +865,142 @@ function modeOf(a, now, hour){ const t=runTimes(a,now); a._nx=t.nx; a._since=t.s
   if(to!=null && to<=15) return 'work'; if(to!=null && to<=25) return 'walk'; return restMode(a,t.since,hour); }
 const fmtMin = m => m==null ? '—' : m<1 ? 'меньше минуты' : m<60 ? Math.round(m)+' мин' : m<60*48 ? Math.floor(m/60)+' ч '+String(Math.round(m%60)).padStart(2,'0')+' мин' : Math.round(m/1440)+' дн';
 
-/* per-agent life: favourite place (deterministic by id), a fixed seat there, a house in the mahalla */
-const LIFE=D.agents.map((a,i)=>({a, i, fav:FAV[a.cost] ? FAV[a.cost][hashId(a.id)%3] : null, home:HOUSE[(((a.home??i)%40)+40)%40]}));
-VEN.forEach((v,vi)=>{ const base=VEN.slice(0,vi).reduce((s,w)=>s+w.seats.length,0); LIFE.filter(L=>L.fav===v.id).sort((x,y)=>x.a.id.localeCompare(y.a.id)).forEach((L,k)=>{ L.seat=v.seats[k%v.seats.length]; L.seatIdx=base+(k%v.seats.length); }); });
+/* ---------- v4 §5.3: prayer times, computed in the browser — Tashkent, Muslim World League angles, Hanafi Asr (shadow ×2) ---------- */
+const PRAY={lat:41.2995, lon:69.2401, tz:5, fajr:18, isha:17, win:20};            /* the two angles live here and only here */
+const PR_NAMES=[['fajr','Bomdod','Fajr'],['dhuhr','Peshin','Dhuhr'],['asr','Asr','Asr'],['maghrib','Shom','Maghrib'],['isha','Xufton','Isha']];
+function prayerTimes(y,m,d){ const r=Math.PI/180, sin=x=>Math.sin(x*r), cos=x=>Math.cos(x*r), tan=x=>Math.tan(x*r), asin=x=>Math.asin(x)/r, acos=x=>Math.acos(x)/r, fix=(a,b)=>{ a%=b; return a<0?a+b:a; };
+  let Y=y, M=m; if(M<=2){ Y-=1; M+=12; } const A=Math.floor(Y/100), B=2-A+Math.floor(A/4);
+  const jd=Math.floor(365.25*(Y+4716))+Math.floor(30.6001*(M+1))+d+B-1524.5, J=jd+.5-PRAY.tz/24, Dd=J-2451545;   /* ≈ local noon in UT */
+  const g=fix(357.529+.98560028*Dd,360), q=fix(280.459+.98564736*Dd,360), L=fix(q+1.915*sin(g)+.020*sin(2*g),360), e=23.439-.00000036*Dd;
+  const RA=fix(Math.atan2(cos(e)*sin(L),cos(L))/r/15,24), dec=asin(sin(e)*sin(L)), EqT=fix(q/15-RA+12,24)-12, lat=PRAY.lat, noon=12+PRAY.tz-PRAY.lon/15-EqT;
+  const T=a=>{ const v=(-sin(a)-sin(lat)*sin(dec))/(cos(lat)*cos(dec)); return Math.abs(v)>1?NaN:acos(v)/15; };
+  const As=t=>{ const v=(sin(Math.atan(1/(t+tan(Math.abs(lat-dec))))/r)-sin(lat)*sin(dec))/(cos(lat)*cos(dec)); return Math.abs(v)>1?NaN:acos(v)/15; };
+  return {fajr:noon-T(PRAY.fajr), sunrise:noon-T(.833), dhuhr:noon+1/60, asr:noon+As(2), maghrib:noon+T(.833)+2/60, isha:noon+T(PRAY.isha)}; }
+const prCache={};
+function prayerDay(ms){ const t=new Date(ms+TZ_MS), y=t.getUTCFullYear(), m=t.getUTCMonth()+1, d=t.getUTCDate(), key=y+'-'+m+'-'+d; if(prCache[key]) return prCache[key];
+  const p=prayerTimes(y,m,d), day0=Date.UTC(y,m-1,d)-TZ_MS;                                                            /* 00:00 Tashkent */
+  return prCache[key]=PR_NAMES.filter(([k])=>!isNaN(p[k])).map(([k,name,lat])=>{ const start=day0+Math.round(p[k]*60)*6e4; return {k,name,lat,start,end:start+PRAY.win*6e4}; }); }   /* NaN (never in Tashkent) = skipped */
+function prayerNow(ms){ const today=prayerDay(ms), cur=today.find(w=>ms>=w.start&&ms<w.end)||null; let next=today.find(w=>w.start>ms), tomorrow=false;
+  if(!next){ next=prayerDay(ms+864e5)[0]||null; tomorrow=true; } return {cur,next,tomorrow,today}; }
+const hhmm = ms => { const t=new Date(ms+TZ_MS); return String(t.getUTCHours()).padStart(2,'0')+':'+String(t.getUTCMinutes()).padStart(2,'0'); };
+window.__prayer = (y,m,d) => { const p=prayerTimes(y,m,d), f=h=>{ const t=Math.round(h*60); return String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0'); }; return Object.fromEntries(Object.entries(p).map(([k,v])=>[k,f(v)])); };
+/* §5.6 demo: a compressed prayer window — walk 15 s, stand 20 s, walk back 15 s; work is never interrupted */
+const DEMO_GO=15, DEMO_STAND=20, DEMO_BACK=15; let DEMO=null;
+const demoPhase = () => { if(!DEMO) return null; const s=(Date.now()-DEMO.t0)/1000; return s<DEMO_GO?'go':s<DEMO_GO+DEMO_STAND?'stand':s<DEMO_GO+DEMO_STAND+DEMO_BACK?'back':null; };
+function startDemo(){ if(DEMO) return; DEMO={t0:Date.now()}; recompute(); DEMO.tm=[setTimeout(()=>recompute(),(DEMO_GO+DEMO_STAND)*1000), setTimeout(()=>{ DEMO=null; recompute(); },(DEMO_GO+DEMO_STAND+DEMO_BACK)*1000)]; }
+const isMosque = s => !!(s && s.key && s.key[0]==='m');
+
+/* per-agent life: favourite place (deterministic by id), a default seat there, a house in the mahalla; v4: persona + family */
+const LIFE=D.agents.map((a,i)=>({a, i, per:PER[a.id], fav:FAV[a.cost] ? FAV[a.cost][hashId(a.id)%3] : null, home:HOUSE[(((a.home??i)%40)+40)%40]}));
+{ let gi=0; VEN.forEach(v=>v.seats.forEach((s,k)=>{ s.gi=gi++; s.k=k; })); }
+VEN.forEach(v=>{ LIFE.filter(L=>L.fav===v.id).sort((x,y)=>x.a.id.localeCompare(y.a.id)).forEach((L,k)=>{ L.seat=v.seats[k%v.seats.length]; }); });
+const LBY={}; LIFE.forEach(L=>LBY[L.a.id]=L);
 LIFE.forEach(L=>{ L.office=officeSpot(L.a); L.pos=V2(0,0); L.yaw=0; L.path=null; L.s=0; L.speed=BRISK; L.phase=Math.random()*6; L.mode=null; L.at=null; L.target=null; L.eatT=Math.random()*9;
   L.bub=label('','bub',()=>openAgent(L.a,'robot')); scene.add(L.bub); });
-function spotFor(L, mode){ if(mode==='work') return L.office||L.home.in; if(mode==='eat') return L.seat||L.home.sit; if(mode==='sleep') return L.home.lie; if(mode==='off') return L.home.in; return L.home.sit; }
-function setPath(L, pts, speed){ const cum=[0]; for(let i=1;i<pts.length;i++) cum.push(cum[i-1]+pts[i].distanceTo(pts[i-1])); L.path=pts; L.cum=cum; L.len=cum[cum.length-1]; L.speed=speed; L.s=0; }
+/* §3.2 rivals (chess / nardy), from persona links; one pair once */
+const RIVALS=[]; if(HASP){ const seen=new Set(); LIFE.forEach(L=>(L.per.links||[]).forEach(l=>{ const kind=/шахмат/.test(l.rel)?'chess':/нард/.test(l.rel)?'narda':null, o=LBY[l.id]; if(!kind||!o) return;
+  const key=[L.a.id,o.a.id].sort().join('|'); if(seen.has(key)) return; seen.add(key); RIVALS.push({A:L, B:o, kind, on:false}); })); }
+/* §3.1 one shared bubble per family dinner (individual bubbles on hover) */
+const FDL={}; Object.values(FAM).forEach(f=>{ const l=label('','bub fd',()=>showFamilies(f.id)); scene.add(l); FDL[f.id]={l, on:false, hover:false, pos:new THREE.Vector3()};
+  l.element.addEventListener('mouseenter',()=>FDL[f.id].hover=true); l.element.addEventListener('mouseleave',()=>FDL[f.id].hover=false); });
+function spotFor(L, mode){ if(mode==='work') return L.office||L.home.in; if(mode==='namoz') return L.mslot||L.home.sit; if(mode==='eat') return L.cs||L.seat||L.home.sit; if(L.leis) return L.leis.spot;
+  if(mode==='sleep') return L.home.lie; if(mode==='off') return L.home.in; return L.home.sit; }
+function setPath(L, pts, speed){ const cum=[0]; for(let i=1;i<pts.length;i++) cum.push(cum[i-1]+pts[i].distanceTo(pts[i-1])); L.path=pts; L.cum=cum; L.len=cum[cum.length-1]; L.speed=speed; L.s=0; L.wall=0; }
 function samplePath(L, s){ const c=L.cum, p=L.path; let i=1; while(i<c.length-1 && c[i]<s) i++; const k=c[i]>c[i-1]?Math.min(1,Math.max(0,(s-c[i-1])/(c[i]-c[i-1]))):1, a=p[i-1], b=p[i];
   return [a.x+(b.x-a.x)*k, a.y+(b.y-a.y)*k, Math.atan2(b.x-a.x,b.y-a.y)]; }
-let COUNTS={};
-function recompute(initial=false){ const now=Date.now(), hour=effHour(); COUNTS={work:0,walk:0,eat:0,home:0,sleep:0,off:0};
+let COUNTS={}, PRN=null;
+function recompute(initial=false){ const now=Date.now(), hour=effHour(), ph=demoPhase(), demoOn=ph==='go'||ph==='stand';
+  PRN=prayerNow(now); const win = demoOn ? {k:'demo', name:'демо', lat:'demo', start:DEMO.t0, end:DEMO.t0+(DEMO_GO+DEMO_STAND)*1000} : (DEMO ? null : PRN.cur);
   VEN.forEach(v=>v.eaters=0);
-  LIFE.forEach(L=>{ const a=L.a, m=modeOf(a,now,hour); a._mode=m; COUNTS[m==='done'?'home':m]++; if(m==='eat'&&L.seat) L.seat.v.eaters++;
+  /* 1. base modes (v3) + §5.4 namoz for the Xo'ja akas: work > namoz > eat/family dinner > home/leisure > done/off */
+  LIFE.forEach(L=>{ const a=L.a; let m=modeOf(a,now,hour); L.company=false; L.cs=null; L.dinner=null; L.leis=null; L.pendNow=false;
+    if(HASP && L.per.xoja){
+      if(m==='work'){ if(win){ L.pendNow=true; if(!demoOn) L.pend=win.k+win.start; } }                      /* running work is never interrupted: «намаз после запуска» */
+      else if(win){ m='namoz'; if(!demoOn){ L.pend=null; L.short=null; } }
+      else if(L.pend || L.short){ const toNext=PRN.next ? (PRN.next.start-now)/6e4 : 999;
+        if(!L.short){ if(toNext>25) L.short={t0:now, arr:null}; else L.pend=null; }                             /* next prayer close: go with everybody next time */
+        if(L.short){ if((L.short.arr && now-L.short.arr>=10*6e4) || now-L.short.t0>40*6e4){ L.short=null; L.pend=null; } else m='namoz'; } } }   /* short 10-min visit, then home */
+    a._mode=m; });
+  /* mosque row: keep a slot once taken, newcomers get the free slot nearest to them (east end first) */
+  const pray=LIFE.filter(L=>L.a._mode==='namoz'); LIFE.forEach(L=>{ if(L.a._mode!=='namoz') L.mslot=null; });
+  const used=new Set(pray.filter(L=>L.mslot).map(L=>L.mslot)); pray.filter(L=>!L.mslot).sort((x,y)=>x.pos.distanceTo(MSPOT[0].pos)-y.pos.distanceTo(MSPOT[0].pos)).forEach(L=>{ const s=MSPOT.find(s=>!used.has(s)); if(s){ used.add(s); L.mslot=s; } });
+  /* 2. §3.1 family dinners: ≥2 of one family at the table of the eldest eater; a spouse at home comes «за компанию» */
+  const taken=new Set();
+  const groups=[]; if(HASP) Object.values(FAM).forEach(f=>{ if(f.id==='guests') return; const E=LIFE.filter(L=>L.a._mode==='eat' && L.seat && L.per.family_id===f.id); if(!E.length) return;
+    const G=E.slice(); E.forEach(L=>{ const sp=LBY[(L.per.family||{}).spouse]; if(sp && !G.includes(sp) && ['home','done'].includes(sp.a._mode)){ G.push(sp); sp.company=true; sp.a._mode='eat'; } });
+    if(G.length<2){ G.forEach(L=>{ if(L.company){ L.company=false; L.a._mode=modeOf(L.a,now,hour); } }); return; }
+    groups.push({f, E, G}); });
+  groups.sort((x,y)=>y.G.length-x.G.length).forEach(({f,E,G})=>{ const eld=E.slice().sort((x,y)=>(y.per.age||0)-(x.per.age||0))[0], n=G.length;
+    const cand=[eld.seat.v, ...(FAV[eld.a.cost]||[]).map(id=>VBY[id]), ...VEN.filter(v=>v.seats.length)].filter((v,k,arr)=>v&&arr.indexOf(v)===k);
+    let v=null, j=-1; for(const c of cand){ for(let s=0;s+n<=c.seats.length;s++){ if(c.seats.slice(s,s+n).every(x=>!taken.has(x))){ v=c; j=s; break; } } if(v) break; }
+    if(!v) v=eld.seat.v;
+    G.sort((x,y)=>(y.per.age||0)-(x.per.age||0)).forEach((L,k)=>{ const s=j>=0?v.seats[j+k]:VEN.flatMap(w=>w.seats).find(x=>!taken.has(x)); if(s){ taken.add(s); L.cs=s; } L.dinner={f, v, G}; }); });
+  LIFE.forEach(L=>{ if(L.a._mode==='eat' && !L.cs && L.seat){ const v=L.seat.v; L.cs=taken.has(L.seat)?(v.seats.find(x=>!taken.has(x))||VEN.flatMap(w=>w.seats).find(x=>!taken.has(x))||L.seat):L.seat; taken.add(L.cs); } });
+  /* 3. §3.2 evening chess / nardy at the older rival's ayvan, 18–22, both at home; starts on an even minute, then stays; never during a prayer window */
+  const minute=new Date(now+TZ_MS).getUTCMinutes();
+  RIVALS.forEach(R=>{ const ok=hour>=18 && hour<22 && !win && ['home','done','off'].includes(R.A.a._mode) && ['home','done','off'].includes(R.B.a._mode);
+    R.on = ok && !R.A.leis && !R.B.leis && (R.on || minute%2===0); if(!R.on) return;   /* one game per person */ const [H,Gst]=(R.A.per.age||0)>=(R.B.per.age||0)?[R.A,R.B]:[R.B,R.A];
+    H.leis={spot:H.home.chA, kind:R.kind, host:true, other:Gst}; Gst.leis={spot:H.home.chB, kind:R.kind, host:false, other:H}; H.a._mode='home'; Gst.a._mode='home'; });
+  /* 4. counts + routes */
+  COUNTS={work:0,walk:0,eat:0,home:0,sleep:0,off:0,namoz:0};
+  LIFE.forEach(L=>{ const a=L.a, m=a._mode; COUNTS[m==='done'?'home':m]++; if(m==='eat'&&L.cs&&!L.company) L.cs.v.eaters++;
     if(m==='walk'){ /* honest commute: from where it rests to the office; position = share of the last 10 min before the run */
       const from=spotFor(L,restMode(a,a._since,hour)); L.commute=L.office?route(from,L.office):null; L.mode=m; if(!L.commute){ L.at=L.home.sit; L.target=L.at; L.pos.copy(L.at.pos); } return; }
     L.commute=null; const sp=spotFor(L,m);
-    if(initial || (!L.at && !L.path)){ L.at=sp; L.target=sp; L.path=null; L.pos.copy(sp.pos); L.yaw=sp.yaw; }
+    if(initial || (!L.at && !L.path)){ L.at=sp; L.target=sp; L.path=null; L.pos.copy(sp.pos); L.yaw=sp.yaw; if(L.short && isMosque(sp)) L.short.arr=now; }   /* opened mid-window: already standing in the row */
     else if(sp!==L.target){
       if(L.at && L.at.key===sp.key){ L.at=sp; L.target=sp; L.path=null; L.pos.copy(sp.pos); L.yaw=sp.yaw; }
-      else { const pts = L.at ? route(L.at,sp) : [L.pos.clone(), ...netPath(nearestNode(L.pos),sp.node).map(i=>NET.n[i]), ...sp.appr.slice().reverse()]; setPath(L,pts,BRISK); L.at=null; L.target=sp; } }
+      else { const pts = L.at ? route(L.at,sp) : [L.pos.clone(), ...netPath(nearestNode(L.pos),sp.node).map(i=>NET.n[i]), ...sp.appr.slice().reverse()];
+        const far=isMosque(sp)||isMosque(L.at)||isMosque(L.target); let len=0; for(let i=1;i<pts.length;i++) len+=pts[i].distanceTo(pts[i-1]);
+        setPath(L,pts, far ? (DEMO ? Math.max(BRISK, len/(ph==='back'?DEMO_BACK-1:DEMO_GO-1)) : BRISK*3) : BRISK); if(far) L.wall=performance.now(); L.at=null; L.target=sp; } }   /* the long walk to Minor: ×3, no teleports */
     L.mode=m; });
   /* offices: beam + lit windows follow the work mode; status under each office label */
-  beams.forEach(b=>{ const a=D.agents.find(x=>x.id===b.id); if(a) b.run=a._mode==='work'; });
-  Object.entries(OFFICE).forEach(([id,of])=>{ const a=D.agents.find(x=>x.id===id); if(!a) return; const w=a._mode==='work';
+  beams.forEach(b=>{ const a=AG[b.id]; if(a) b.run=a._mode==='work'; });
+  Object.entries(OFFICE).forEach(([id,of])=>{ const a=AG[id]; if(!a) return; const w=a._mode==='work';
     if(a.state!=='off') of.body.material.emissiveIntensity = w ? .5 : .22;
     of.st.textContent = a.state==='running' ? ' · работает' : w ? ` · через ${fmtMin(a._to)}` : ` · ${MODE[a._mode][0]}`; });
-  /* mahalla windows + teapots */
-  const tod=todOf(hour); let tp=0;
-  HOUSE.forEach((h,i)=>{ const L=LIFE.find(x=>x.home===h), m=L?L.a._mode:null; const c = !L ? '#2a2f38' : m==='off' ? '#121418' : m==='sleep' ? '#6e4220' : (m==='home'||m==='done') ? (tod==='day'?'#ffd99a':'#ffc35a') : (tod==='day'?'#3b4452':'#1c2129');
-    WIN.setColorAt(i,_c.set(c)); if(m==='done'){ _m4.compose(_p.set(h.roof.x,3.0,h.roof.y),_q.setFromEuler(_e.set(0,h.ry+.6,0)),_s.set(2.3,2.3,2.3)); TEA.setMatrixAt(tp++,_m4); }
-    const yc = !L||m==='off' ? '#000000' : m==='sleep' ? (tod==='day'?'#000000':'#3a3f66') : (m==='home'||m==='done') ? (tod==='day'?'#3a2a10':tod==='evening'?'#b8792e':'#d08a36') : '#000000'; YARD.setColorAt(i,_c.set(yc)); });
+  /* mahalla windows + teapots; §5.4.6: 10 min before Bomdod the Xo'ja akas' windows light up warm */
+  const tod=todOf(hour); let tp=0; const preFajr = PRN.next && PRN.next.k==='fajr' && PRN.next.start-now<=10*6e4 && PRN.next.start>now, demoWake = ph==='go' && tod==='night';
+  HOUSE.forEach((h,i)=>{ const L=LIFE.find(x=>x.home===h), m=L?L.a._mode:null, wake=L && HASP && L.per.xoja && m==='sleep' && (preFajr||demoWake);
+    const c = !L ? '#2a2f38' : wake ? '#ffc35a' : m==='off' ? '#121418' : m==='sleep' ? '#6e4220' : (m==='home'||m==='done') ? (tod==='day'?'#ffd99a':'#ffc35a') : (tod==='day'?'#3b4452':'#1c2129');
+    WIN.setColorAt(i,_c.set(c)); if(m==='done' && L.a.state==='done'){ _m4.compose(_p.set(h.roof.x,(h.elder?3.42:3.0),h.roof.y),_q.setFromEuler(_e.set(0,h.ry+.6,0)),_s.set(2.3,2.3,2.3)); TEA.setMatrixAt(tp++,_m4); }
+    const yc = !L||m==='off' ? '#000000' : wake ? '#b8792e' : m==='sleep' ? (tod==='day'?'#000000':'#3a3f66') : (m==='home'||m==='done') ? (tod==='day'?'#3a2a10':tod==='evening'?'#b8792e':'#d08a36') : '#000000'; YARD.setColorAt(i,_c.set(yc)); });
   WIN.instanceColor.needsUpdate=true; YARD.instanceColor.needsUpdate=true; TEA.count=tp; TEA.instanceMatrix.needsUpdate=true;
-  LIFE.forEach(L=>{ const a=L.a, m=a._mode; let t='';
-    if(m==='eat') t=`🍽 ${a.cost==='gemini'?'Gemini':'Claude'}`; else if(m==='walk') t=`🚶 в офис · ${fmtMin(a._to)}`; else if(m==='sleep') t='💤 спит'; else if(m==='home') t='🏠 отдыхает'; else if(m==='done') t='🫖 сделано';
-    L.bub.element.innerHTML=`<span class="bi">${a.emoji} ${t}</span>`; L.bub.element.classList.toggle('zz',m==='sleep'); L.hidden = m==='work'||m==='off'; });
-  drawBank(COUNTS.eat); updateHud(); todButton();
-  if(panel.classList.contains('on') && panel.dataset.agent && !inOffice) openAgent(D.agents.find(x=>x.id===panel.dataset.agent),'refresh'); }
+  /* bubbles: «Doston · 🍽 Claude», «Qodir aka · 🕌 namoz», «Shoira opa · 💤 спит» (§2.2); one shared bubble per family dinner */
+  Object.values(FDL).forEach(x=>x.on=false);
+  LIFE.forEach(L=>{ const a=L.a, m=a._mode, who=HASP?esc(callName(L.per))+' · ':''; let t='';
+    if(m==='eat') t=L.company?'🍽 за компанию':`🍽 ${a.cost==='gemini'?'Gemini':'Claude'}`; else if(m==='walk') t=`🚶 в офис · ${fmtMin(a._to)}`; else if(m==='sleep') t='💤 спит'; else if(m==='namoz') t='🕌 namoz';
+    else if(L.leis) t=L.leis.kind==='chess'?`♟ shaxmat · ${esc(callName(L.leis.other.per))}`:`🎲 narda · ${esc(callName(L.leis.other.per))}`; else if(m==='home') t='🏠 отдыхает'; else if(m==='done') t='🫖 сделано';
+    L.bub.element.innerHTML=`<span class="bi">${a.emoji} ${who}${t}</span>`; L.bub.element.classList.toggle('zz',m==='sleep'); L.bub.element.classList.toggle('nz',m==='namoz'); L.hidden = m==='work'||(m==='off'&&!L.leis);
+    if(L.dinner){ const x=FDL[L.dinner.f.id]; x.on=true; x.n=L.dinner.G.length; x.v=L.dinner.v; } });
+  const perV={}; Object.entries(FDL).forEach(([fid,x])=>{ if(!x.on) return; const fk=perV[x.v.id]=(perV[x.v.id]||0)+1; const G=LIFE.filter(L=>L.dinner&&L.dinner.f.id===fid&&L.cs); x.pos.set(0,0,0); G.forEach(L=>{ x.pos.x+=L.cs.pos.x; x.pos.z+=L.cs.pos.y; }); x.pos.multiplyScalar(1/Math.max(1,G.length)); x.pos.y=3.25+(fk-1)*.9;
+    x.l.position.copy(x.pos); x.l.element.innerHTML=`🍽 ${esc(FAM[fid].name)} · ${x.n}`; });
+  drawBank(LIFE.filter(L=>L.a._mode==='eat'&&!L.company).length); updateHud(); todButton();
+  if(panel.classList.contains('on') && panel.dataset.agent && !inOffice) openAgent(AG[panel.dataset.agent],'refresh'); }
 
 /* per-frame robot animation (dt-based, not frame-based) */
 const _R=new THREE.Matrix4(), _L4=new THREE.Matrix4(), _P4=new THREE.Matrix4(), _Z=new THREE.Matrix4().makeScale(0,0,0), _v3=new THREE.Vector3();
 function part(mesh, idx, lx,ly,lz, rx=0,ry=0,rz=0, sc=1){ _e.set(rx,ry,rz); _q.setFromEuler(_e); _L4.compose(_p.set(lx,ly,lz),_q,_s.set(sc,sc,sc)); _P4.multiplyMatrices(_R,_L4); mesh.setMatrixAt(idx,_P4); }
-function robotsTick(dt, t){ const now=Date.now(); let coinI=SEATN*3;
+function robotsTick(dt, t){ const now=Date.now(); let coinI=SEATN*3, inRow=0;
   for(let k=0;k<RB.coin.count;k++) RB.coin.setMatrixAt(k,_Z);
   LIFE.forEach((L,i)=>{ const a=L.a; let pose='hide', walking=false, spd=0;
     if(L.mode==='walk' && L.commute){ const to=a._nx?Math.max(0,(a._nx-now)/6e4):20, p=Math.min(1,Math.max(0,(25-to)/10)); if(L.path!==L.commute) setPath(L,L.commute,0);
       const [x,z,yaw]=samplePath(L,p*L.len); L.pos.set(x,z); let d=yaw-L.yaw; d=Math.atan2(Math.sin(d),Math.cos(d)); L.yaw+=d*Math.min(1,dt*6); walking=p<1; spd=L.len/600; L.at=p>=1?L.office:null; L.target=L.office; }
-    else if(L.path){ L.s=Math.min(L.len,L.s+L.speed*dt); const [x,z,yaw]=samplePath(L,L.s); L.pos.set(x,z); let d=yaw-L.yaw; d=Math.atan2(Math.sin(d),Math.cos(d)); L.yaw+=d*Math.min(1,dt*10); walking=true; spd=L.speed;
-      if(L.s>=L.len-.01){ L.path=null; L.at=L.target; L.pos.copy(L.target.pos); L.yaw=L.target.yaw; } }
-    if(walking){ pose='walk'; L.phase+=dt*Math.max(5.5,spd*2.3); } else if(L.at){ pose=L.at.pose; L.yaw=L.at.yaw; }
-    const vis = pose!=='hide';
+    else if(L.path){ L.s=Math.min(L.len, L.wall ? (performance.now()-L.wall)/1000*L.speed : L.s+L.speed*dt); const [x,z,yaw]=samplePath(L,L.s); L.pos.set(x,z); let d=yaw-L.yaw; d=Math.atan2(Math.sin(d),Math.cos(d)); L.yaw+=d*Math.min(1,dt*10); walking=true; spd=L.speed;
+      if(L.s>=L.len-.01){ L.path=null; L.at=L.target; L.pos.copy(L.target.pos); L.yaw=L.target.yaw; if(L.short && !L.short.arr && isMosque(L.at)) L.short.arr=now; } }
+    if(walking){ pose='walk'; L.phase+=dt*Math.max(5.5,Math.min(spd,BRISK*1.4)*2.3); } else if(L.at){ pose=L.at.pose; L.yaw=L.at.yaw; }
+    const vis = pose!=='hide', standRow = !walking && L.mode==='namoz' && isMosque(L.at); if(standRow) inRow++;
     if(!vis) _R.copy(_Z);
     else if(pose==='lie'){ _q.setFromEuler(_e.set(0,L.yaw,0)); _R.compose(_p.set(L.pos.x,.86,L.pos.y),_q,_s.set(ROBOT_S,ROBOT_S,ROBOT_S)); _R.multiply(_L4.makeTranslation(0,0,.95)).multiply(_P4.makeRotationX(-Math.PI/2)); }
-    else { const y = pose==='walk' ? Math.abs(Math.sin(L.phase))*.07 : pose==='sit' ? (L.at.h||.5)-.5*ROBOT_S+.04 : 0, sway = pose==='sit'&&L.mode!=='eat' ? Math.sin(t*.5+i)*.15 : 0;
+    else { const y = pose==='walk' ? Math.abs(Math.sin(L.phase))*.07 : pose==='sit' ? (L.at.h||.5)-.5*ROBOT_S+.04 : pose==='stand' ? .006*Math.sin(t*1.3+i) : 0, sway = pose==='sit'&&L.mode!=='eat'&&!L.leis ? Math.sin(t*.5+i)*.15 : 0;   /* stand: quiet breathing only, no other motion */
       _q.setFromEuler(_e.set(0,L.yaw+sway,0)); _R.compose(_p.set(L.pos.x,y,L.pos.y),_q,_s.set(ROBOT_S,ROBOT_S,ROBOT_S)); }
     part(RB.core,i,0,0,0, pose==='sit'?.05:0, 0, 0, pose==='lie'?1+.025*Math.sin(t*1.6+i):1);
     const sw = pose==='walk' ? Math.sin(L.phase)*.65 : 0, sit=pose==='sit'||pose==='lie';
     part(RB.leg,i*2, .13,.5,0, sit?-Math.PI/2:sw); part(RB.leg,i*2+1,-.13,.5,0, sit?-Math.PI/2:-sw);
     let armR = pose==='walk' ? -sw*.8 : 0, armL = pose==='walk' ? sw*.8 : (pose==='sit'?-.45:0), coin=false, eatK=0;
-    if(L.mode==='eat' && L.at && L.at===L.seat){ L.eatT+=dt; const c=L.eatT%3.4; eatK = c<.8 ? c/.8 : c<1.5 ? 1 : c<2.3 ? 1-(c-1.5)/.8 : 0; armR=-2.2*eatK; coin=eatK>.05;
+    if(L.mode==='eat' && !L.company && L.at && L.at===L.cs){ L.eatT+=dt; const c=L.eatT%3.4; eatK = c<.8 ? c/.8 : c<1.5 ? 1 : c<2.3 ? 1-(c-1.5)/.8 : 0; armR=-2.2*eatK; coin=eatK>.05;
       /* plate: a short stack of tokens that goes down bite by bite and gets refilled */
-      const left=3-(Math.floor(L.eatT/3.4)%4), pl=L.seat.plate, base=L.seatIdx*3; _c.set(a.cost==='gemini'?tok.gcol:tok.ccol);
+      const left=3-(Math.floor(L.eatT/3.4)%4), pl=L.cs.plate, base=L.cs.gi*3; _c.set(a.cost==='gemini'?tok.gcol:tok.ccol);
       for(let k=0;k<left;k++){ _m4.compose(_v3.set(pl.x,pl.y+.04+k*.065,pl.z),_q.setFromEuler(_e.set(0,k*.5,0)),_s.set(1,1,1)); RB.coin.setMatrixAt(base+k,_m4); RB.coin.setColorAt(base+k,_c); } }
     if(pose==='lie') armR=armL=0;
     part(RB.arm,i*2, .36,1.3,0, armL); part(RB.arm,i*2+1,-.36,1.3,0, armR, 0, -eatK*.3);
@@ -816,8 +1009,13 @@ function robotsTick(dt, t){ const now=Date.now(); let coinI=SEATN*3;
     part(RB.eye,i*2, .11,1.66,.385, 0,0,0, blink); part(RB.eye,i*2+1,-.11,1.66,.385, 0,0,0, blink);
     _c.set(MODE[L.mode]?MODE[L.mode][2]:'#19d3c5'); RB.eye.setColorAt(i*2,_c); RB.eye.setColorAt(i*2+1,_c);
     part(RB.badge,i, 0,1.03,.315);
-    const show = vis && cam.position.distanceTo(_v3.set(L.pos.x,2,L.pos.y)) < (pose==='lie'?100:MOBILE?75:64);
+    /* bubble rules: standing in the mosque row -> only the shared «🕌 namoz»; chess guest -> host's bubble; family dinner -> shared bubble unless hovered */
+    const seated = L.dinner && L.at===L.cs, quiet = standRow || (L.leis && !L.leis.host && !walking) || (seated && !FDL[L.dinner.f.id].hover);
+    const show = vis && !quiet && cam.position.distanceTo(_v3.set(L.pos.x,2,L.pos.y)) < (pose==='lie'?100:MOBILE?75:64);
     L.bub.position.set(L.pos.x, pose==='lie'?2.2:pose==='sit'?2.45+(i%2)*.55:2.75, L.pos.y); L.bub.element.classList.toggle('show',show); });
+  namozLbl.element.classList.toggle('show', inRow>0 && cam.position.distanceTo(_v3.set(MOSQUE.x,2,MOSQUE.row))<150);
+  Object.entries(FDL).forEach(([fid,x])=>{ const any = x.on && LIFE.some(L=>L.dinner && L.dinner.f.id===fid && L.at===L.cs);
+    x.l.element.classList.toggle('show', any && cam.position.distanceTo(x.pos)<(MOBILE?80:70)); });
   for(const m of Object.values(RB)) m.instanceMatrix.needsUpdate=true; RB.eye.instanceColor.needsUpdate=true; RB.coin.instanceColor.needsUpdate=true;
   /* token streams: bank -> every place where someone is eating right now */
   const S=bankStreams, act=VEN.map((v,k)=>v.eaters>0?k:-1).filter(k=>k>=0);
@@ -826,6 +1024,7 @@ function robotsTick(dt, t){ const now=Date.now(); let coinI=SEATN*3;
   S.pts.geometry.attributes.position.needsUpdate=true; S.pts.geometry.attributes.color.needsUpdate=true;
   const M=smoke; for(let k=0;k<M.N && smokeSrc.length;k++){ M.ph[k]=(M.ph[k]+dt*.22)%1; const s=smokeSrc[k%smokeSrc.length], p=M.ph[k]; M.pos[k*3]=s.x+Math.sin(p*6+k)*.4*p; M.pos[k*3+1]=s.y+p*5; M.pos[k*3+2]=s.z+Math.cos(p*5+k)*.3*p; }
   M.pts.geometry.attributes.position.needsUpdate=true;
+  gateBlink(t);
   bankCoin.rotation.y+=dt*.8; }
 
 /* ---------- time of day (spec §6): 07–18 day (golden hour), 18–22 evening (neon), 22–07 night (stars, lamps, mahalla asleep) ---------- */
@@ -846,9 +1045,16 @@ function applyTOD(name){ const P=TOD[name]; curTod=name; HEMI.color.set(P.hemi[0
 const TOD_ORDER=['auto','day','evening','night'], TOD_ICON={day:'☀️',evening:'🌆',night:'🌙'}, TOD_RU={day:'день',evening:'вечер',night:'ночь'};
 function todButton(){ const t=todOf(effHour()), d=new Date(Date.now()+TZ_MS), clock=String(d.getUTCHours()).padStart(2,'0')+':'+String(d.getUTCMinutes()).padStart(2,'0');
   document.getElementById('tod').innerHTML = todMode==='auto' ? `${TOD_ICON[t]} авто · ${clock}` : `${TOD_ICON[todMode]} ${TOD_RU[todMode]} · демо`; }
+{ const b=document.getElementById('prdemo'); if(!HASP) b.style.display='none'; if(MOBILE) b.textContent='🕌'; b.onclick=()=>startDemo(); }
 document.getElementById('tod').onclick=()=>{ todMode=TOD_ORDER[(TOD_ORDER.indexOf(todMode)+1)%4]; applyTOD(todOf(effHour())); recompute(); };
 function updateHud(){ const c=COUNTS; document.getElementById('sum').textContent = `${D.agents.length} агентов в ${D.districts.length} районах · данные на ${String(D.checked||'').slice(11)||'—'}`;
-  document.getElementById('modes').innerHTML = [['work','работают'],['walk','идут'],['eat','едят'],['home','дома'],['sleep','спят']].map(([k,t])=>`<span class="mc" style="--c:${MODE[k][2]}">${MODE[k][0]} <b>${c[k]||0}</b> ${t}</span>`).join('') + (c.off?`<span class="mc" style="--c:#8b8f99">⏻ <b>${c.off}</b> выкл</span>`:''); }
+  document.getElementById('modes').innerHTML = [['work','работают'],['walk','идут'],['eat','едят'],['home','дома'],['sleep','спят']].map(([k,t])=>`<span class="mc" style="--c:${MODE[k][2]}">${MODE[k][0]} <b>${c[k]||0}</b> ${t}</span>`).join('') + (c.off?`<span class="mc" style="--c:#8b8f99">⏻ <b>${c.off}</b> выкл</span>`:'') + (c.namoz?`<span class="mc" style="--c:${MODE.namoz[2]}">🕌 намоз: <b>${c.namoz}</b></span>`:'');
+  const pr=document.getElementById('pray'), P=PRN, ph=demoPhase();
+  if(!HASP || !P) pr.style.display='none';
+  else if(ph) pr.innerHTML = `🕌 Демо намаза · ${ph==='go'?'идут в мечеть':ph==='stand'?'стоят в ряду':'возвращаются'}<small>сжато: 15 с · 20 с · 15 с</small>`;
+  else if(P.cur){ pr.innerHTML = `🕌 Сейчас ${esc(P.cur.name)} · до ${hhmm(P.cur.end)}<small>${esc(P.cur.lat)} · расчётное, MWL/ханафи</small>`; pr.title=`${P.cur.lat}: ${hhmm(P.cur.start)}–${hhmm(P.cur.end)}`; }
+  else if(P.next){ pr.innerHTML = `🕌 Следующий намоз: ${esc(P.next.name)} ≈ ${hhmm(P.next.start)}${P.tomorrow?' (завтра)':''}<small>расчётное, MWL/ханафи</small>`;
+    pr.title = P.today.map(w=>`${w.name} (${w.lat}) ${hhmm(w.start)}`).join(' · ') + ' — Ташкент, MWL 18°/17°, Asr ханафи'; } }
 
 /* places: Token Street, Mahalla, Token Bank — labels, chips, camera views */
 const PLACES={ token:{name:'Token Street', place:'гастро-квартал у Анхора', color:'#ffb547', at:[-6,14.5,111.8], view:[-6,13,148,-6,5,113], m:[-6,28,170]},
@@ -864,9 +1070,13 @@ function showPlace(id){ const p=PLACES[id]; let list=[], extra='';
   panel.dataset.agent=''; panel.innerHTML=`<div class="em">${id==='token'?'🍽':id==='mahalla'?'🏡':'🏦'}</div><h3>${esc(p.name)}</h3><div style="color:#c7b58a;font-size:12px;margin-bottom:8px">${esc(p.place)}</div>${extra?`<div class="vts">${extra}</div>`:''}
   <div style="display:grid;gap:6px;max-height:36vh;overflow:auto">${list.length?list.map(L=>`<div data-id="${esc(L.a.id)}" class="li"><span style="font-size:18px">${L.a.emoji}</span><span style="flex:1;font-size:13px;font-weight:700">${esc(L.a.name)}</span><span style="font-size:11.5px;color:${MODE[L.a._mode][2]}">${MODE[L.a._mode][0]} ${esc(MODE[L.a._mode][1])}</span></div>`).join(''):'<div style="font-size:12.5px;color:#c7b58a">Сейчас здесь никого нет.</div>'}</div>`;
   panel.classList.add('on'); panel.querySelectorAll('[data-id]').forEach(el=>el.onclick=()=>openAgent(D.agents.find(a=>a.id===el.dataset.id),'robot')); }
-function nowBlock(a){ const L=LIFE.find(x=>x.a===a); if(!L||!a._mode) return ''; const m=a._mode, d=D.districts.find(x=>x.id===a.district), fav=L.fav?VBY[L.fav].name:null;
-  const where = m==='work' ? `в офисе · ${d?d.place:''}` : m==='walk' ? 'идёт в офис по тротуару' : m==='eat' ? `Token Street · за столиком в ${fav}` : m==='off' ? `махалля, дом №${L.home.i+1} — закрыт` : `махалля, дом №${L.home.i+1}`;
-  const line = m==='work' ? (a.state==='running'?'работает прямо сейчас':`в офисе, через ${fmtMin(a._to)} запуск`) : m==='walk' ? `идёт в офис, через ${fmtMin(a._to)} запуск` : m==='eat' ? `ест токены ${a.cost==='gemini'?'Gemini':'Claude'} в ${fav}` : m==='sleep' ? 'спит дома' : m==='home' ? 'отдыхает дома' : m==='done' ? 'разовая, сделано — пьёт чай' : 'выключен';
+function nowBlock(a){ const L=LBY[a.id]; if(!L||!a._mode) return ''; const m=a._mode, d=D.districts.find(x=>x.id===a.district), fav=L.fav?VBY[L.fav].name:null, here=L.cs?L.cs.v.name:fav;
+  const others = L.dinner ? L.dinner.G.filter(x=>x!==L).map(x=>callName(x.per)).join(', ') : '', host = L.leis ? (L.leis.host?L:L.leis.other) : null;
+  const where = m==='work' ? `в офисе · ${d?d.place:''}` : m==='walk' ? 'идёт в офис по тротуару' : m==='namoz' ? 'двор мечети Минор' : m==='eat' ? `Token Street · ${L.dinner?'семейный стол':'за столиком'} в ${here}` : L.leis ? `махалля, двор дома №${host.home.i+1} (${callName(host.per)})` : m==='off' ? `махалля, дом №${L.home.i+1} — закрыт` : `махалля, дом №${L.home.i+1}`;
+  let line = m==='work' ? (a.state==='running'?'работает прямо сейчас':`в офисе, через ${fmtMin(a._to)} запуск`) : m==='walk' ? `идёт в офис, через ${fmtMin(a._to)} запуск` : m==='namoz' ? (L.short?'намаз после работы, 10 минут':'на намазе во дворе мечети') :
+    m==='eat' ? (L.dinner ? `${L.company?'за компанию — ':''}ужинает с семьёй в ${here} (${others})` : `ест токены ${a.cost==='gemini'?'Gemini':'Claude'} в ${here}`) :
+    L.leis ? `${L.leis.kind==='chess'?'♟ шахматы':'🎲 нарды'} с ${callName(L.leis.other.per)}` : m==='sleep' ? 'спит дома' : m==='home' ? 'отдыхает дома' : m==='done' ? 'разовая, сделано — пьёт чай' : 'выключен';
+  if(m==='work' && L.pendNow) line += ', намаз после запуска';
   return `<div class="now" style="--c:${MODE[m][2]}"><div class="nh"><b>Сейчас</b><span>${MODE[m][0]} ${esc(line)}</span></div>
     <dl><dt>Где</dt><dd>${esc(where)}</dd><dt>До запуска</dt><dd>${a.state==='running'?'идёт сейчас':a._nx&&a.state==='ready'?fmtMin(a._to):'—'}</dd><dt>Любимое место</dt><dd>${fav?esc(fav):'не ест токены'}</dd><dt>Ест</dt><dd>${a.cost==='max'?'токены Claude (Max)':a.cost==='gemini'?'токены Gemini':'ничего — без токенов'}${a.kind==='always'?' · бот 24/7':''}</dd></dl>
     ${L.hidden?'':'<button class="btn ghost sm" id="seeBot">👀 Показать, где он</button>'}</div>`; }
@@ -875,11 +1085,15 @@ window.__city={ setTOD:m=>{ todMode=m; applyTOD(todOf(effHour())); recompute(); 
   modes:()=>LIFE.map(L=>[L.a.id,L.a._mode,L.fav,L.a._to==null?null:Math.round(L.a._to)]), calls:()=>R.info.render.calls, eater:()=>{ const L=LIFE.find(x=>x.a._mode==='eat'&&!x.path); return L&&L.a.id; },
   fly:(p,t)=>{ flyTo(new THREE.Vector3(...p),new THREE.Vector3(...t),.01); },
   walker:()=>{ const L=LIFE.filter(x=>x.path&&x.mode!=='walk'&&x.s>25&&x.s<x.len-25).sort((a,b)=>a.pos.distanceTo(V2(0,40))-b.pos.distanceTo(V2(0,40)))[0]; if(!L) return null; flyTo(new THREE.Vector3(L.pos.x+7,7,L.pos.y+9),new THREE.Vector3(L.pos.x,1.2,L.pos.y),.01); return L.a.id; },
-  settle:()=>LIFE.forEach(L=>{ if(L.path && L.target && L.mode!=='walk'){ L.path=null; L.at=L.target; L.pos.copy(L.target.pos); L.yaw=L.target.yaw; } }) };
+  settle:()=>LIFE.forEach(L=>{ if(L.path && L.target && L.mode!=='walk'){ L.path=null; L.at=L.target; L.pos.copy(L.target.pos); L.yaw=L.target.yaw; if(L.short && isMosque(L.at) && !L.short.arr) L.short.arr=Date.now(); } }),
+  demo:()=>startDemo(), families:id=>id?focusFamily(id):showFamilies(), prayer:()=>PRN && {cur:PRN.cur&&PRN.cur.lat, next:PRN.next&&[PRN.next.lat,hhmm(PRN.next.start)], today:PRN.today.map(w=>[w.lat,hhmm(w.start)])},
+  counts:()=>COUNTS, dinners:()=>LIFE.filter(L=>L.dinner).map(L=>[L.a.id,L.dinner.f.id,L.cs&&L.cs.v.id,L.company]), namoz:()=>LIFE.filter(L=>L.a._mode==='namoz'||L.pendNow).map(L=>[L.a.id,L.a._mode,L.mslot&&L.mslot.key,!!L.path]),
+  openOffice:id=>openAgent(AG[id]), hover:id=>{ const x=agentLabels.find(l=>l.id===id); if(x) x.al.element.classList.add('hold'); }, house:i=>hoverHouseAt(i) };
 
 /* ---------- chips (district filter / fly-to) ---------- */
 const chips=document.getElementById('chips');
 D.districts.forEach(d=>{ const n=D.agents.filter(a=>a.district===d.id).length; const c=document.createElement('div'); c.className='chip'; c.dataset.id=d.id; c.innerHTML=`<i style="background:${d.color}"></i>${esc(d.name)} · ${n}`; c.onclick=()=>focusDistrict(d.id); chips.appendChild(c); });
+if(HASP){ const c=document.createElement('div'); c.className='chip'; c.dataset.id='families'; c.innerHTML='👨‍👩‍👧 Семьи'; c.onclick=()=>showFamilies(); chips.prepend(c); }
 [['token','🍽 Token Street'],['mahalla','🏡 Махалля'],['bank','🏦 Token Bank']].forEach(([id,t])=>{ const c=document.createElement('div'); c.className='chip'; c.dataset.id=id; c.innerHTML=`<i style="background:${PLACES[id].color}"></i>${t}`; c.onclick=()=>focusPlace(id); chips.appendChild(c); });
 
 /* ---------- camera flights ---------- */
@@ -893,6 +1107,62 @@ let tourOn=false, tourI=0, tourT=null;
 document.getElementById('tour').onclick=()=>{ tourOn=!tourOn; document.getElementById('tour').textContent=tourOn?'■ Стоп':'▶ Облёт'; clearInterval(tourT);
   if(tourOn){ const TOUR=[...D.districts.map(d=>d.id),'token','mahalla','bank'], step=()=>{ const id=TOUR[tourI%TOUR.length]; PLACES[id]?focusPlace(id):focusDistrict(id); tourI++; }; step(); tourT=setInterval(step,5200); } };
 
+/* ---------- v4 §2.1 persona card, §2.3 «Семьи», §4.3 focusFamily ---------- */
+const REL_RU = (sp) => sp && PER[sp] && PER[sp].gender==='f' ? 'Жена' : 'Муж';
+const relChip = (id, rel) => { const p=PER[id]; if(!p||!AG[id]) return ''; return `<span class="rc" data-rel="${esc(id)}" title="${esc(fullName(p))} · ${esc(AG[id].emoji+' '+AG[id].name)} · 🤖 агент">${avatar(id,'s')}${rel?`<em>${esc(rel)} →</em>`:''}${esc(rel?fullName(p):p.first)}</span>`; };
+const narrow = () => matchMedia('(max-width:480px)').matches;
+function sec(title, html, open, acc){ if(!html) return ''; return acc ? `<details class="sec acc"${open?' open':''}><summary>${title}</summary>${html}</details>` : `<div class="sec"><div style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#c7b58a;margin-bottom:6px">${title}</div>${html}</div>`; }
+function personaHead(a){ const p=PER[a.id];
+  return `<div class="em tr">${a.emoji}</div><div class="ph">${avatar(a.id)}<div><h3>${esc(fullName(p))}${p.xoja?`<span class="xj">🕌 Xo'ja aka</span>`:''}</h3>
+    <div class="sub">${p.age?p.age+' лет · ':''}${esc(p.role_title||'')}</div><div class="sub" style="color:#8f7d5c">${a.emoji} ${esc(a.name)} · 🤖 агент</div></div></div>`; }
+function personaBody(a){ const p=PER[a.id], f=famOf(a.id), fm=p.family||{}, L=LBY[a.id], acc=narrow();
+  const rows=[[fm.spouse?REL_RU(fm.spouse):'', fm.spouse?[fm.spouse]:[]], ['Родители', fm.parents||[]], ['Дети', fm.children||[]], ['Братья и сёстры', fm.siblings||[]]]
+    .filter(([,ids])=>ids.some(id=>AG[id])).map(([t,ids])=>`<dt>${t}</dt><dd>${ids.map(id=>relChip(id)).join('')}</dd>`).join('');
+  const fam = `<dl class="fr">${rows||'<dt>—</dt><dd style="color:#c7b58a">родственников в городе нет</dd>'}</dl>`;
+  const links = (p.links||[]).filter(l=>AG[l.id]).map(l=>relChip(l.id,l.rel)).join('');
+  const eat = a.cost==='max'?'🍽 токены Claude':a.cost==='gemini'?'🍽 токены Gemini':'🍽 без токенов';
+  const home = [p.home_family?`<div>${esc(p.home_family)}</div>`:'', p.favorite_dish?`<div><b>Любимое:</b> ${esc(p.favorite_dish)} · ${eat}</div>`:'', p.hobby?`<div><b>Хобби:</b> ${esc(p.hobby)}</div>`:''].join('');
+  const famT = `<i style="background:${f.color}"></i>Oila · ${esc(f.name)}`;
+  return `${p.bio?`<div class="bio">${esc(p.bio)}</div>`:''}${(p.traits||[]).length?`<div class="trs">${p.traits.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`:''}
+    ${p.catchphrase?`<div class="cph" style="--f:${f.color}">«${esc(p.catchphrase)}»</div>`:''}
+    ${acc?`<div style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#ffe7b0;margin-top:10px">Семья и связи</div>`:''}
+    ${sec(famT, fam, true, acc)}${sec('Связи', links?`<div class="lnk" style="display:flex;flex-wrap:wrap;gap:5px">${links}</div>`:'', false, acc)}${sec('Дом', home?`<div class="hm">${home}</div>`:'', false, acc)}`; }
+function wireRel(){ panel.querySelectorAll('[data-rel]').forEach(el=>el.onclick=e=>{ e.stopPropagation(); openAgent(AG[el.dataset.rel],'robot'); }); }
+
+function famMembers(f){ return f.members.filter(id=>AG[id]); }
+function famCard(f, big){ const ms=famMembers(f);
+  return `<div class="fam" style="--f:${f.color}"><div class="bar"></div><div class="bd"><div class="hd" data-fam="${esc(f.id)}">${esc(f.name)} <small>· ${esc(f.label)} · ${ms.length}</small></div>
+    ${big ? `<div style="display:grid;gap:5px;margin-top:8px">${ms.map(id=>{ const L=LBY[id], m=AG[id]._mode||'home'; return `<div class="li" data-id="${esc(id)}">${avatar(id,'m',id===f.elder?' title="oqsoqol"':'')}<span style="flex:1;font-size:12.5px;font-weight:700">${esc(fullName(PER[id]))}${id===f.elder?' <span style="color:#ffd36a" title="oqsoqol — старший семьи">●</span>':''}<br><span style="font-weight:600;color:#c7b58a;font-size:11px">${PER[id].age} · ${AG[id].emoji} ${esc(AG[id].name)}</span></span><span style="font-size:11px;color:${MODE[m][2]}">${MODE[m][0]}</span></div>`; }).join('')}</div>`
+      : `<div class="ms">${ms.map(id=>avatar(id,'m',` data-id="${esc(id)}" title="${esc(fullName(PER[id]))}${id===f.elder?' · oqsoqol':''}"`).replace('</span>', id===f.elder?'<i class="cr"></i></span>':'</span>')).join('')}</div>`}</div></div>`; }
+function showFamilies(fid){ if(!HASP) return; const list=Object.values(FAM).filter(f=>famMembers(f).length); panel.dataset.agent=''; focused='families';
+  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.id==='families'));
+  const one = fid && FAM[fid];
+  panel.innerHTML = one ? `<div class="em">🏡</div><h3>${esc(one.name)}</h3><div style="color:#c7b58a;font-size:12px;margin-bottom:9px">${esc(one.label)} · дома №${Math.min(...famMembers(one).map(id=>AG[id].home+1))}–${Math.max(...famMembers(one).map(id=>AG[id].home+1))} в махалле · ● oqsoqol</div>${famCard(one,true)}
+      <div class="row"><button class="btn ghost sm" id="allFam">← Все семьи</button></div><div class="fic">Имена агентов вымышленные · это 🤖 агенты, не люди</div>`
+    : `<div class="em">👨‍👩‍👧</div><h3>Семьи агентов</h3><div style="color:#c7b58a;font-size:12px;margin-bottom:9px">${list.length} семей · ${list.reduce((s,f)=>s+famMembers(f).length,0)} агентов · клик по семье — их дома в махалле, по кружку — агент</div>
+      ${list.map(f=>famCard(f)).join('')}<div class="fic">Имена агентов вымышленные · это 🤖 агенты, не люди · ● oqsoqol — старший семьи</div>`;
+  panel.classList.add('on');
+  panel.querySelectorAll('[data-fam]').forEach(el=>el.onclick=()=>focusFamily(el.dataset.fam));
+  panel.querySelectorAll('[data-id]').forEach(el=>el.onclick=e=>{ e.stopPropagation(); openAgent(AG[el.dataset.id],'robot'); });
+  const b=document.getElementById('allFam'); if(b) b.onclick=()=>showFamilies(); }
+let GBL=null, gateLit=false;
+function focusFamily(fid){ const f=FAM[fid]; if(!f) return; const hs=HOUSE.filter(h=>h.fam===f); if(!hs.length){ showFamilies(fid); return; }
+  const cx=hs.reduce((s,h)=>s+h.cx,0)/hs.length, cz=hs.reduce((s,h)=>s+h.cz,0)/hs.length;
+  if(MOBILE) flyTo(new THREE.Vector3(cx+2,58,cz+44), new THREE.Vector3(cx,0,cz+2)); else flyTo(new THREE.Vector3(cx+4,34,cz+30), new THREE.Vector3(cx,0,cz));
+  GBL={f, t0:performance.now()+1300}; showFamilies(fid); }
+function paintGates(fBright){ HOUSE.forEach((h,i)=>{ const base=h.fam?h.fam.color:'#7a4a2a'; [0,1].forEach(k=>{ _c.set(base).multiplyScalar(k?.82:1); if(fBright && h.fam===fBright) _c.lerp(new THREE.Color('#ffffff'),.55); GATE.setColorAt(i*2+k,_c); }); }); GATE.instanceColor.needsUpdate=true; }
+function gateBlink(){ if(!GBL) return; const el=(performance.now()-GBL.t0)/1000; if(el<0) return; const on = el<1.6 && Math.floor(el/.4)%2===0;   /* two blinks in the family colour */
+  if(on!==gateLit){ gateLit=on; paintGates(on?GBL.f:null); POOL_HL(on?GBL.f:null); } if(el>=1.6){ GBL=null; if(gateLit){ gateLit=false; paintGates(null); } POOL_HL(null); } }
+/* gate glow during the blink + §3.2 hover: the neighbour's house lights up */
+const HLM=(()=>{ const m=new THREE.InstancedMesh(new THREE.PlaneGeometry(1,1),new THREE.MeshBasicMaterial({map:glowTex,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending}),44), o=new THREE.Object3D(); m.count=0; m.renderOrder=3; scene.add(m);
+  m.put=(list)=>{ list.forEach(([x,z,s,c],i)=>{ o.position.set(x,.32,z); o.rotation.set(-Math.PI/2,0,0); o.scale.set(s,s,1); o.updateMatrix(); m.setMatrixAt(i,o.matrix); m.setColorAt(i,_c.set(c)); }); m.count=list.length; m.instanceMatrix.needsUpdate=true; if(m.instanceColor) m.instanceColor.needsUpdate=true; }; return m; })();
+function POOL_HL(f){ HLM.put(f ? HOUSE.filter(h=>h.fam===f).map(h=>{ const p=V2(h.cx, h.cz+h.s*4.9); return [p.x,p.y,4.2,f.color]; }) : []); }
+let hoverHouse=-1;
+function houseAt(x,z){ return HOUSE.findIndex(h=>h && Math.abs(x-h.cx)<3.2 && Math.abs(z-h.cz)<4.5); }
+function hoverHouseAt(i){ if(i===hoverHouse || GBL) return; hoverHouse=i; const h=HOUSE[i]; if(i<0||!h||!h.agent||!HASP){ HLM.put([]); return; }
+  const nb=(PER[h.agent.id].links||[]).filter(l=>/сосед/.test(l.rel)).map(l=>AG[l.id]).filter(Boolean).map(a=>HOUSE[a.home]).filter(Boolean);
+  HLM.put([[h.cx,h.cz,7.5,h.fam?h.fam.color:'#ffd9a0'], ...nb.map(n=>[n.cx,n.cz,9,'#ffe2a8'])]); }
+
 /* ---------- side panel ---------- */
 const panel=document.getElementById('panel');
 const pill=s=>`<span class="pl" style="background:${ST[s][1]}22;color:${ST[s][1]};border:1px solid ${ST[s][1]}66">${ST[s][0]}</span>`;
@@ -901,18 +1171,24 @@ function showDistrict(d){ const list=D.agents.filter(a=>a.district===d.id); pane
   <div style="display:grid;gap:6px;max-height:44vh;overflow:auto">${list.map(a=>`<div data-id="${esc(a.id)}" style="display:flex;gap:8px;align-items:center;padding:7px 9px;border-radius:10px;background:#ffffff0d;cursor:pointer"><span style="font-size:18px">${a.emoji}</span><span style="flex:1;font-size:13px;font-weight:700">${esc(a.name)}</span><i style="width:9px;height:9px;border-radius:50%;background:${ST[a.state][1]}"></i></div>`).join('')}</div>`;
   panel.classList.add('on'); panel.querySelectorAll('[data-id]').forEach(el=>el.onclick=()=>openAgent(D.agents.find(a=>a.id===el.dataset.id))); }
 function openAgent(a, from){ if(!a) return; panel.dataset.last=a.id; panel.dataset.agent=a.id; const d=D.districts.find(x=>x.id===a.district);
-  panel.innerHTML=`<div class="em">${a.emoji}</div><h3>${esc(a.name)}</h3>${pill(a.state)}${nowBlock(a)}
+  const scroll = from==='refresh' ? panel.scrollTop : 0, openSecs = from==='refresh' ? [...panel.querySelectorAll('details.sec')].map(x=>x.open) : null;
+  panel.innerHTML=`${HASP?personaHead(a):`<div class="em">${a.emoji}</div><h3>${esc(a.name)}</h3>`}${pill(a.state)}${nowBlock(a)}
   <dl><dt>Что делает</dt><dd>${esc(a.does)}</dd><dt>Район</dt><dd>${esc(d.name)} · ${esc(d.place)}</dd><dt>Последний запуск</dt><dd>${esc(a.last||'—')}</dd><dt>Следующий</dt><dd>${esc(a.next||'—')}</dd><dt>Задача</dt><dd style="font-family:monospace;font-size:11px">${esc(a.task)}</dd></dl>
-  <div class="row"><button class="btn" id="enter">🚪 Зайти в офис</button><button class="btn ghost" id="back2">${esc(d.name)}</button></div>`;
+  ${HASP?personaBody(a):''}
+  <div class="row"><button class="btn" id="enter">🚪 Зайти в офис</button><button class="btn ghost" id="back2">${esc(d.name)}</button></div>${HASP?'<div class="fic">Имя вымышленное · это 🤖 агент, не человек</div>':''}`;
   panel.classList.add('on'); document.getElementById('enter').onclick=()=>enterOffice(a); document.getElementById('back2').onclick=()=>focusDistrict(d.id);
-  const sb=document.getElementById('seeBot'); if(sb) sb.onclick=()=>flyToRobot(a);
-  if(from==='refresh') return; if(from==='robot' && flyToRobot(a)) return;
+  const sb=document.getElementById('seeBot'); if(sb) sb.onclick=()=>flyToRobot(a); wireRel();
+  if(openSecs){ panel.querySelectorAll('details.sec').forEach((x,i)=>{ if(openSecs[i]!=null) x.open=openSecs[i]; }); panel.scrollTop=scroll; }
+  if(from==='refresh') return; panel.scrollTop=0; if(from==='robot' && flyToRobot(a)) return;
   const lb=agentLabels.find(x=>x.id===a.id); if(lb){ const wp=new THREE.Vector3(); lb.o.getWorldPosition(wp); const dir=wp.clone().sub(new THREE.Vector3(d.x,0,d.z)).setY(0).normalize(); flyTo(wp.clone().add(dir.multiplyScalar(13)).add(new THREE.Vector3(4,13,4)), wp.clone().setY(3.5), 1.2); } }
 window.__openFirst = () => openAgent(D.agents.find(a=>a.state==='running')||D.agents[0]);
 
 /* ---------- picking ---------- */
 const ray=new THREE.Raycaster(), mouse=new THREE.Vector2(); let down=null;
 L2.domElement.addEventListener('pointerdown',e=>{ down=[e.clientX,e.clientY]; });
+{ const gp=new THREE.Plane(new THREE.Vector3(0,1,0),0), hit=new THREE.Vector3(); let last=0;
+  L2.domElement.addEventListener('pointermove',e=>{ if(e.pointerType!=='mouse' || inOffice || performance.now()-last<80) return; last=performance.now(); mouse.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1); ray.setFromCamera(mouse,cam);
+    if(ray.ray.intersectPlane(gp,hit)) hoverHouseAt(houseAt(hit.x,hit.z)); }); }
 L2.domElement.addEventListener('pointerup',e=>{ if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>6) return; mouse.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1); ray.setFromCamera(mouse,cam);
   const hit=ray.intersectObjects(pickables,false)[0]; RB.core.computeBoundingSphere(); const rh=ray.intersectObject(RB.core,false)[0];
   if(rh && (!hit || rh.distance<hit.distance)) openAgent(D.agents[rh.instanceId],'robot'); else if(hit) openAgent(hit.object.userData.agent); });

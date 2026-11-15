@@ -23,3 +23,6 @@ agents/advisors/out/
 
 # advisor/client prompts hold W2W finance + names: never public (audit 2026-10-21)
 agents/**/*.md
+
+# Agents City brand logos: build input only, embedded into agent-city.html at build time (never served on their own)
+assets/agent-city/
