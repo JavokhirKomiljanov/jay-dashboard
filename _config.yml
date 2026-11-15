@@ -2,4 +2,5 @@
 exclude:
   - agents
   - src
+  - assets
   - README.md
