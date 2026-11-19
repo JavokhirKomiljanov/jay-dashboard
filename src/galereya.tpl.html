@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<title>Jay OS — Галерея Ош</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* light only: inside JOS the parent inverts iframe.panel in dark mode (same as every other panel) */
+:root{--ink:#131313;--body:#4f5154;--muted:#85878b;--bg:#f3f4f6;--card:#fff;--card-2:#f6f7f8;--line:#e6e8ea;--line-2:#d9dcdf;
+  --mint:#07e7b7;--mint-dark:#05a884;--mint-tint:#eefcf8;--coral:#d64545;--coral-t:#fdecea;--amber:#b36b00;--amber-t:#fff6e6;--blue:#2f5fd8;--blue-t:#edf2ff;--violet:#6b4fc4;--violet-t:#f2eeff;
+  --head:'Manrope','Inter',system-ui,sans-serif;--text:'Inter',system-ui,-apple-system,"Segoe UI",sans-serif;--mono:ui-monospace,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--body);font:13.5px/1.45 var(--text)}
+#app{max-width:1280px;margin:0 auto;padding:16px 16px 28px}
+b,strong,h1,h2,h3{color:var(--ink)}
+h1{font:800 20px var(--head);margin:0}
+h2{font:700 12px var(--text);margin:18px 0 8px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+a{color:var(--mint-dark)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.mut{color:var(--muted)}.sm{font-size:12px}
+.hd{display:flex;flex-wrap:wrap;align-items:flex-start;gap:10px 14px}
+.hd .sp{flex:1}
+.status{margin-top:4px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.btn{border:1px solid var(--line-2);background:var(--card);border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:600;color:var(--ink);white-space:nowrap}
+.btn:hover{border-color:var(--mint-dark)}
+.btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn.pri{background:var(--mint);border-color:var(--mint);color:#131313}
+.btn.x{padding:2px 8px;font-size:11.5px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 4px;border-bottom:1px solid var(--line);padding-bottom:10px}
+.tabs button{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:7px 13px;font-weight:600;font-size:13px;color:var(--body)}
+.tabs button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.tabs button i{font-style:normal;font-weight:500;color:var(--muted);margin-left:5px;font-size:11.5px}
+.tabs button.on i{color:#cfd1d4}
+.pill{display:inline-block;font-size:11px;font-weight:600;padding:1px 8px;border-radius:999px;border:1px solid var(--line);background:var(--card-2);color:var(--body);white-space:nowrap}
+.pill.p0{background:var(--coral-t);border-color:#f5c2bd;color:var(--coral)}
+.pill.p1{background:var(--amber-t);border-color:#f3d9a8;color:var(--amber)}
+.pill.p2{background:var(--blue-t);border-color:#c9d6fb;color:var(--blue)}
+.pill.p3{background:var(--violet-t);border-color:#d9cff7;color:var(--violet)}
+.pill.ok{background:var(--mint-tint);border-color:#a8eedc;color:#047a60}
+.pill.warn{background:var(--amber-t);border-color:#f3d9a8;color:var(--amber)}
+.sc{display:inline-flex;align-items:center;gap:3px;font-size:11px;padding:1px 7px;border-radius:6px;border:1px solid #c9d6fb;background:var(--blue-t);color:var(--blue);text-decoration:none;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;line-height:1.6}
+button.sc{border-color:var(--line-2);background:var(--card-2);color:var(--body)}
+.sc.none{background:transparent;border-color:#f5c2bd;color:var(--coral)}
+.chips{display:flex;flex-wrap:wrap;gap:4px}
+.flt{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin:10px 0}
+.flt .lab{font-size:11.5px;color:var(--muted);margin-right:2px}
+.flt button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:3px 10px;font-size:12px}
+.flt button.on{background:var(--mint-tint);border-color:var(--mint-dark);color:#047a60;font-weight:600}
+.flt .gap{width:12px}
+/* board */
+.board{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(230px,1fr);gap:10px;overflow-x:auto;padding-bottom:8px;align-items:start}
+.col{background:var(--card-2);border:1px solid var(--line);border-radius:14px;padding:8px;min-height:160px;transition:background .12s,border-color .12s}
+.col.over{border-color:var(--mint-dark);background:var(--mint-tint)}
+.col-h{display:flex;align-items:center;gap:6px;margin:2px 2px 8px;font-weight:700;color:var(--ink);font-size:13px}
+.col-h .n{font:500 11px var(--mono);color:var(--muted);margin-left:auto}
+.col-h button{border:0;background:transparent;font-size:15px;line-height:1;color:var(--muted);padding:0 3px}
+.col-h button:hover{color:var(--mint-dark)}
+.kc{position:relative;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:8px 10px;margin:0 0 7px;cursor:grab;display:flex;flex-direction:column;gap:5px}
+.kc:hover{border-color:var(--line-2);box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.kc.drag{opacity:.45}
+.kc .tt{font-weight:600;color:var(--ink);font-size:13px;line-height:1.3;padding-right:42px}
+.kc .why{font-size:12px;color:var(--body);line-height:1.35}
+.kc .meta{font-size:11.5px;color:var(--muted)}
+.kc .meta b{font-weight:600;color:var(--ink)}
+.kc .act{position:absolute;top:5px;right:5px;display:flex;gap:2px}
+.kc .act button{border:0;background:transparent;font-size:12px;padding:2px 3px;border-radius:5px;opacity:.55}
+.kc .act button:hover{opacity:1;background:var(--card-2)}
+.kc .row{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.arch{background:var(--card);border:1px dashed var(--line-2);border-radius:12px;padding:10px 12px;margin:10px 0}
+.arch .it{display:flex;gap:8px;align-items:center;padding:3px 0;border-bottom:1px solid var(--line)}
+.arch .it:last-child{border-bottom:0}
+/* generic blocks */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
+.blk{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.blk h3{margin:0;font:700 14.5px var(--head)}
+.blk ul{margin:0;padding-left:17px}.blk li{margin:2px 0}
+.ppl{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+.pp{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 12px;display:flex;flex-direction:column;gap:4px}
+.pp.w{border-left:3px solid var(--mint)}
+.pp b{font-size:13.5px}
+.tw{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:14px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11.5px;color:var(--muted);font-weight:600;background:var(--card-2)}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+tr.done td{color:var(--muted)}tr.done td .wt{text-decoration:line-through}
+tr.tot td{font-weight:700;color:var(--ink);background:var(--mint-tint)}
+td input[type=text],td input:not([type]){width:100%;min-width:110px;border:1px solid var(--line);border-radius:7px;padding:4px 7px;background:var(--card);font-size:12.5px}
+input[type=checkbox]{width:17px;height:17px;accent-color:var(--mint-dark);cursor:pointer}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.box.hint{background:var(--amber-t);border-color:#f3d9a8}
+.fld{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.fld input{flex:1 1 280px;border:1px solid var(--line-2);border-radius:9px;padding:6px 10px;background:var(--card);font-size:13px;min-width:0}
+code{font:12px var(--mono);background:var(--card-2);border:1px solid var(--line);padding:1px 5px;border-radius:5px;word-break:break-all}
+details.dq{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:0 0 8px}
+details.dq>summary{cursor:pointer;padding:10px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;list-style:none;font-weight:600;color:var(--ink)}
+details.dq>summary::-webkit-details-marker{display:none}
+details.dq>summary .sp{flex:1}
+.qq{border-top:1px solid var(--line);padding:9px 14px;display:grid;grid-template-columns:1fr 150px;gap:6px 12px}
+.qq .qt{font-weight:600;color:var(--ink);font-size:13px}
+.qq .qh{font-size:11.5px;color:var(--muted)}
+.qq select{border:1px solid var(--line-2);border-radius:8px;padding:4px 6px;background:var(--card);font-size:12px;align-self:start}
+.qq textarea{grid-column:1/-1;width:100%;min-height:36px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--card-2);font-size:12.5px;resize:vertical}
+.qq .got{grid-column:1/-1;background:var(--mint-tint);border:1px solid #a8eedc;border-radius:8px;padding:6px 9px;font-size:12.5px}
+.qq.ok .qt::before{content:'✓ ';color:var(--mint-dark)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:6px 0 4px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 12px}
+.kpi b{display:block;font:800 19px var(--head);font-variant-numeric:tabular-nums}.kpi span{font-size:11.5px;color:var(--muted)}
+.dl{display:flex;flex-direction:column}
+.dl .r{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line)}
+.dl .r:last-child{border-bottom:0}
+.dl .r .nm{font-weight:600;color:var(--ink);min-width:170px}
+.dl .r code{flex:1 1 300px}
+/* edit layer */
+body.editing [data-e]{outline:1px dashed var(--mint-dark);outline-offset:2px;border-radius:3px;cursor:text}
+body.editing [data-e]:focus{background:var(--mint-tint)}
+.editbar{display:none;background:var(--mint-tint);border:1px solid #a8eedc;border-radius:10px;padding:6px 10px;font-size:12px;margin-top:8px}
+body.editing .editbar{display:block}
+/* card editor */
+.ov{position:fixed;inset:0;background:rgba(19,19,19,.28);z-index:9}
+.ed{position:absolute;left:50%;transform:translateX(-50%);width:min(560px,calc(100% - 24px));background:var(--card);border:1px solid var(--line-2);border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.18);padding:14px 16px;z-index:10;display:flex;flex-direction:column;gap:8px}
+.ed h3{margin:0;font:800 15px var(--head)}
+.ed label{display:flex;flex-direction:column;gap:3px;font-size:11.5px;color:var(--muted);font-weight:600}
+.ed input,.ed select,.ed textarea{border:1px solid var(--line-2);border-radius:9px;padding:6px 9px;background:var(--card);font-size:13px;color:var(--ink);font-weight:400}
+.ed textarea{min-height:64px;resize:vertical;font-family:var(--mono);font-size:12px}
+.ed .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ed .bt{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.toast{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:6px 14px;border-radius:999px;font-size:12.5px;z-index:20;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+@media(max-width:640px){.qq{grid-template-columns:1fr}.ed .two{grid-template-columns:1fr}.dl .r .nm{min-width:0}}
+</style></head>
+<body><div id="app" class="lt-full kb"></div><div class="toast" id="toast"></div>
+<script>
+const D = /*__DATA__*/{};
+const KEY = 'jos-gal-v1';
+let ST; try { ST = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { ST = {}; }
+const norm = () => { for (const k of ['c', 'pr', 'q', 'f', 'tx', 'ui']) ST[k] = ST[k] && typeof ST[k] === 'object' ? ST[k] : {}; for (const k of ['add', 'pradd']) ST[k] = Array.isArray(ST[k]) ? ST[k] : []; };
+norm();
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(ST)); } catch (e) { toast('Не сохранилось: браузер запретил localStorage'); } };
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+const $ = s => document.querySelector(s);
+const money = n => '$' + Math.round(n).toLocaleString('ru-RU').replace(/\u00a0/g, ' ');
+function toast(t){ const el = $('#toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('on'), 1600); }
+function copy(t){ const ok = () => toast('Путь скопирован'); try { navigator.clipboard.writeText(t).then(ok, () => prompt('Скопируйте путь', t)); } catch (e) { prompt('Скопируйте путь', t); } }
+/* editable text: data-e key → ST.tx */
+const tx = (k, def) => ST.tx[k] != null ? ST.tx[k] : def;
+const E = (k, def, tag = 'span', cls = '') => `<${tag} data-e="${esc(k)}"${cls ? ` class="${cls}"` : ''}>${esc(tx(k, def))}</${tag}>`;
+const demoBase = () => { let u = (ST.f.demo || D.demo_default || '').trim(); if (u && !/\/$/.test(u)) u += '/'; return u; };
+const surveyUrl = () => (ST.f.survey || '').trim() || demoBase() + 'survey/index.html';
+function srcHref(s){ return s.k === 'demo' ? demoBase() + (s.p || '') : s.u; }
+function chips(src){
+  if (!src || !src.length) return '<span class="sc none">нет источника</span>';
+  return src.map(s => s.k === 'file' ? `<button class="sc" data-copy="${esc(s.p)}" title="Скопировать путь: ${esc(s.p)}">📄 ${esc(s.t)}</button>`
+    : `<a class="sc" href="${esc(srcHref(s))}" target="_blank" rel="noopener" title="${esc(srcHref(s))}">↗ ${esc(s.t)}</a>`).join('');
+}
+const PRIO = D.prios || [];
+const pcls = p => { const i = PRIO.indexOf(p); return i < 0 ? '' : 'p' + i; };
+/* ---------- effective data = seed + edits ---------- */
+function cards(){ return D.cards.map(c => Object.assign({}, c, ST.c[c.id] || {})).concat(ST.add.map(c => Object.assign({}, c, ST.c[c.id] || {}))); }
+function promises(){ return D.promises.map(p => Object.assign({}, p, ST.pr[p.id] || {})).concat(ST.pradd.map(p => Object.assign({}, p, ST.pr[p.id] || {}))); }
+function qState(dept, i){
+  const k = dept + '.q' + (i + 1), s = ST.q[k] || {}, got = ((D.answers.by_dept || {})[dept] || []).filter(r => (r.a || {})['q' + (i + 1)]);
+  return {k, st: s.st || (got.length ? 'ok' : 'none'), a: s.a || '', got};
+}
+const QST = {none: 'не отправлено', wait: 'ждём', ok: 'отвечено'};
+/* ---------- tabs ---------- */
+const TABS = [['board', '🗂 Доска'], ['company', '🏢 Компания'], ['prom', '🤝 Обещания'], ['q', '❓ Вопросы'], ['docs', '📁 Документы'], ['money', '💵 Деньги']];
+function tabCount(t){
+  if (t === 'board') return cards().filter(c => !c.arch).length;
+  if (t === 'prom'){ const p = promises().filter(x => !x.arch); return p.filter(x => x.done).length + '/' + p.length; }
+  if (t === 'q'){ let n = 0, ok = 0; D.questions.forEach(d => d.q.forEach((_, i) => { n++; if (qState(d.id, i).st === 'ok') ok++; })); return ok + '/' + n; }
+  if (t === 'money') return D.total_label || '';
+  return '';
+}
+function render(){
+  const tab = ST.ui.tab || 'board';
+  let h = `<div class="hd"><div><h1>🏗 ${esc(D.title)}</h1>
+    <div class="status"><span class="pill warn">${E('status', D.status)}</span>${chips(D.status_src)}</div>
+    <div class="sm mut" style="margin-top:3px">${esc(D.client)} · собрано ${esc(D.built)} · правки живут в этом браузере (<code>${KEY}</code>)</div></div><div class="sp"></div>
+    <button class="btn${document.body.classList.contains('editing') ? ' on' : ''}" data-act="edit">✏️ Править</button>
+    <button class="btn" data-act="export">⬇ Экспорт JSON</button><button class="btn" data-act="reset">↺ Сброс</button></div>
+    <div class="editbar">Режим правки: кликни на текст с пунктиром и пиши. Карточки правятся кнопкой ✎, таблицы — прямо в полях.</div>
+    <div class="tabs">${TABS.map(([id, t]) => { const n = tabCount(id); return `<button data-tab="${id}" class="${id === tab ? 'on' : ''}">${t}${n !== '' ? `<i>${esc(n)}</i>` : ''}</button>`; }).join('')}</div>`;
+  h += ({board: vBoard, company: vCompany, prom: vProm, q: vQ, docs: vDocs, money: vMoney}[tab] || vBoard)();
+  $('#app').innerHTML = h;
+  applyEdit(); post();
+}
+/* ---------- 🗂 board ---------- */
+function vBoard(){
+  const all = cards(), live = all.filter(c => !c.arch), fd = ST.ui.fd || '', fp = ST.ui.fp || '';
+  const depts = [...new Set(live.map(c => c.dept).filter(Boolean))];
+  const vis = live.filter(c => (!fd || c.dept === fd) && (!fp || c.prio === fp));
+  let h = `<div class="flt"><span class="lab">Отдел</span><button data-fd="" class="${!fd ? 'on' : ''}">все</button>${depts.map(d => `<button data-fd="${esc(d)}" class="${fd === d ? 'on' : ''}">${esc(d)} <span class="mut">${live.filter(c => c.dept === d).length}</span></button>`).join('')}
+    <span class="gap"></span><span class="lab">Приоритет</span><button data-fp="" class="${!fp ? 'on' : ''}">все</button>${PRIO.map(p => `<button data-fp="${esc(p)}" class="${fp === p ? 'on' : ''}">${esc(p)}</button>`).join('')}
+    <span class="gap"></span><button class="btn x" data-act="new" data-col="idea">＋ Карточка</button></div>`;
+  h += `<div class="board">${D.cols.map(col => { const cs = vis.filter(c => c.col === col.id);
+    return `<div class="col" data-col="${col.id}"><div class="col-h">${esc(col.t)}<span class="n">${cs.length}</span><button data-act="new" data-col="${col.id}" title="Добавить карточку">＋</button></div>${cs.map(card).join('') || '<div class="sm mut" style="padding:6px">перетащи сюда</div>'}</div>`; }).join('')}</div>`;
+  const ar = all.filter(c => c.arch);
+  h += `<div class="sm mut" style="margin-top:6px">Тащи карточку между колонками (на телефоне — ✎ → «Колонка»). 🗄 убирает в архив, ничего не удаляется.
+    ${ar.length ? ` <button class="btn x" data-act="arch">🗄 Архив · ${ar.length}</button>` : ''}</div>`;
+  if (ar.length && ST.ui.arch) h += `<div class="arch">${ar.map(c => `<div class="it"><span style="flex:1">${esc(c.t)} <span class="mut sm">· ${esc(c.dept || '')}</span></span><button class="btn x" data-unarch="${esc(c.id)}">↩ вернуть</button></div>`).join('')}</div>`;
+  return h;
+}
+function card(c){
+  const meta = [c.dur && `срок <b>${esc(c.dur)}</b>`, c.price && `<b>${esc(c.price)}</b>`].filter(Boolean).join(' · ');
+  return `<div class="kc" draggable="true" data-id="${esc(c.id)}"><div class="act"><button data-ed="${esc(c.id)}" title="Править">✎</button><button data-archc="${esc(c.id)}" title="В архив">🗄</button></div>
+    <div class="tt">${c.n ? `<span class="mut">${c.n}.</span> ` : ''}${esc(c.t)}</div>
+    <div class="row">${c.dept ? `<span class="pill">${esc(c.dept)}</span>` : ''}${c.prio ? `<span class="pill ${pcls(c.prio)}">${esc(c.prio)}</span>` : ''}</div>
+    ${c.why ? `<div class="why">${esc(c.why)}</div>` : ''}${meta ? `<div class="meta">${meta}</div>` : ''}<div class="chips">${chips(c.src)}</div></div>`;
+}
+function srcToText(src){ return (src || []).map(s => s.t + ' | ' + (s.k === 'file' ? s.p : s.k === 'demo' ? 'demo:' + s.p : s.u)).join('\n'); }
+function textToSrc(t){ return t.split('\n').map(l => l.trim()).filter(Boolean).map(l => { const i = l.lastIndexOf('|'), lab = (i < 0 ? l : l.slice(0, i)).trim(), v = (i < 0 ? l : l.slice(i + 1)).trim();
+  if (/^demo:/.test(v)) return {k: 'demo', p: v.slice(5), t: lab}; if (/^https?:\/\//.test(v)) return {k: 'url', u: v, t: lab}; return {k: 'file', p: v, t: lab}; }); }
+function openEd(id, col, y){
+  const c = id ? cards().find(x => x.id === id) : {id: '', t: '', why: '', dept: ST.ui.fd || '', prio: '', dur: '', price: '', usd: 0, col: col || 'idea', src: []};
+  if (!c) return;
+  const depts = [...new Set(cards().map(x => x.dept).filter(Boolean))];
+  closeEd();
+  const ov = document.createElement('div'); ov.className = 'ov'; ov.onclick = closeEd;
+  const ed = document.createElement('div'); ed.className = 'ed'; ed.style.top = Math.max(8, (y || 60) - 30) + 'px';
+  ed.innerHTML = `<h3>${id ? 'Карточка' : 'Новая карточка'}</h3>
+    <label>Название<input id="e-t" value="${esc(c.t)}" maxlength="120"></label>
+    <label>Почему (одна строка)<input id="e-why" value="${esc(c.why)}" maxlength="200"></label>
+    <div class="two"><label>Отдел<input id="e-dept" list="e-dl" value="${esc(c.dept)}"><datalist id="e-dl">${depts.map(d => `<option value="${esc(d)}">`).join('')}</datalist></label>
+      <label>Приоритет<select id="e-prio"><option value="">—</option>${PRIO.map(p => `<option${p === c.prio ? ' selected' : ''}>${esc(p)}</option>`).join('')}</select></label></div>
+    <div class="two"><label>Срок<input id="e-dur" value="${esc(c.dur)}"></label><label>Колонка<select id="e-col">${D.cols.map(x => `<option value="${x.id}"${x.id === c.col ? ' selected' : ''}>${esc(x.t)}</option>`).join('')}</select></label></div>
+    <div class="two"><label>Цена (текст)<input id="e-price" value="${esc(c.price)}"></label><label>Цена, $ (для суммы)<input id="e-usd" type="number" min="0" step="100" value="${+c.usd || 0}"></label></div>
+    <label>Источники — по строке: «подпись | путь, https://… или demo:путь»<textarea id="e-src">${esc(srcToText(c.src))}</textarea></label>
+    <div class="bt">${id ? `<button class="btn" id="e-arch">🗄 В архив</button>` : ''}<span style="flex:1"></span><button class="btn" id="e-no">Отмена</button><button class="btn pri" id="e-ok">Сохранить</button></div>`;
+  document.body.append(ov, ed);
+  ed.querySelector('#e-t').focus();
+  ed.querySelector('#e-no').onclick = closeEd;
+  if (id) ed.querySelector('#e-arch').onclick = () => { patchCard(id, {arch: 1}); closeEd(); render(); toast('В архиве — «🗄 Архив» внизу доски'); };
+  ed.querySelector('#e-ok').onclick = () => {
+    const v = k => ed.querySelector('#e-' + k).value.trim();
+    const p = {t: v('t') || 'Без названия', why: v('why'), dept: v('dept'), prio: v('prio'), dur: v('dur'), col: v('col'), price: v('price'), usd: +v('usd') || 0, src: textToSrc(ed.querySelector('#e-src').value)};
+    if (id) patchCard(id, p); else ST.add.push(Object.assign({id: 'u' + Date.now().toString(36), plan: false, monthly: 0}, p));
+    save(); closeEd(); render(); toast('Сохранено');
+  };
+  ed.addEventListener('keydown', e => { if (e.key === 'Escape') closeEd(); });
+  post(ed.offsetTop + ed.offsetHeight + 20);
+}
+function closeEd(){ document.querySelectorAll('.ov,.ed').forEach(x => x.remove()); }
+function patchCard(id, p){ const a = ST.add.find(x => x.id === id); if (a) Object.assign(a, p); else ST.c[id] = Object.assign(ST.c[id] || {}, p); save(); }
+/* ---------- 🏢 company ---------- */
+function vCompany(){
+  let h = `<h2>Блоки группы</h2><div class="grid">${D.company.map(b => `<div class="blk"><h3>${b.ic} ${E('co.' + b.id + '.t', b.t)}</h3><ul>${b.facts.map((f, i) => `<li>${E('co.' + b.id + '.' + i, f)}</li>`).join('')}</ul><div class="chips">${chips(b.src)}</div></div>`).join('')}</div>`;
+  const grp = (side, t) => `<h2>${t}</h2><div class="ppl">${D.people.filter(p => p.side === side).map(p => `<div class="pp${side === 'w2w' ? ' w' : ''}"><b>${E('pp.' + p.id + '.n', p.n)}</b><span class="sm">${E('pp.' + p.id + '.r', p.r)}</span><div class="chips">${chips(p.src)}</div></div>`).join('')}</div>`;
+  return h + grp('client', 'Кто есть кто у клиента') + grp('w2w', 'Команда W2W на проекте') + `<div class="sm mut" style="margin-top:8px">Имена восстановлены по записям; «уточнить» — там, где в записи противоречие.</div>`;
+}
+/* ---------- 🤝 promises ---------- */
+function vProm(){
+  const ps = promises().filter(p => !p.arch), ar = promises().filter(p => p.arch);
+  let h = `<h2>Что мы обещали клиенту</h2><div class="tw"><table><tr><th></th><th>Что</th><th>Кому</th><th>Срок</th><th>Кто у нас</th><th>Заметка</th><th>Источник</th><th></th></tr>
+    ${ps.map(p => `<tr class="${p.done ? 'done' : ''}"><td><input type="checkbox" data-pdone="${esc(p.id)}"${p.done ? ' checked' : ''} title="Сделано"></td>
+      <td><span class="wt">${E('prt.' + p.id, p.t)}</span></td><td class="sm">${esc(p.to)}</td>
+      <td><input data-pf="due" data-pid="${esc(p.id)}" value="${esc(p.due)}"></td><td><input data-pf="owner" data-pid="${esc(p.id)}" value="${esc(p.owner)}" placeholder="кто делает"></td>
+      <td><input data-pf="note" data-pid="${esc(p.id)}" value="${esc(p.note)}" placeholder="—"></td><td><div class="chips">${chips(p.src)}</div></td>
+      <td><button class="btn x" data-parch="${esc(p.id)}" title="В архив">🗄</button></td></tr>`).join('')}</table></div>
+    <div class="flt"><button class="btn x" data-act="padd">＋ Обещание</button>${ar.length ? `<span class="sm mut">В архиве: ${ar.map(p => `${esc(tx('prt.' + p.id, p.t))} <button class="btn x" data-punarch="${esc(p.id)}">↩</button>`).join(' · ')}</span>` : ''}</div>`;
+  return h;
+}
+/* ---------- ❓ questions ---------- */
+function vQ(){
+  const A = D.answers || {};
+  let tot = {none: 0, wait: 0, ok: 0};
+  D.questions.forEach(d => d.q.forEach((_, i) => tot[qState(d.id, i).st]++));
+  let h = `<div class="box"><b>Ссылка на анкету</b><div class="fld"><input id="f-survey" value="${esc(ST.f.survey || '')}" placeholder="${esc(demoBase() + 'survey/index.html')}">
+      <a class="btn" href="${esc(surveyUrl())}" target="_blank" rel="noopener">Открыть ↗</a><button class="btn" data-copy="${esc(surveyUrl())}">📋 Копировать</button></div>
+    <div class="sm mut">Ответы приходят на демо-сервер: <code>F:\\Dev\\galereya-osh\\data\\survey\\*.jsonl</code>. Подтянуть: <code>python scripts/pull_galereya_answers.py</code> → пересобрать страницу.
+      Сейчас в сборке: <b>${A.count || 0}</b> ответов${A.pulled ? ' · подтянуто ' + esc(A.pulled) : ''}.</div></div>
+    <div class="kpis"><div class="kpi"><b>${tot.none}</b><span>не отправлено</span></div><div class="kpi"><b>${tot.wait}</b><span>ждём ответа</span></div><div class="kpi"><b>${tot.ok}</b><span>отвечено</span></div></div>`;
+  h += D.questions.map(d => { const qs = d.q.map((q, i) => Object.assign({q, i}, qState(d.id, i))), ok = qs.filter(x => x.st === 'ok').length, got = ((A.by_dept || {})[d.id] || []).length;
+    const open = (ST.ui.qo || {})[d.id];
+    return `<details class="dq" data-dq="${d.id}"${open ? ' open' : ''}><summary>${d.ic} ${esc(d.name)}<span class="pill ${ok === qs.length ? 'ok' : ''}">${ok}/${qs.length}</span>${got ? `<span class="pill ok">📥 ${got} анкет</span>` : ''}<span class="sp"></span>
+      <button class="btn x" data-qall="${d.id}" title="Все неотвеченные вопросы отдела → «ждём»">отправлено → ждём</button></summary>
+      ${qs.map(x => `<div class="qq ${x.st}"><div><div class="qt">${esc(x.q.t)}</div>${x.q.h ? `<div class="qh">${esc(x.q.h)}</div>` : ''}</div>
+        <select data-qst="${x.k}">${Object.entries(QST).map(([v, t]) => `<option value="${v}"${v === x.st ? ' selected' : ''}>${t}</option>`).join('')}</select>
+        ${x.got.map(r => `<div class="got">📥 <b>${esc(r.who || 'без имени')}</b> <span class="mut sm">${esc((r.ts || '').slice(0, 16).replace('T', ' '))}</span><br>${esc(r.a['q' + (x.i + 1)])}</div>`).join('')}
+        <textarea data-qa="${x.k}" placeholder="ответ / заметка">${esc(x.a)}</textarea></div>`).join('')}
+      <div class="sm mut" style="padding:6px 14px 10px">Источник: <a href="${esc(demoBase() + 'survey/index.html#' + d.id)}" target="_blank" rel="noopener">анкета · ${esc(d.name)} ↗</a></div></details>`; }).join('');
+  const known = new Set(D.questions.map(d => d.id)), other = Object.entries(A.by_dept || {}).filter(([k]) => !known.has(k));
+  if (other.length) h += `<h2>Ответы из других анкет</h2><div class="box">${other.map(([k, rs]) => rs.map(r => `<div class="sm"><b>${esc(k)}</b> · ${esc(r.who || 'без имени')} <span class="mut">${esc((r.ts || '').slice(0, 16).replace('T', ' '))}</span><br>${Object.entries(r.a || {}).map(([q, v]) => `${esc(q)}: ${esc(v)}`).join(' · ')}</div>`).join('')).join('')}</div>`;
+  return h;
+}
+/* ---------- 📁 docs ---------- */
+function vDocs(){
+  let h = `<div class="box"><b>Публичная ссылка на демо</b><div class="fld"><input id="f-demo" value="${esc(ST.f.demo || '')}" placeholder="${esc(D.demo_default)}">
+    <a class="btn" href="${esc(demoBase())}" target="_blank" rel="noopener">Открыть ↗</a><button class="btn" data-copy="${esc(demoBase())}">📋</button></div>
+    <div class="sm mut">Все ссылки «↗» на этой странице строятся от этого адреса. Пока демо на ноутбуке — <code>${esc(D.demo_default)}</code>; поменяй, когда появится публичный адрес.</div></div>`;
+  h += D.docs.map(g => `<h2>${esc(g.g)}</h2><div class="box dl">${g.items.map(s => `<div class="r"><span class="nm">${esc(s.t)}</span>${s.k === 'file'
+    ? `<code>${esc(s.p)}</code><button class="btn x" data-copy="${esc(s.p)}">📋 Копировать путь</button>`
+    : `<code>${esc(srcHref(s))}</code><a class="btn x" href="${esc(srcHref(s))}" target="_blank" rel="noopener">Открыть ↗</a><button class="btn x" data-copy="${esc(srcHref(s))}">📋</button>`}</div>`).join('')}</div>`).join('');
+  return h + `<div class="sm mut" style="margin-top:8px">Локальные файлы браузер открыть не даёт — кнопка копирует путь, вставь его в Проводник или Obsidian.</div>`;
+}
+/* ---------- 💵 money ---------- */
+function vMoney(){
+  const plan = cards().filter(c => c.plan && !c.arch).sort((a, b) => (a.n || 99) - (b.n || 99)), sum = plan.reduce((s, c) => s + (+c.usd || 0), 0);
+  const mon = plan.filter(c => c.monthly).map(c => `${c.n}. ${money(c.monthly)}/мес`).join(', ');
+  let h = `<div class="box hint"><b>${E('m.status', D.money_status)}</b><span class="sm">${E('m.status2', D.money_status2)}</span><div class="chips">${chips(D.status_src)}</div></div>`;
+  h += `<h2>План работ и цены</h2><div class="tw"><table><tr><th>№</th><th>Что</th><th>Приоритет</th><th>Срок</th><th class="num">Цена</th><th>Колонка</th></tr>
+    ${plan.map(c => `<tr><td class="mut">${c.n || ''}</td><td><b>${esc(c.t)}</b><div class="sm mut">${esc(c.dept)}</div></td><td><span class="pill ${pcls(c.prio)}">${esc(c.prio)}</span></td><td class="sm">${esc(c.dur)}</td><td class="num">${esc(c.price)}</td><td class="sm">${esc((D.cols.find(x => x.id === c.col) || {}).t || '')}</td></tr>`).join('')}
+    <tr class="tot"><td></td><td>Всего по плану ${esc(D.total_label)}</td><td colspan="2" class="sm">${esc(D.total_note)}</td><td class="num">${money(sum)}</td><td class="sm">${mon ? '+ ' + esc(mon) : ''}</td></tr></table></div>
+    <div class="chips" style="margin-top:6px">${chips([{k: 'demo', p: 'tz/index.html', t: 'План работ'}])}<span class="sm mut">${esc(D.pay_note)}</span></div>`;
+  h += `<h2>Двери: три варианта запуска</h2><div class="tw"><table><tr><th>Вариант</th><th class="num">Цена</th><th>Срок</th><th>Почему</th></tr>${D.options.map(o => `<tr><td><b>${esc(o.t)}</b></td><td class="num">${esc(o.p)}</td><td class="sm">${esc(o.d)}</td><td class="sm">${esc(o.why)}</td></tr>`).join('')}</table></div>
+    <div class="chips" style="margin-top:6px">${chips([{k: 'demo', p: 'offer/index.html', t: 'Предложение'}])}</div>`;
+  h += `<h2>Сколько стоит ничего не менять</h2><div class="tw"><table><tr><th>Где теряются деньги</th><th>Что известно</th><th class="num">Потеря в год</th><th>Источник</th></tr>
+    ${D.loss.map(l => `<tr><td><b>${esc(l.t)}</b></td><td class="sm">${esc(l.k)}</td><td class="num">${esc(l.v)}</td><td><div class="chips">${chips(l.src)}</div></td></tr>`).join('')}</table></div>
+    <div class="sm mut" style="margin-top:6px">Считаем только по цифрам, которые назвал клиент. Оборотов по направлениям нет — они в анкете.</div>`;
+  return h;
+}
+/* ---------- edit layer + events ---------- */
+function applyEdit(){ const on = document.body.classList.contains('editing');
+  document.querySelectorAll('[data-e]').forEach(el => { el.contentEditable = on ? 'true' : 'false'; if (!el._b){ el._b = 1; const keep = () => { if (document.body.classList.contains('editing')){ ST.tx[el.dataset.e] = el.textContent.trim(); save(); } };
+    el.addEventListener('input', keep); el.addEventListener('blur', keep); } }); }
+function exportJson(){
+  const out = {exported: new Date().toISOString(), key: KEY, edits: ST, effective: {cards: cards(), promises: promises(),
+    questions: D.questions.map(d => ({id: d.id, q: d.q.map((q, i) => { const s = qState(d.id, i); return {t: q.t, st: s.st, a: s.a}; })}))}};
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 1)], {type: 'application/json'}));
+  a.download = 'galereya-edits-' + new Date().toISOString().slice(0, 10) + '.json'; document.body.appendChild(a); a.click(); a.remove();
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-copy],[data-tab],[data-act],[data-fd],[data-fp],[data-ed],[data-archc],[data-unarch],[data-parch],[data-punarch],[data-qall]'); if (!t) return;
+  const d = t.dataset, y = t.getBoundingClientRect().top + window.scrollY;
+  if (d.copy != null){ e.preventDefault(); return copy(d.copy); }
+  if (d.qall){ e.preventDefault(); const dp = D.questions.find(x => x.id === d.qall); dp.q.forEach((_, i) => { const s = qState(dp.id, i); if (s.st === 'none') ST.q[s.k] = Object.assign(ST.q[s.k] || {}, {st: 'wait'}); }); save(); render(); return; }
+  if (d.tab){ ST.ui.tab = d.tab; save(); closeEd(); render(); return; }
+  if (d.fd != null){ ST.ui.fd = d.fd; save(); render(); return; }
+  if (d.fp != null){ ST.ui.fp = d.fp; save(); render(); return; }
+  if (d.ed) return openEd(d.ed, null, y);
+  if (d.archc){ patchCard(d.archc, {arch: 1}); render(); toast('В архиве — «🗄 Архив» внизу доски'); return; }
+  if (d.unarch){ patchCard(d.unarch, {arch: 0}); render(); return; }
+  if (d.parch){ ST.pr[d.parch] = Object.assign(ST.pr[d.parch] || {}, {arch: 1}); save(); render(); return; }
+  if (d.punarch){ ST.pr[d.punarch] = Object.assign(ST.pr[d.punarch] || {}, {arch: 0}); save(); render(); return; }
+  switch (d.act){
+    case 'edit': document.body.classList.toggle('editing'); render(); break;
+    case 'export': exportJson(); break;
+    case 'reset': if (confirm('Сбросить все правки этой доски в этом браузере?')){ try { localStorage.removeItem(KEY); } catch (_) {} ST = {}; norm(); render(); toast('Сброшено'); } break;
+    case 'new': openEd(null, d.col, y); break;
+    case 'arch': ST.ui.arch = !ST.ui.arch; save(); render(); break;
+    case 'padd': ST.pradd.push({id: 'pu' + Date.now().toString(36), t: 'Новое обещание', to: '', due: '', owner: '', note: '', src: [], done: false}); save(); render(); if (!document.body.classList.contains('editing')) toast('Текст — в режиме ✏️ Править'); break;
+  }
+});
+document.addEventListener('change', e => { const t = e.target, d = t.dataset;
+  if (d.pdone){ ST.pr[d.pdone] = Object.assign(ST.pr[d.pdone] || {}, {done: t.checked}); save(); render(); }
+  else if (d.qst){ ST.q[d.qst] = Object.assign(ST.q[d.qst] || {}, {st: t.value}); save(); render(); }
+  else if (t.id === 'f-demo' || t.id === 'f-survey'){ ST.f[t.id.slice(2)] = t.value.trim(); save(); render(); toast('Ссылка сохранена'); } });
+document.addEventListener('input', e => { const t = e.target, d = t.dataset;
+  if (d.pf){ ST.pr[d.pid] = Object.assign(ST.pr[d.pid] || {}, {[d.pf]: t.value}); save(); }
+  else if (d.qa){ ST.q[d.qa] = Object.assign(ST.q[d.qa] || {}, {a: t.value}); save(); } });
+document.addEventListener('toggle', e => { const d = e.target.dataset && e.target.dataset.dq; if (!d) return; ST.ui.qo = ST.ui.qo || {}; ST.ui.qo[d] = e.target.open ? 1 : 0; save(); post(); }, true);
+/* drag & drop between columns */
+let dragId = null;
+document.addEventListener('dragstart', e => { const c = e.target.closest && e.target.closest('.kc'); if (!c) return; dragId = c.dataset.id; c.classList.add('drag'); try { e.dataTransfer.setData('text/plain', dragId); e.dataTransfer.effectAllowed = 'move'; } catch (_) {} });
+document.addEventListener('dragend', () => { dragId = null; document.querySelectorAll('.kc.drag,.col.over').forEach(x => x.classList.remove('drag', 'over')); });
+document.addEventListener('dragover', e => { const col = e.target.closest && e.target.closest('.col'); if (!col || !dragId) return; e.preventDefault(); document.querySelectorAll('.col.over').forEach(x => x !== col && x.classList.remove('over')); col.classList.add('over'); });
+document.addEventListener('drop', e => { const col = e.target.closest && e.target.closest('.col'); if (!col || !dragId) return; e.preventDefault();
+  const id = dragId; dragId = null; const c = cards().find(x => x.id === id);
+  if (c && c.col !== col.dataset.col){ patchCard(id, {col: col.dataset.col}); toast('→ ' + D.cols.find(x => x.id === col.dataset.col).t); }
+  render(); });
+/* height → JOS parent (content height, not scrollHeight: that never shrinks below the frame) */
+function post(min){ const h = Math.max(Math.ceil($('#app').getBoundingClientRect().height) + 16, min || 0);
+  try { parent.postMessage({jos: 'h', page: 'galereya', h}, '*'); } catch (e) {} }
+if (window.ResizeObserver) new ResizeObserver(() => post()).observe($('#app'));
+window.addEventListener('resize', () => post());
+render();
+</script></body></html>
