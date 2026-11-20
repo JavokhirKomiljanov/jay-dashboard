@@ -149,6 +149,49 @@ body[data-tod=night] .hud .eb{color:#7fe9df}
 .pop .chips{margin:0;display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .pop .chip{border-radius:10px;background:#ffffff0d;padding:8px 10px}
 body.emb .top a.btn{display:none}
+/* 🎮 game mode (2026-11-20): open-world HUD behind one button — radar bottom-left, counters top-right, zone name bottom-right.
+   Own design (genre conventions only). Made once for content: no news, no scenes, the normal UI is untouched when it is off. */
+.gm{display:none}
+body.gm .gm{display:block}
+body.gm .hud,body.gm .legend,body.gm .hint,body.gm .toast,body.gm .pop,body.gm #plBtn,body.gm #lgBtn,body.gm #prdemo,body.gm #tod,body.gm #tour,body.gm #menuBtn{display:none!important}
+body.gm .lbl.bub,body.gm .lbl.lm,body.gm .lbl.gvb,body.gm .lbl.hand,body.gm .lbl.pl{visibility:hidden!important}
+body.gm #c{filter:saturate(1.28) contrast(1.07)}
+body.gm .vig{background:radial-gradient(ellipse at 50% 50%,transparent 42%,#05030a99 100%)}
+#gmBtn.on{background:#ff3d9a;border-color:#ff3d9a;color:#fff}
+.gm>*{position:fixed;z-index:6;pointer-events:none;font-family:Manrope,system-ui,sans-serif}
+.gm-radar{left:max(22px,env(safe-area-inset-left,0px));bottom:max(22px,env(safe-area-inset-bottom,0px));width:212px}
+.gm-radar canvas{display:block;width:212px;height:212px;border-radius:50%;border:3px solid #0b0a10;box-shadow:0 0 0 2px #ffffff40,0 10px 34px #000a}
+.gm-bars{display:flex;gap:5px;margin-top:9px}
+.gm-bars div{flex:1;height:9px;background:#0b0a10cc;border-radius:2px;overflow:hidden;box-shadow:0 0 0 1px #ffffff26}
+.gm-bars i{display:block;height:100%;width:0;transition:width .5s}
+.gm-bars .b1 i{background:#4be08a}.gm-bars .b2 i{background:#48b7ff}
+.gm-barl{display:flex;justify-content:space-between;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#ffffffb8;margin-top:4px;text-shadow:0 1px 4px #000}
+.gm-stat{right:max(22px,env(safe-area-inset-right,0px));top:74px;text-align:right;text-shadow:0 2px 0 #000,0 0 14px #000a}
+.gm-money{font-size:34px;font-weight:800;line-height:1;color:#7dff9b;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.gm-money small{display:block;font-size:10.5px;letter-spacing:.2em;color:#ffffffa8;margin-bottom:4px}
+.gm-clock{font-size:20px;font-weight:800;color:#fff;margin-top:8px;font-variant-numeric:tabular-nums}
+.gm-pips{display:flex;gap:5px;justify-content:flex-end;margin-top:9px}
+.gm-pips i{width:16px;height:16px;transform:rotate(45deg);border:2px solid #ffffff59;background:#0b0a1099}
+.gm-pips i.on{background:#ff3d5a;border-color:#fff;box-shadow:0 0 12px #ff3d5a}
+.gm-pipl{font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#ffffffa8;margin-top:7px}
+.gm-obj{left:max(22px,env(safe-area-inset-left,0px));top:max(20px,env(safe-area-inset-top,0px));max-width:min(420px,60vw);text-shadow:0 2px 0 #000,0 0 12px #000a}
+.gm-obj b{display:block;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:#ffd84a}
+.gm-obj span{display:block;font-size:17px;font-weight:800;color:#fff;margin-top:3px;line-height:1.25}
+.gm-obj em{display:block;font-style:normal;font-size:12.5px;font-weight:700;color:#ffffffc2;margin-top:3px}
+.gm-zone{right:max(26px,env(safe-area-inset-right,0px));bottom:max(30px,env(safe-area-inset-bottom,0px));text-align:right;opacity:0;transform:translateX(18px);transition:opacity .5s,transform .5s;text-shadow:0 3px 0 #000,0 0 18px #000c}
+.gm-zone.on{opacity:1;transform:none}
+.gm-zone b{display:block;font-size:40px;font-weight:800;font-style:italic;line-height:1;color:#fff;letter-spacing:-.01em}
+.gm-zone span{display:block;font-size:14px;font-weight:800;font-style:italic;color:var(--zc,#ffd84a);margin-top:5px}
+.gm-keys{left:50%;bottom:max(18px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);font-size:11.5px;font-weight:700;color:#ffffffc9;background:#0b0a10a8;padding:6px 12px;border-radius:999px;white-space:nowrap}
+.gm-keys kbd{font:800 10.5px Manrope;background:#ffffff24;border-radius:4px;padding:1px 6px;margin:0 2px;color:#fff}
+@media (max-width:700px),(max-height:480px){
+  body.gm #menuBtn{display:flex!important}
+  .gm-radar{width:132px;left:calc(10px + var(--sal));bottom:calc(var(--bb,64px) + 12px)}.gm-radar canvas{width:132px;height:132px}
+  .gm-stat{top:calc(12px + var(--sat));right:calc(12px + var(--sar))}.gm-money{font-size:24px}.gm-clock{font-size:16px}
+  .gm-obj{top:calc(12px + var(--sat));left:calc(12px + var(--sal));max-width:54vw}.gm-obj span{font-size:14px}
+  .gm-zone{bottom:calc(var(--bb,64px) + 16px);right:calc(12px + var(--sar))}.gm-zone b{font-size:24px}.gm-zone span{font-size:12px}
+  .gm-keys{display:none!important}
+}
 .hint{transition:opacity .6s}.hint.gone{opacity:0;pointer-events:none}
 @media (min-width:701px) and (min-height:481px){
   .legend{display:none;left:max(16px,env(safe-area-inset-left,0px));bottom:16px;flex-direction:column;gap:7px;max-width:min(380px,calc(100vw - 32px));background:#1b1612f5;border:1px solid #d9a44155;border-radius:16px;padding:12px 14px;backdrop-filter:blur(10px);box-shadow:0 18px 60px #000a;text-shadow:none;z-index:7;font-size:12px}
@@ -263,10 +306,17 @@ body.emb .top a.btn{display:none}
   <div class="dfil" id="dfil" role="toolbar" aria-label="Фильтр по департаментам"></div>
 </div>
 <div class="pop" id="plPop" role="dialog" aria-label="Места города"><div class="chips" id="chips"></div></div>
-<div class="top" id="topbar"><button class="btn ghost mb" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu"><span class="ic">☰</span><span class="tx">Меню</span></button><button class="btn ghost" id="plBtn" type="button" title="Места города: Saroy, Token Street, махалля, семьи…"><span class="ic">📍</span><span class="tx">Места</span></button><button class="btn ghost" id="lgBtn" type="button" title="Легенда: что значат цвета и значки"><span class="ic">?</span></button><button class="btn ghost" id="prdemo" type="button" title="Демо намаза, сжато: проход 15 с, стояние 20 с, возвращение 15 с"><span class="ic">🕌</span><span class="tx">демо</span></button><button class="btn ghost" id="tod" type="button" title="Время суток: авто по Ташкенту или демо">авто</button><button class="btn ghost" id="tour" type="button"><span class="ic">▶</span><span class="tx">Облёт</span></button><button class="btn ghost" id="home" type="button"><span class="ic">⌂</span><span class="tx"><span class="tl-l">Весь город</span><span class="tl-s">Город</span></span></button><a class="btn" href="index.html#agents" target="_top" style="text-decoration:none"><span class="ic">←</span><span class="tx">JOS</span></a></div>
+<div class="top" id="topbar"><button class="btn ghost mb" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu"><span class="ic">☰</span><span class="tx">Меню</span></button><button class="btn ghost" id="plBtn" type="button" title="Места города: Saroy, Token Street, махалля, семьи…"><span class="ic">📍</span><span class="tx">Места</span></button><button class="btn ghost" id="lgBtn" type="button" title="Легенда: что значат цвета и значки"><span class="ic">?</span></button><button class="btn ghost" id="gmBtn" type="button" title="Игровой режим: радар, счётчики, управление WASD. Выключается этой же кнопкой или клавишей G"><span class="ic">🎮</span><span class="tx">Игра</span></button><button class="btn ghost" id="prdemo" type="button" title="Демо намаза, сжато: проход 15 с, стояние 20 с, возвращение 15 с"><span class="ic">🕌</span><span class="tx">демо</span></button><button class="btn ghost" id="tod" type="button" title="Время суток: авто по Ташкенту или демо">авто</button><button class="btn ghost" id="tour" type="button"><span class="ic">▶</span><span class="tx">Облёт</span></button><button class="btn ghost" id="home" type="button"><span class="ic">⌂</span><span class="tx"><span class="tl-l">Весь город</span><span class="tl-s">Город</span></span></button><a class="btn" href="index.html#agents" target="_top" style="text-decoration:none"><span class="ic">←</span><span class="tx">JOS</span></a></div>
 <div class="panel" id="sheet" role="dialog" aria-label="Карточка"><div class="grab" aria-hidden="true"><i></i></div><button class="sx" type="button" aria-label="Закрыть">✕</button><div class="pbody" id="panel"></div></div>
 <div class="msheet" id="menu" role="dialog" aria-label="Меню города"><div class="grab" aria-hidden="true"><i></i></div><button class="sx" type="button" aria-label="Закрыть меню">✕</button><div class="mbody" id="mbody"><div class="mh"><b>Город агентов · Ташкент</b><span id="msum"></span></div><div class="mt">Места</div><div id="mchips"></div><div class="mt">Сейчас</div><div id="mnow"></div><div class="mt">Легенда</div><div id="mleg"></div></div></div>
 <div class="legend"><span><i style="background:#22e07a"></i>работает сейчас</span><span><i style="background:#19d3c5"></i>по расписанию</span><span><i style="background:#f5a623"></i>разовая, сделано</span><span><i style="background:#8b8f99"></i>выключен</span><span class="md">🏢 в офисе · 🚶 идёт · 🍽 ест токены · 🏠 дома · 😴 спит · 🫖 сделано · 🕌 Xo'ja aka на намазе</span><span class="md" id="lgf">цвет калитки и бейджа = семья</span><span id="chk"></span><span class="md" id="lg5" style="display:none">🏛 Президент · 🏫 в исправительном центре · 🎓 вышел (24 ч) · P — бейдж действующего президента</span><span id="lgn" style="width:100%;font-size:10.5px;color:#c7b58a">Имена агентов вымышленные · это 🤖 агенты, не люди</span><span id="lg6" style="width:100%;font-size:10.5px;color:#c7b58a;display:none">Выговоры, приговоры и выборы — из журнала CEO-агента, ничего не выдумано</span></div>
+<div class="gm" id="gm" aria-hidden="true">
+  <div class="gm-obj"><b>Текущая задача</b><span id="gmObj"></span><em id="gmObj2"></em></div>
+  <div class="gm-stat"><div class="gm-money"><small>ТОКЕНЫ ЗА СЕГОДНЯ</small><span id="gmMoney"></span></div><div class="gm-clock" id="gmClock"></div><div class="gm-pips" id="gmPips"></div><div class="gm-pipl" id="gmPipl"></div></div>
+  <div class="gm-radar"><canvas id="gmRadar" width="424" height="424"></canvas><div class="gm-bars"><div class="b1"><i id="gmB1"></i></div><div class="b2"><i id="gmB2"></i></div></div><div class="gm-barl"><span id="gmL1"></span><span id="gmL2"></span></div></div>
+  <div class="gm-zone" id="gmZone"><b></b><span></span></div>
+  <div class="gm-keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> движение · <kbd>Shift</kbd> быстрее · <kbd>1</kbd>–<kbd>6</kbd> департамент · <kbd>G</kbd> выйти</div>
+</div>
 <div class="toast" id="toast"></div>
 <div class="hint">Клик по зданию — офис · по роботу — что он делает</div>
 <div class="office" id="office"><div class="bar"><div><h2 id="oname"></h2><p id="odesc"></p></div><button class="btn" id="oback">← В город</button></div></div>
@@ -1644,8 +1694,8 @@ function toggleHud(on){ document.body.classList.toggle('hud-open',on); sump.setA
 sump.onclick=()=>toggleHud(!document.body.classList.contains('hud-open'));
 /* phone <-> desktop: move the chips, the legend and the prayer demo between the HUD and the menu */
 function uiLayout(){ PHONE=PHQ.matches; LAND=PHONE&&LNQ.matches; document.body.classList.toggle('ph',PHONE);
-  if(PHONE){ legendEl.classList.remove('on'); document.getElementById('mchips').appendChild(chipsEl); document.getElementById('mleg').appendChild(legendEl); document.getElementById('mnow').prepend(prdemoEl); }
-  else { document.getElementById('plPop').appendChild(chipsEl); document.body.insertBefore(legendEl,document.getElementById('toast')); topbar.insertBefore(prdemoEl,document.getElementById('tod')); setMenu(false); document.body.classList.remove('hud-open'); }
+  if(PHONE){ legendEl.classList.remove('on'); document.getElementById('mchips').appendChild(chipsEl); document.getElementById('mleg').appendChild(legendEl); document.getElementById('mnow').prepend(prdemoEl); document.getElementById('mnow').prepend(document.getElementById('gmBtn')); }
+  else { document.getElementById('plPop').appendChild(chipsEl); document.body.insertBefore(legendEl,document.getElementById('toast')); topbar.insertBefore(prdemoEl,document.getElementById('tod')); topbar.insertBefore(document.getElementById('gmBtn'),prdemoEl); setMenu(false); document.body.classList.remove('hud-open'); }
   measure(); if(sheetOn()) snapTo(portrait()?(['peek','half','full'].includes(UI.snap)?UI.snap:'half'):'full',false); else sheet.style.transform=''; THIN.t=0; }
 [PHQ,LNQ].forEach(q=>q.addEventListener?q.addEventListener('change',uiLayout):q.addListener(uiLayout));
 /* layers: office > menu > card > status row. Phone: one history entry while any layer is open (browser back), JOS_M.back for the Android app, Esc on desktop */
@@ -1675,7 +1725,7 @@ const THIN={t:0, on:false}, TCAP=[99,6,6,6,3,5], TCAPD=[99,14,10,18,8,12];   /* 
 function thinLabels(now){
   if(now-THIN.t<240) return; THIN.t=now; THIN.on=true;
   const open=PHONE&&(sheetOn()||UI.menu), ag=panel.dataset.agent, cx=innerWidth/2, cy=(UI.tb+innerHeight-UI.bb)/2, cand=[], TC=PHONE?TCAP:TCAPD, fil=!!DEPT;
-  const block = PHONE ? [hud.getBoundingClientRect(), topbar.getBoundingClientRect()] : [...document.querySelectorAll('.hcard,.dfil,#topbar,.pop.on,.legend.on,.toast.on')].map(e=>e.getBoundingClientRect());
+  const block = PHONE ? [hud.getBoundingClientRect(), topbar.getBoundingClientRect()] : [...document.querySelectorAll(GM.on?'#topbar,.gm-radar,.gm-stat,.gm-obj,.gm-zone.on':'.hcard,.dfil,#topbar,.pop.on,.legend.on,.toast.on')].map(e=>e.getBoundingClientRect());
   if(sheetOn()) block.push(sheet.getBoundingClientRect());
   for(const el of L2.domElement.children){ if(el.style.display==='none') continue; const c=el.classList, k=el.dataset.k, sel=!!((k&&k===focused)||(ag&&el.dataset.ag===ag));
     if(c.contains('fo') || (fil && (c.contains('pl')||c.contains('gvb')||c.contains('hand')||c.contains('fd')))) continue;
@@ -1877,6 +1927,7 @@ function loop(){ requestAnimationFrame(loop); const t=clock.getElapsedTime(), no
   const dist=cam.position.distanceTo(ctl.target);
   agentLabels.forEach(x=>{ x.o.getWorldPosition(wp); const near=DEPT ? DEPT===x.d : (cam.position.distanceTo(wp)<72 || (focused===x.d && dist<80)); x.al.element.classList.toggle('show',near); });
   lmLabels.forEach(x=>{ x.l.getWorldPosition(wp); x.l.element.classList.toggle('show', cam.position.distanceTo(wp)<110 && dist<140); });
+  if(GM.on) gmTick(dt,nowP);
   viewOffset(dt); R.render(scene,cam); L2.render(scene,cam); thinLabels(nowP);
   if(!window.__cityOK){ window.__cityOK=true; const f=document.getElementById('fail'); if(f) f.classList.remove('on'); } }
 /* ---------- v5 init: place labels, chips after «Семьи», award stars, election urns, rain, boards, legend ---------- */
@@ -1898,6 +1949,57 @@ if(GOV){
     play:(type,agent,at)=>{ const c=G.chronicle.filter(c=>c.type===type&&(!agent||c.agent===agent)&&(!at||c.at.startsWith(at))).slice(-1)[0]; playRecord(c,true); return c?c.at:null; },
     case:(i,cls)=>{ const H=G.prison_history||[]; replayCase(H[i<0?H.length+i:i],cls); return H.length; }, rain:on=>setWx(on?'rain':null),
     sc:()=>SC&&{ovr:Object.keys(SC.ovr), say:Object.keys(SC.say), inm:(SC.inm||[]).map(x=>x.id)}, roles:()=>Object.fromEntries(Object.entries(GV.role||{}).map(([k,v])=>[k,v.spot.key])) }); }
+/* ---------- 🎮 game mode (2026-11-20) ----------
+   Jay: «кнопка — открывается игровой интерфейс, в остальное время не надо; сделаем один раз на контент». Everything on the HUD is the page's own real data:
+   radar = districts + where every agent is right now, counter = Claude tokens eaten today, green bar = share of agents at work, blue bar = President's approval,
+   red pips = agents in Tuzatish markazi, task = the next scheduled run. WASD / arrows move the camera, 1–6 jump to a department, G or the button leaves. */
+const GM={on:false, keys:new Set(), t:0, zone:null, zt:null, cv:document.getElementById('gmRadar')};
+GM.g=GM.cv.getContext('2d');
+function gmSet(on){ on=!!on; if(on===GM.on) return; GM.on=on; document.body.classList.toggle('gm',on); document.getElementById('gmBtn').classList.toggle('on',on); GM.keys.clear(); GM.zone=null;
+  if(typeof closePops==='function') closePops(); if(window.__ui) __ui.menu(false);
+  if(on){ if(tourOn) document.getElementById('tour').click(); if(SC) scStop(); panel.classList.remove('on'); focused=null; deptFx(null); document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+    const tg=ctl.target.clone(); tg.y=4; flyTo(new THREE.Vector3(tg.x+16,MOBILE?52:30,tg.z+(MOBILE?92:58)), tg, 1.4); gmHud(); }
+  else { document.getElementById('gmZone').classList.remove('on'); document.getElementById('home').click(); }
+  THIN.t=0; }
+document.getElementById('gmBtn').onclick=()=>gmSet(!GM.on);
+addEventListener('keydown',e=>{ if(e.ctrlKey||e.metaKey||e.altKey||/^(input|textarea|select)$/i.test((e.target||{}).tagName||'')) return; const k=e.code;
+  if(k==='KeyG' && !inOffice){ gmSet(!GM.on); return; } if(!GM.on||inOffice) return;
+  if(/^(Key[WASD]|Arrow(Up|Down|Left|Right)|Shift(Left|Right))$/.test(k)){ GM.keys.add(k); e.preventDefault(); }
+  else if(/^Digit[1-9]$/.test(k)){ const d=D.districts[+k.slice(5)-1]; if(d){ fly=null; const tg=new THREE.Vector3(d.x,4,d.z); flyTo(new THREE.Vector3(d.x+16,30,d.z+58), tg, 1.1); } } });
+addEventListener('keyup',e=>GM.keys.delete(e.code)); addEventListener('blur',()=>GM.keys.clear());
+function gmHud(){ const c=COUNTS, n=D.agents.length||1, d=new Date(Date.now()+TZ_MS), w=(c.work||0)/n, ap=GOV&&PRES.approval!=null?PRES.approval:null;
+  document.getElementById('gmMoney').textContent = D.tokens_today==null ? '—' : fmtFull(D.tokens_today);
+  document.getElementById('gmClock').textContent = String(d.getUTCHours()).padStart(2,'0')+':'+String(d.getUTCMinutes()).padStart(2,'0')+' · Ташкент';
+  document.getElementById('gmB1').style.width=Math.round(w*100)+'%'; document.getElementById('gmL1').textContent=`в работе ${c.work||0}/${D.agents.length}`;
+  document.getElementById('gmB2').style.width=(ap==null?0:ap)+'%'; document.getElementById('gmL2').textContent=ap==null?'':`доверие ${ap} %`;
+  const inm=GOV?INM().length:0; document.getElementById('gmPips').innerHTML=GOV?Array.from({length:5},(_,i)=>`<i class="${i<inm?'on':''}"></i>`).join(''):''; document.getElementById('gmPipl').textContent=GOV?(inm?`в исправительном центре: ${inm}`:'нарушителей нет'):'';
+  const run=D.agents.filter(a=>a.state==='running'), nx=D.agents.filter(a=>a.state==='ready'&&a._to!=null).sort((a,b)=>a._to-b._to)[0];
+  document.getElementById('gmObj').textContent = nx ? `${nx.emoji} ${nx.name} — запуск через ${fmtMin(nx._to)}` : run.length ? `${run[0].emoji} ${run[0].name} — работает` : 'Все агенты отдыхают';
+  document.getElementById('gmObj2').textContent = run.length ? `сейчас работают: ${run.length}` : ''; }
+function gmTick(dt,now){ const f=new THREE.Vector3(ctl.target.x-cam.position.x,0,ctl.target.z-cam.position.z); if(f.lengthSq()<1e-6) f.set(0,0,-1); f.normalize(); const rx=-f.z, rz=f.x, K=GM.keys;
+  const mf=(K.has('KeyW')||K.has('ArrowUp')?1:0)-(K.has('KeyS')||K.has('ArrowDown')?1:0), mr=(K.has('KeyD')||K.has('ArrowRight')?1:0)-(K.has('KeyA')||K.has('ArrowLeft')?1:0);
+  if(mf||mr){ fly=null; const sp=(K.has('ShiftLeft')||K.has('ShiftRight')?95:44)*dt; let dx=(f.x*mf+rx*mr)*sp, dz=(f.z*mf+rz*mr)*sp;
+    const nxp=Math.max(-175,Math.min(175,ctl.target.x+dx)), nzp=Math.max(-175,Math.min(175,ctl.target.z+dz)); dx=nxp-ctl.target.x; dz=nzp-ctl.target.z;
+    ctl.target.x+=dx; ctl.target.z+=dz; cam.position.x+=dx; cam.position.z+=dz; }
+  if(now-GM.t<90) return; const slow=!GM.th||now-GM.th>2000; GM.t=now; if(slow){ GM.th=now; gmHud(); }
+  /* zone name: the nearest department / place under the camera target */
+  let best=null, bd=1e9; D.districts.forEach(d=>{ const q=Math.hypot(d.x-ctl.target.x,d.z-ctl.target.z); if(q<bd){ bd=q; best={id:d.id,n:d.name,p:d.place,c:d.color}; } });
+  Object.entries(PLACES).forEach(([id,p])=>{ const q=Math.hypot(p.at[0]-ctl.target.x,p.at[2]-ctl.target.z); if(q<bd){ bd=q; best={id,n:p.name,p:p.place,c:p.color}; } });
+  const zid=best&&bd<46?best.id:null; if(zid!==GM.zone){ GM.zone=zid; const z=document.getElementById('gmZone'); clearTimeout(GM.zt);
+    if(zid){ z.querySelector('b').textContent=best.n; z.querySelector('span').textContent=best.p; z.style.setProperty('--zc',best.c); z.classList.add('on'); GM.zt=setTimeout(()=>z.classList.remove('on'),4200); } else z.classList.remove('on'); }
+  /* radar: camera heading is up, 1 px = 1/k world units */
+  const g=GM.g, S=424, C=S/2, R=C-6, RANGE=115, k=R/RANGE, tx=ctl.target.x, tz=ctl.target.z, P=(x,z)=>{ const dx=x-tx, dz=z-tz; return [C+(dx*rx+dz*rz)*k, C-(dx*f.x+dz*f.z)*k]; };
+  g.clearRect(0,0,S,S); g.save(); g.beginPath(); g.arc(C,C,R+4,0,7); g.clip(); g.fillStyle='#14121cd9'; g.fillRect(0,0,S,S);
+  g.strokeStyle='#ffffff14'; g.lineWidth=2; for(let q=-200;q<=200;q+=40){ let a=P(q,-200), b=P(q,200); g.beginPath(); g.moveTo(a[0],a[1]); g.lineTo(b[0],b[1]); g.stroke(); a=P(-200,q); b=P(200,q); g.beginPath(); g.moveTo(a[0],a[1]); g.lineTo(b[0],b[1]); g.stroke(); }
+  D.districts.forEach(d=>{ const L=LAYOUT[d.landmark]||{r:20}, p=P(d.x,d.z); g.beginPath(); g.arc(p[0],p[1],(L.r+5)*k,0,7); g.fillStyle=d.color+'40'; g.fill(); g.lineWidth=3; g.strokeStyle=d.color; g.stroke(); });
+  Object.values(PLACES).forEach(pl=>{ const p=P(pl.at[0],pl.at[2]); g.fillStyle=pl.color; g.fillRect(p[0]-7,p[1]-7,14,14); g.strokeStyle='#0b0a10'; g.lineWidth=2; g.strokeRect(p[0]-7,p[1]-7,14,14); });
+  LIFE.forEach(L=>{ if(!L.pos) return; const p=P(L.pos.x,L.pos.y); g.beginPath(); g.arc(p[0],p[1],L.a.state==='running'?6:4.5,0,7); g.fillStyle=(ST[L.a.state]||ST.off)[1]; g.fill(); g.lineWidth=1.5; g.strokeStyle='#0b0a10'; g.stroke(); });
+  /* districts out of range stick to the rim, so you always know where to go */
+  D.districts.forEach(d=>{ const p=P(d.x,d.z), dx=p[0]-C, dy=p[1]-C, q=Math.hypot(dx,dy); if(q<=R-10) return; const ex=C+dx/q*(R-9), ey=C+dy/q*(R-9); g.beginPath(); g.arc(ex,ey,9,0,7); g.fillStyle=d.color; g.fill(); g.lineWidth=2.5; g.strokeStyle='#fff'; g.stroke(); });
+  g.restore();
+  g.beginPath(); g.moveTo(C,C-15); g.lineTo(C+11,C+12); g.lineTo(C,C+6); g.lineTo(C-11,C+12); g.closePath(); g.fillStyle='#fff'; g.fill(); g.lineWidth=3; g.strokeStyle='#0b0a10'; g.stroke();
+  { const nx2=C+(-rz)*(R-4), ny2=C-(-f.z)*(R-4); g.beginPath(); g.arc(nx2,ny2,15,0,7); g.fillStyle='#0b0a10'; g.fill(); g.fillStyle='#fff'; g.font='800 19px Manrope,sans-serif'; g.textAlign='center'; g.textBaseline='middle'; g.fillText('N',nx2,ny2+1); } }
+window.__game={set:on=>gmSet(on), on:()=>GM.on};
 applyTOD(todOf(effHour())); recompute(true);
 /* §2.4: a record younger than 2 h plays live; else the last 24 h replay as «Kun xronikasi» (desktop only — on the phone by the button) */
 if(GOV && !MOBILE && !/[?&]noscene/.test(location.search)){ const now=Date.now(), live=G.chronicle.filter(c=>SCENE_T.has(c.type) && c.type!=='hisobot' && now-tIso(c.at)>=0 && now-tIso(c.at)<72e5).slice(-1)[0];
