@@ -64,7 +64,6 @@ body.in-office .hud,body.in-office .top,body.in-office .legend,body.in-office .h
 .vts{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px}
 .vt{font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;border:1px solid var(--c);color:#fff3dc}
 .legend .md{color:#fff3dc}
-@media(min-width:701px){.hud{max-width:min(800px,70vw)}}
 .fail{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 40%,#2a211a,#140f0c);text-align:center;padding:24px}
 .fail.on{display:flex}.fail h2{font-size:22px;margin:10px 0 8px}.fail p{font-size:14px;color:#ffe9c9;max-width:340px;margin:0 auto 18px;line-height:1.45}
 body[data-tod=night] .vig{background:radial-gradient(ellipse at 50% 45%,transparent 45%,#05081599 100%)}
@@ -124,11 +123,49 @@ body[data-tod=night] .hud .eb{color:#7fe9df}
 .grab,.msheet,#menuBtn,.tl-s,.sump{display:none}
 .hrow{display:contents}
 .btn .ic+.tx{margin-left:.35em}
+/* v7 (2026-11-20): less text. Status = one card of icon pills, departments = filter row, places + legend behind buttons,
+   3D labels never sit under the UI or over each other (desktop too), district border lights up for the chosen department */
+.hud{left:max(16px,env(safe-area-inset-left,0px));top:max(14px,env(safe-area-inset-top,0px));max-width:min(860px,calc(100vw - 32px))}
+.hcard{pointer-events:auto;display:inline-block;max-width:min(620px,calc(100vw - 440px));background:#14100cc9;border:1px solid #ffffff1f;border-radius:16px;padding:10px 14px 11px;backdrop-filter:blur(10px);box-shadow:0 8px 30px #0006}
+.hud h1{font-size:20px;margin:0}
+.hud p{font-size:12px;color:#c7b58a;margin-top:1px;text-shadow:none}
+.hrow{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;align-items:center}
+.hrow .modes,.hrow .gov{display:contents}
+.modes,.gov,.prl{margin-top:0}
+.mc,.gc,.prl{font-size:12px;padding:3px 9px;background:#ffffff0f;backdrop-filter:none}
+.gc .gl,.prl small{display:none}
+.hsep{flex:0 0 auto;width:1px;height:16px;background:#ffffff26;margin:0 3px}
+.dfil{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;pointer-events:auto}
+.dchip{display:inline-flex;align-items:center;font-size:12px;font-weight:700;padding:6px 11px;border-radius:999px;background:#14100cc9;border:1px solid #ffffff2a;backdrop-filter:blur(8px);cursor:pointer;color:#fff3dc;white-space:nowrap;user-select:none}
+.dchip i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.dchip b{font-weight:800;color:#c7b58a;margin-left:6px}
+.dchip:hover{border-color:#ffffff66}
+.dchip.on{background:var(--c,#fff6e8);border-color:#fff9;color:#14100c}.dchip.on b{color:#14100c;opacity:.7}.dchip.on i{background:#14100c!important}
+.lbl.thin,.lbl.fo,body.fil .lbl.pl,body.fil .lbl.gvb,body.fil .lbl.hand,body.fil .lbl.fd{visibility:hidden!important;pointer-events:none!important}
+.lbl.d small{display:none}.lbl.d:hover small,.lbl.d.sel small{display:block}
+.lbl.d.sel{border-color:#19d3c5;box-shadow:0 0 0 2px #19d3c544}.lbl.a.sel{opacity:1}
+.pop{position:fixed;right:16px;top:62px;z-index:7;width:min(340px,calc(100vw - 32px));background:#1b1612f5;border:1px solid #d9a44155;border-radius:16px;padding:12px;backdrop-filter:blur(10px);box-shadow:0 18px 60px #000a;display:none}
+.pop.on{display:block;animation:up .2s ease}
+.pop .chips{margin:0;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.pop .chip{border-radius:10px;background:#ffffff0d;padding:8px 10px}
+body.emb .top a.btn{display:none}
+.hint{transition:opacity .6s}.hint.gone{opacity:0;pointer-events:none}
+@media (min-width:701px) and (min-height:481px){
+  .legend{display:none;left:max(16px,env(safe-area-inset-left,0px));bottom:16px;flex-direction:column;gap:7px;max-width:min(380px,calc(100vw - 32px));background:#1b1612f5;border:1px solid #d9a44155;border-radius:16px;padding:12px 14px;backdrop-filter:blur(10px);box-shadow:0 18px 60px #000a;text-shadow:none;z-index:7;font-size:12px}
+  .legend.on{display:flex}
+  .toast{top:auto;bottom:54px}
+  .top{right:max(16px,env(safe-area-inset-right,0px));top:max(14px,env(safe-area-inset-top,0px))}
+}
+@media (min-width:701px) and (max-width:1280px){.top .btn.ghost .ic+.tx{display:none}.hcard{max-width:calc(100vw - 350px)}}
 @media (max-width:700px),(max-height:480px){
   :root{--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);--sal:env(safe-area-inset-left,0px);--sar:env(safe-area-inset-right,0px)}
   /* top bar: one line (title + status pill); the pill expands one scrollable row of status / government / prayer pills */
   .hud{left:calc(10px + var(--sal));right:calc(10px + var(--sar));top:calc(8px + var(--sat));max-width:none}
-  .hud::before{content:'';position:fixed;left:0;right:0;top:0;height:calc(var(--sat) + 84px);background:linear-gradient(#0d0a08d9,#0d0a0800);z-index:-1;pointer-events:none}
+  .hcard{display:block;max-width:none;background:none;border:0;border-radius:0;padding:0;backdrop-filter:none;box-shadow:none;pointer-events:none}
+  .dfil{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:6px calc(-10px - var(--sar)) 0 calc(-10px - var(--sal));padding:0 10px 2px;overscroll-behavior-x:contain}
+  .dfil::-webkit-scrollbar{display:none}.dchip{flex:0 0 auto;min-height:38px;font-size:13px;padding:0 13px}
+  #plBtn,#lgBtn,.pop{display:none!important}
+  .hud::before{content:'';position:fixed;left:0;right:0;top:0;height:calc(var(--sat) + 128px);background:linear-gradient(#0d0a08d9,#0d0a0800);z-index:-1;pointer-events:none}
   .hud .eb,#sum,.legend,.hint{display:none}
   .tl{display:flex;align-items:center;gap:8px;justify-content:space-between}
   .hud h1{font-size:17px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
@@ -176,9 +213,7 @@ body[data-tod=night] .hud .eb{color:#7fe9df}
   #mleg .legend{display:flex;position:static;flex-direction:column;gap:8px;max-width:none;font-size:13px;text-shadow:none;transform:none}
   #mleg .legend #lgn,#mleg .legend #lg6{font-size:12px!important}
   /* 3D labels: readable, thinned by JS (collisions / caps / sheet open) */
-  .lbl.thin{visibility:hidden!important;pointer-events:none!important}
-  .lbl.d{font-size:13px;padding:5px 10px}.lbl.d small{display:none}.lbl.d.sel small{display:block;font-size:12px}
-  .lbl.d.sel{border-color:#19d3c5;box-shadow:0 0 0 2px #19d3c544}
+  .lbl.d{font-size:13px;padding:5px 10px}.lbl.d.sel small{font-size:12px}
   .lbl.a,.lbl.lm,.lbl.bub,.lbl.gvb,.lbl.hand{font-size:12px}.lbl.a.sel{opacity:1}.lbl.a .pn{font-size:12px}
   .lbl.bub.say{font-size:12px;max-width:220px}
   .toast{top:calc(var(--tb,64px) + 6px);bottom:auto;font-size:13px}
@@ -216,7 +251,7 @@ body[data-tod=night] .hud .eb{color:#7fe9df}
 <canvas id="c"></canvas><div class="vig"></div>
 <div class="fail" id="fail"><div><div style="font-size:46px">🏙</div><h2>Город агентов не открылся</h2><p>Этому браузеру не хватает 3D (WebGL) или он устарел. Открой ссылку в Safari или Chrome — там город работает.</p><a class="btn" href="index.html#agents" target="_top" style="text-decoration:none">← JOS</a> <a class="btn ghost" href="" style="text-decoration:none;margin-left:6px">Ещё раз</a></div></div>
 <div class="hud" id="hud">
-  <div class="eb">Jay OS · Agents House</div>
+  <div class="hcard">
   <div class="tl"><h1>Город агентов<span class="h1x"> · Ташкент</span></h1><button class="sump" id="sump" type="button" aria-expanded="false" aria-controls="hrow" title="Статус города"></button></div>
   <p id="sum"></p>
   <div class="hrow" id="hrow">
@@ -224,14 +259,16 @@ body[data-tod=night] .hud .eb{color:#7fe9df}
   <div class="gov" id="gov"></div>
   <div class="prl" id="pray" title="расчётное время намаза для Ташкента: MWL 18°/17°, Asr по ханафи"></div>
   </div>
-  <div class="chips" id="chips"></div>
+  </div>
+  <div class="dfil" id="dfil" role="toolbar" aria-label="Фильтр по департаментам"></div>
 </div>
-<div class="top" id="topbar"><button class="btn ghost mb" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu"><span class="ic">☰</span><span class="tx">Меню</span></button><button class="btn ghost" id="prdemo" type="button" title="Показать окно намаза сжато: проход 15 с, стояние 20 с, возвращение 15 с">🕌 демо</button><button class="btn ghost" id="tod" type="button" title="Время суток: авто по Ташкенту или демо">авто</button><button class="btn ghost" id="tour" type="button"><span class="ic">▶</span><span class="tx">Облёт</span></button><button class="btn ghost" id="home" type="button"><span class="ic">⌂</span><span class="tx"><span class="tl-l">Весь город</span><span class="tl-s">Город</span></span></button><a class="btn" href="index.html#agents" target="_top" style="text-decoration:none"><span class="ic">←</span><span class="tx">JOS</span></a></div>
+<div class="pop" id="plPop" role="dialog" aria-label="Места города"><div class="chips" id="chips"></div></div>
+<div class="top" id="topbar"><button class="btn ghost mb" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu"><span class="ic">☰</span><span class="tx">Меню</span></button><button class="btn ghost" id="plBtn" type="button" title="Места города: Saroy, Token Street, махалля, семьи…"><span class="ic">📍</span><span class="tx">Места</span></button><button class="btn ghost" id="lgBtn" type="button" title="Легенда: что значат цвета и значки"><span class="ic">?</span></button><button class="btn ghost" id="prdemo" type="button" title="Демо намаза, сжато: проход 15 с, стояние 20 с, возвращение 15 с"><span class="ic">🕌</span><span class="tx">демо</span></button><button class="btn ghost" id="tod" type="button" title="Время суток: авто по Ташкенту или демо">авто</button><button class="btn ghost" id="tour" type="button"><span class="ic">▶</span><span class="tx">Облёт</span></button><button class="btn ghost" id="home" type="button"><span class="ic">⌂</span><span class="tx"><span class="tl-l">Весь город</span><span class="tl-s">Город</span></span></button><a class="btn" href="index.html#agents" target="_top" style="text-decoration:none"><span class="ic">←</span><span class="tx">JOS</span></a></div>
 <div class="panel" id="sheet" role="dialog" aria-label="Карточка"><div class="grab" aria-hidden="true"><i></i></div><button class="sx" type="button" aria-label="Закрыть">✕</button><div class="pbody" id="panel"></div></div>
-<div class="msheet" id="menu" role="dialog" aria-label="Меню города"><div class="grab" aria-hidden="true"><i></i></div><button class="sx" type="button" aria-label="Закрыть меню">✕</button><div class="mbody" id="mbody"><div class="mh"><b>Город агентов · Ташкент</b><span id="msum"></span></div><div class="mt">Районы и места</div><div id="mchips"></div><div class="mt">Сейчас</div><div id="mnow"></div><div class="mt">Легенда</div><div id="mleg"></div></div></div>
+<div class="msheet" id="menu" role="dialog" aria-label="Меню города"><div class="grab" aria-hidden="true"><i></i></div><button class="sx" type="button" aria-label="Закрыть меню">✕</button><div class="mbody" id="mbody"><div class="mh"><b>Город агентов · Ташкент</b><span id="msum"></span></div><div class="mt">Места</div><div id="mchips"></div><div class="mt">Сейчас</div><div id="mnow"></div><div class="mt">Легенда</div><div id="mleg"></div></div></div>
 <div class="legend"><span><i style="background:#22e07a"></i>работает сейчас</span><span><i style="background:#19d3c5"></i>по расписанию</span><span><i style="background:#f5a623"></i>разовая, сделано</span><span><i style="background:#8b8f99"></i>выключен</span><span class="md">🏢 в офисе · 🚶 идёт · 🍽 ест токены · 🏠 дома · 😴 спит · 🫖 сделано · 🕌 Xo'ja aka на намазе</span><span class="md" id="lgf">цвет калитки и бейджа = семья</span><span id="chk"></span><span class="md" id="lg5" style="display:none">🏛 Президент · 🏫 в исправительном центре · 🎓 вышел (24 ч) · P — бейдж действующего президента</span><span id="lgn" style="width:100%;font-size:10.5px;color:#c7b58a">Имена агентов вымышленные · это 🤖 агенты, не люди</span><span id="lg6" style="width:100%;font-size:10.5px;color:#c7b58a;display:none">Выговоры, приговоры и выборы — из журнала CEO-агента, ничего не выдумано</span></div>
 <div class="toast" id="toast"></div>
-<div class="hint">Крути мышью / пальцем · колесо — ближе · клик по зданию — офис · по роботу — что он сейчас делает</div>
+<div class="hint">Клик по зданию — офис · по роботу — что он делает</div>
 <div class="office" id="office"><div class="bar"><div><h2 id="oname"></h2><p id="odesc"></p></div><button class="btn" id="oback">← В город</button></div></div>
 
 <script type="module" onerror="window.__cityFail&&__cityFail()">
@@ -249,6 +286,7 @@ const cnt = s => D.agents.filter(a=>a.state===s).length;
 document.getElementById('sum').textContent = `${D.agents.length} агентов в ${D.districts.length} районах: ${cnt('running')} работают сейчас, ${cnt('ready')} по расписанию.`;
 document.getElementById('chk').textContent = 'проверено ' + D.checked;
 const MOBILE = Math.min(innerWidth, innerHeight) < 700;
+if(self!==top) document.body.classList.add('emb');   /* v7: opened inside JOS (iframe) — the «← JOS» button is not needed there */
 
 /* ---------- v4 personas (spec §1–§2): names, families, relations. Fictional names; always labelled «🤖 агент» ---------- */
 const PD = D.personas && Array.isArray(D.personas.personas) && D.personas.personas.length ? D.personas : null, HASP = !!PD;
@@ -592,9 +630,11 @@ D.districts.forEach(d=>{
   const g=new THREE.Group(); g.position.set(d.x,0,d.z); scene.add(g); districtGroups[d.id]={g,d}; const L=LAYOUT[d.landmark]||{r:20,a0:0,a1:2,h:30};
   const pad=add(g,new THREE.CylinderGeometry(L.r+5,L.r+5,.08,64),mat('#e9dcc0',{roughness:.95}),0,.04,0,false);
   const rim=add(g,new THREE.TorusGeometry(L.r+5,.2,6,96),new THREE.MeshBasicMaterial({color:d.color,transparent:true,opacity:.75}),0,.22,0,false); rim.rotation.x=Math.PI/2;
+  const band=add(g,new THREE.RingGeometry(L.r+5,L.r+8,96),new THREE.MeshBasicMaterial({color:d.color,transparent:true,opacity:.13,depthWrite:false}),0,.13,0,false); band.rotation.x=-Math.PI/2;   /* v7: department border */
+  Object.assign(districtGroups[d.id],{rim,band});
   LM[d.landmark](g);
   const list=D.agents.filter(a=>a.district===d.id);
-  const lab=label(`${esc(d.name)}<small>${esc(d.place)} · ${list.length} агент.</small>`,'d',()=>focusDistrict(d.id)); lab.position.set(0,L.h,0); g.add(lab); lab.element.dataset.k=d.id;
+  const lab=label(`${esc(d.name)}<small>${esc(d.place)} · ${list.length} агент.</small>`,'d',()=>focusDistrict(d.id)); lab.position.set(0,L.h,0); g.add(lab); lab.element.dataset.k=d.id; lab.element.dataset.dp=d.id;
   const span=(L.a1-L.a0)*Math.PI, full=span>=Math.PI*1.99;
   list.forEach((a,i)=>{
     const ang=L.a0*Math.PI + (full ? i/list.length*span + .3 : (list.length>1 ? i/(list.length-1)*span : span/2)), x=Math.cos(ang)*L.r, z=Math.sin(ang)*L.r;
@@ -608,16 +648,16 @@ D.districts.forEach(d=>{
     if(i%2===0) ribbedDome(o,1.1,0,1.0+h,0,.4); else add(o,new THREE.BoxGeometry(1.2,1,1.2),mat('#efe4cc'),0,1.5+h,0);
     body.userData.agent=a; pickables.push(body);
     if(a.state!=='off'){ const bm=new THREE.Mesh(new THREE.CylinderGeometry(.4,.4,34,8,1,true),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:a.state==='running'?.38:.14,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));
-      bm.position.set(0,h+17,0); o.add(bm); beams.push({bm,run:a.state==='running',ph:Math.random()*6,id:a.id}); }
-    const al=label(`${a.emoji} ${esc(a.name)}<span class="st"></span>${HASP?`<span class="pn">${esc(fullName(PER[a.id]))} · 🤖 агент</span>`:''}`,'a',()=>openAgent(a)); al.position.set(0,h+2.4,0); o.add(al); al.element.dataset.ag=a.id; agentLabels.push({al,o,d:d.id,id:a.id});
+      bm.position.set(0,h+17,0); o.add(bm); beams.push({bm,run:a.state==='running',ph:Math.random()*6,id:a.id,d:d.id}); }
+    const al=label(`${a.emoji} ${esc(a.name)}<span class="st"></span>${HASP?`<span class="pn">${esc(fullName(PER[a.id]))} · 🤖 агент</span>`:''}`,'a',()=>openAgent(a)); al.position.set(0,h+2.4,0); o.add(al); al.element.dataset.ag=a.id; al.element.dataset.dp=d.id; agentLabels.push({al,o,d:d.id,id:a.id});
     if(HASP){ const el=al.element; let tm=null; el.addEventListener('pointerdown',e=>{ if(e.pointerType==='mouse') return; tm=setTimeout(()=>{ el.classList.add('hold'); el._held=true; setTimeout(()=>el.classList.remove('hold'),2600); },450); });
       ['pointerup','pointerleave','pointercancel'].forEach(k=>el.addEventListener(k,()=>clearTimeout(tm))); el.addEventListener('click',e=>{ if(el._held){ el._held=false; e.stopImmediatePropagation(); } },true); }
     OFFICE[a.id]={o, body, d, r:L.r, ang, h, st:al.element.querySelector('.st')};
   });
 });
 /* small landmark captions (appear when close) */
-[['Телебашня · 375 м','content',0,70,0],['Гостиница «Узбекистан»','board',0,18,-40],['Куранты','board',-23,25,-15],['Дворец форумов','board',34,16,-2],['Nest One','sales',0,62,-6],['Чорсу','assist',0,17,0],['Кукельдаш','assist',0,16,-26],['Humo Arena','ops',0,13,0],['IT Park','lab',0,15,-2]].forEach(([t,did,x,y,z])=>{ const dg=districtGroups[did]; if(!dg) return; const l=label(esc(t),'lm'); l.position.set(x,y,z); dg.g.add(l); lmLabels.push({l,did}); });
-[['Минор','minor',-128,24,44],['Театр Навои','navoi',152,16,-76]].forEach(([t,_,x,y,z])=>{ const l=label(esc(t),'lm'); l.position.set(x,y,z); scene.add(l); lmLabels.push({l,did:null,p:new THREE.Vector3(x,y,z)}); });
+[['Телебашня · 375 м','content',0,70,0],['Гостиница «Узбекистан»','board',0,18,-40],['Куранты','board',-23,25,-15],['Дворец форумов','board',34,16,-2],['Nest One','sales',0,62,-6],['Чорсу','assist',0,17,0],['Кукельдаш','assist',0,16,-26],['Humo Arena','ops',0,13,0],['IT Park','lab',0,15,-2]].forEach(([t,did,x,y,z])=>{ const dg=districtGroups[did]; if(!dg) return; const l=label(esc(t),'lm'); l.position.set(x,y,z); dg.g.add(l); l.element.dataset.dp=did; lmLabels.push({l,did}); });
+[['Минор','minor',-128,24,44],['Театр Навои','navoi',152,16,-76]].forEach(([t,_,x,y,z])=>{ const l=label(esc(t),'lm'); l.position.set(x,y,z); scene.add(l); l.element.dataset.dp='-'; lmLabels.push({l,did:null,p:new THREE.Vector3(x,y,z)}); });
 
 /* golden data arcs: every district -> server (Humo Arena), with flying light particles */
 const arcs=[]; { const srv=D.districts.find(d=>d.id==='ops');
@@ -1141,7 +1181,7 @@ const LIFE=ALLA.map((a,i)=>({a, i, v:!!a.v, per:PER[a.id], fav:FAV[a.cost] ? FAV
 VEN.forEach(v=>{ LIFE.filter(L=>L.fav===v.id).sort((x,y)=>x.a.id.localeCompare(y.a.id)).forEach((L,k)=>{ L.seat=v.seats[k%v.seats.length]; }); });
 const LBY={}; LIFE.forEach(L=>LBY[L.a.id]=L);
 LIFE.forEach(L=>{ L.office=officeSpot(L.a); L.pos=V2(0,0); L.yaw=0; L.path=null; L.s=0; L.speed=BRISK; L.phase=Math.random()*6; L.mode=null; L.at=null; L.target=null; L.eatT=Math.random()*9;
-  L.bub=label('','bub',()=>openAgent(L.a,'robot')); scene.add(L.bub); });
+  L.bub=label('','bub',()=>openAgent(L.a,'robot')); L.bub.element.dataset.dp=L.a.district||'-'; scene.add(L.bub); });
 /* §3.2 rivals (chess / nardy), from persona links; one pair once */
 const RIVALS=[]; if(HASP){ const seen=new Set(); LIFE.forEach(L=>(L.per.links||[]).forEach(l=>{ const kind=/шахмат/.test(l.rel)?'chess':/нард/.test(l.rel)?'narda':null, o=LBY[l.id]; if(!kind||!o) return;
   const key=[L.a.id,o.a.id].sort().join('|'); if(seen.has(key)) return; seen.add(key); RIVALS.push({A:L, B:o, kind, on:false}); })); }
@@ -1415,14 +1455,14 @@ function todButton(){ const t=todOf(effHour()), d=new Date(Date.now()+TZ_MS), cl
   document.getElementById('tod').innerHTML = todMode==='auto' ? `<span class="ic">${TOD_ICON[t]}</span><span class="tx"><span class="tl-l">авто · </span>${clock}</span>` : `<span class="ic">${TOD_ICON[todMode]}</span><span class="tx">${TOD_RU[todMode]}<span class="tl-l"> · демо</span></span>`; }
 { const b=document.getElementById('prdemo'); if(!HASP) b.style.display='none'; if(MOBILE) b.textContent='🕌 Демо намаза · 50 с'; b.onclick=()=>{ if(window.__ui) __ui.menu(false); startDemo(); }; }
 document.getElementById('tod').onclick=()=>{ todMode=TOD_ORDER[(TOD_ORDER.indexOf(todMode)+1)%4]; applyTOD(todOf(effHour())); recompute(); };
-function updateHud(){ const c=COUNTS; document.getElementById('sum').textContent = document.getElementById('msum').textContent = `${D.agents.length} агентов в ${D.districts.length} районах · данные на ${String(D.checked||'').slice(11)||'—'}`;
+function updateHud(){ const c=COUNTS; document.getElementById('sum').textContent = document.getElementById('msum').textContent = `${D.agents.length} агентов · ${D.districts.length} департаментов · данные ${String(D.checked||'').slice(11)||'—'}`;
   document.getElementById('sump').innerHTML = `${MODE.work[0]} ${c.work||0} · ${MODE.sleep[0]} ${c.sleep||0}${GOV?` · 🏛 ${PRES.approval??'—'} %`:''}<span class="cv">▾</span>`;
-  document.getElementById('modes').innerHTML = [['work','работают'],['walk','идут'],['eat','едят'],['home','дома'],['sleep','спят']].map(([k,t])=>`<span class="mc" style="--c:${MODE[k][2]}">${MODE[k][0]} <b>${c[k]||0}</b> ${t}</span>`).join('') + (c.off?`<span class="mc" style="--c:#8b8f99">⏻ <b>${c.off}</b> выкл</span>`:'') + (c.namoz?`<span class="mc" style="--c:${MODE.namoz[2]}">🕌 намоз: <b>${c.namoz}</b></span>`:'');
+  document.getElementById('modes').innerHTML = [['work','работают'],['walk','идут'],['eat','едят токены'],['home','дома'],['sleep','спят']].filter(([k])=>c[k]).map(([k,t])=>`<span class="mc" style="--c:${MODE[k][2]}" title="${t}: ${c[k]}">${MODE[k][0]} <b>${c[k]}</b></span>`).join('') + (c.off?`<span class="mc" style="--c:#8b8f99" title="выключены: ${c.off}">⏻ <b>${c.off}</b></span>`:'') + (c.namoz?`<span class="mc" style="--c:${MODE.namoz[2]}" title="на намазе: ${c.namoz}">🕌 <b>${c.namoz}</b></span>`:'') + (GOV?'<i class="hsep"></i>':'');   /* v7: icon + number, the word lives in the tooltip; zeroes are not shown */
   const pr=document.getElementById('pray'), P=PRN, ph=demoPhase();
   if(!HASP || !P) pr.style.display='none';
   else if(ph) pr.innerHTML = `🕌 Демо намаза · ${ph==='go'?'идут в мечеть':ph==='stand'?'стоят в ряду':'возвращаются'}<small>сжато: 15 с · 20 с · 15 с</small>`;
-  else if(P.cur){ pr.innerHTML = `🕌 Сейчас ${esc(P.cur.name)} · до ${hhmm(P.cur.end)}<small>${esc(P.cur.lat)} · расчётное, MWL/ханафи</small>`; pr.title=`${P.cur.lat}: ${hhmm(P.cur.start)}–${hhmm(P.cur.end)}`; }
-  else if(P.next){ pr.innerHTML = `🕌 Следующий намоз: ${esc(P.next.name)} ≈ ${hhmm(P.next.start)}${P.tomorrow?' (завтра)':''}<small>расчётное, MWL/ханафи</small>`;
+  else if(P.cur){ pr.innerHTML = `🕌 ${esc(P.cur.name)} · до ${hhmm(P.cur.end)}<small>${esc(P.cur.lat)} · расчётное, MWL/ханафи</small>`; pr.title=`${P.cur.lat}: ${hhmm(P.cur.start)}–${hhmm(P.cur.end)}`; }
+  else if(P.next){ pr.innerHTML = `🕌 ${esc(P.next.name)} ${hhmm(P.next.start)}${P.tomorrow?' · завтра':''}<small>расчётное, MWL/ханафи</small>`;
     pr.title = P.today.map(w=>`${w.name} (${w.lat}) ${hhmm(w.start)}`).join(' · ') + ' — Ташкент, MWL 18°/17°, Asr ханафи'; }
   if(GOV){ const g=document.getElementById('gov'), w=WXN[wxKind()]||WXN.clear;          /* §6.3: 🏛 Davron aka · 83 % · 🏫 0 · 🌤 ясно · 🗳 27.11 */
     g.innerHTML=`<span class="gc" data-g="saroy" style="--c:${apCol(PRES.approval)}" title="рейтинг доверия Президента">🏛 <span class="gl">${esc(PRES.name)} · </span><b>${PRES.approval??'—'} %</b></span><span class="gc" data-g="tuzatish" style="--c:#7fc8a9" title="в Tuzatish markazi">🏫 <b>${INM().length}</b>${SC&&SC.inm?' <span class="gl">demo</span>':''}</span><span class="gc" data-g="gazeta" style="--c:#f0e0b0" title="погода настроения: доля ошибок за 24 ч">${w[0]} <span class="gl">${w[1]}${WXD?' · demo':''}</span></span><span class="gc" data-g="saylov" style="--c:#3fb6ff" title="следующие выборы">🗳 <b>${dd5(G.next_election)}</b></span>`;
@@ -1433,7 +1473,7 @@ const PLACES={ token:{name:'Token Street', place:'гастро-квартал у
   mahalla:{name:'Махалля агентов', place:HN+' домов · у IT Park', color:'#d08a4a', at:[73,9,70], view:[78,50,132,73,0,70], m:[78,82,168]},
   bank:{name:'Token Bank', place:'банк токенов · у Tashkent City', color:'#e9c46a', at:[-70,21,-58], view:[-44,26,-20,-66,6,-56], m:[-34,40,2]} };
 Object.entries(PLACES).forEach(([id,p])=>{ const l=label(`${esc(p.name)}<small>${esc(p.place)}</small>`,'d pl',()=>focusPlace(id)); l.position.set(...p.at); scene.add(l); p.lab=l; l.element.dataset.k=id; });
-function focusPlace(id){ const p=PLACES[id], v=MOBILE?p.m.concat(p.view.slice(3)):p.view; focused=id; document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.id===id));
+function focusPlace(id){ deptFx(null); const p=PLACES[id], v=MOBILE?p.m.concat(p.view.slice(3)):p.view; focused=id; document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.id===id));
   flyTo(new THREE.Vector3(v[0],v[1],v[2]), new THREE.Vector3(v[3],v[4],v[5])); showPlace(id); }
 function showPlace(id){ const p=PLACES[id]; let list=[], extra='';
   if(id==='token'){ list=LIFE.filter(L=>L.a._mode==='eat'); extra=VEN.filter(v=>v.tokens).map(v=>`<span class="vt" style="--c:${v.trim==='#ffffff'?v.body:v.trim}">${esc(v.name)} · ${v.eaters}</span>`).join('')+`<span class="vt" style="--c:#1fb2ad">Osh Markazi · казаны</span>`; }
@@ -1464,17 +1504,26 @@ window.__city={ setTOD:m=>{ todMode=m; applyTOD(todOf(effHour())); recompute(); 
 
 /* ---------- chips (district filter / fly-to) ---------- */
 const chips=document.getElementById('chips');
-D.districts.forEach(d=>{ const n=D.agents.filter(a=>a.district===d.id).length; const c=document.createElement('div'); c.className='chip'; c.dataset.id=d.id; c.innerHTML=`<i style="background:${d.color}"></i>${esc(d.name)} · ${n}`; c.onclick=()=>focusDistrict(d.id); chips.appendChild(c); });
+/* v7: departments = the districts. One row of filter chips: click = only this department's labels, beams and border stay bright, camera flies there, the card lists its agents */
+const dfil=document.getElementById('dfil'), DSHORT={board:'Совет',sales:'Продажи',content:'Маркетинг',assist:'Ассистенты',ops:'Сервер',lab:'Лаборатория'};
+{ const c=document.createElement('div'); c.className='dchip on'; c.dataset.id=''; c.innerHTML=`Все<b>${D.agents.length}</b>`; c.onclick=()=>document.getElementById('home').click(); dfil.appendChild(c); }
+D.districts.forEach(d=>{ const n=D.agents.filter(a=>a.district===d.id).length; const c=document.createElement('div'); c.className='dchip'; c.dataset.id=d.id; c.style.setProperty('--c',d.color); c.title=`${d.name} · ${d.place}`;
+  c.innerHTML=`<i style="background:${d.color}"></i>${esc(DSHORT[d.id]||d.name)}<b>${n}</b>`; c.onclick=()=>DEPT===d.id?document.getElementById('home').click():focusDistrict(d.id); dfil.appendChild(c); });
 if(HASP){ const c=document.createElement('div'); c.className='chip'; c.dataset.id='families'; c.innerHTML='👨‍👩‍👧 Семьи'; c.onclick=()=>showFamilies(); chips.prepend(c); }
 [['token','🍽 Token Street'],['mahalla','🏡 Махалля'],['bank','🏦 Token Bank']].forEach(([id,t])=>{ const c=document.createElement('div'); c.className='chip'; c.dataset.id=id; c.innerHTML=`<i style="background:${PLACES[id].color}"></i>${t}`; c.onclick=()=>focusPlace(id); chips.appendChild(c); });
 
 /* ---------- camera flights ---------- */
-let fly=null, focused=null;
+let fly=null, focused=null, DEPT=null;
+function deptFx(id){ DEPT=id||null; document.body.classList.toggle('fil',!!DEPT);
+  document.querySelectorAll('.dchip').forEach(c=>{ const on=(c.dataset.id||null)===DEPT; c.classList.toggle('on',on); if(on&&DEPT&&c.scrollIntoView) try{ c.scrollIntoView({block:'nearest',inline:'center'}); }catch(_){} });
+  document.querySelectorAll('.lbl[data-dp]').forEach(e=>e.classList.toggle('fo',!!DEPT&&e.dataset.dp!==DEPT));
+  Object.values(districtGroups).forEach(x=>{ if(!x.rim) return; const on=DEPT===x.d.id; x.rim.material.opacity=on?1:DEPT?.16:.75; x.band.material.opacity=on?.4:DEPT?.03:.13; });
+  if(typeof THIN!=='undefined') THIN.t=0; }
 function flyTo(p,t,dur=1.6){ if(matchMedia('(prefers-reduced-motion: reduce)').matches) dur=.01; fly={p0:cam.position.clone(),t0:ctl.target.clone(),p,t,s:performance.now(),dur:dur*1000}; }
 const VIEW = { board:[0,34,62,0,6], city:[30,46,60,0,14], tvtower:[-26,44,66,0,22], chorsu:[18,34,58,0,5], humo:[0,34,58,0,4], itpark:[14,30,52,0,4] };
-function focusDistrict(id){ const {d}=districtGroups[id]; focused=id; document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.id===id));
+function focusDistrict(id){ const {d}=districtGroups[id]; focused=id; document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.id===id)); deptFx(id);
   const v=VIEW[d.landmark]||[26,30,34,0,4], k=MOBILE?1.7:1; flyTo(new THREE.Vector3(d.x+v[0]*k,v[4]+(v[1]-v[4])*k,d.z+v[2]*k), new THREE.Vector3(d.x,v[4],d.z)); showDistrict(d); }
-document.getElementById('home').onclick=()=>{ focused=null; document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); flyTo(HOME.p.clone(),HOME.t.clone()); panel.classList.remove('on'); };
+document.getElementById('home').onclick=()=>{ focused=null; deptFx(null); document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on')); flyTo(HOME.p.clone(),HOME.t.clone()); panel.classList.remove('on'); };
 let tourOn=false, tourI=0, tourT=null;
 document.getElementById('tour').onclick=()=>{ tourOn=!tourOn; document.getElementById('tour').innerHTML=tourOn?'<span class="ic">■</span><span class="tx">Стоп</span>':'<span class="ic">▶</span><span class="tx">Облёт</span>'; document.getElementById('tour').classList.toggle('on',tourOn); clearInterval(tourT);
   if(tourOn){ const TOUR=[...D.districts.map(d=>d.id),'token','mahalla','bank'], step=()=>{ const id=TOUR[tourI%TOUR.length]; PLACES[id]?focusPlace(id):focusDistrict(id); tourI++; }; step(); tourT=setInterval(step,5200); } };
@@ -1506,7 +1555,7 @@ function famCard(f, big){ const ms=famMembers(f);
   return `<div class="fam" style="--f:${f.color}"><div class="bar"></div><div class="bd"><div class="hd" data-fam="${esc(f.id)}">${esc(f.name)} <small>· ${esc(f.label)} · ${ms.length}</small></div>
     ${big ? `<div style="display:grid;gap:5px;margin-top:8px">${ms.map(id=>{ const L=LBY[id], m=AG[id]._mode||'home'; return `<div class="li" data-id="${esc(id)}">${avatar(id,'m',id===f.elder?' title="oqsoqol"':'')}<span style="flex:1;font-size:12.5px;font-weight:700">${esc(fullName(PER[id]))}${id===f.elder?' <span style="color:#ffd36a" title="oqsoqol — старший семьи">●</span>':''}<br><span style="font-weight:600;color:#c7b58a;font-size:11px">${PER[id].age} · ${AG[id].emoji} ${esc(AG[id].name)}</span></span><span style="font-size:11px;color:${MODE[m][2]}">${MODE[m][0]}</span></div>`; }).join('')}</div>`
       : `<div class="ms">${ms.map(id=>avatar(id,'m',` data-id="${esc(id)}" title="${esc(fullName(PER[id]))}${id===f.elder?' · oqsoqol':''}"`).replace('</span>', id===f.elder?'<i class="cr"></i></span>':'</span>')).join('')}</div>`}</div></div>`; }
-function showFamilies(fid){ if(!HASP) return; const list=Object.values(FAM).filter(f=>famMembers(f).length); panel.dataset.agent=''; focused='families';
+function showFamilies(fid){ if(!HASP) return; deptFx(null); const list=Object.values(FAM).filter(f=>famMembers(f).length); panel.dataset.agent=''; focused='families';
   document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.id==='families'));
   const one = fid && FAM[fid];
   panel.innerHTML = one ? `<div class="em">🏡</div><h3>${esc(one.name)}</h3><div style="color:#c7b58a;font-size:12px;margin-bottom:9px">${esc(one.label)} · дома №${Math.min(...famMembers(one).map(id=>AG[id].home+1))}–${Math.max(...famMembers(one).map(id=>AG[id].home+1))} в махалле · ● oqsoqol</div>${famCard(one,true)}
@@ -1595,8 +1644,8 @@ function toggleHud(on){ document.body.classList.toggle('hud-open',on); sump.setA
 sump.onclick=()=>toggleHud(!document.body.classList.contains('hud-open'));
 /* phone <-> desktop: move the chips, the legend and the prayer demo between the HUD and the menu */
 function uiLayout(){ PHONE=PHQ.matches; LAND=PHONE&&LNQ.matches; document.body.classList.toggle('ph',PHONE);
-  if(PHONE){ document.getElementById('mchips').appendChild(chipsEl); document.getElementById('mleg').appendChild(legendEl); document.getElementById('mnow').prepend(prdemoEl); }
-  else { hud.appendChild(chipsEl); document.body.insertBefore(legendEl,document.getElementById('toast')); topbar.insertBefore(prdemoEl,document.getElementById('tod')); setMenu(false); document.body.classList.remove('hud-open'); }
+  if(PHONE){ legendEl.classList.remove('on'); document.getElementById('mchips').appendChild(chipsEl); document.getElementById('mleg').appendChild(legendEl); document.getElementById('mnow').prepend(prdemoEl); }
+  else { document.getElementById('plPop').appendChild(chipsEl); document.body.insertBefore(legendEl,document.getElementById('toast')); topbar.insertBefore(prdemoEl,document.getElementById('tod')); setMenu(false); document.body.classList.remove('hud-open'); }
   measure(); if(sheetOn()) snapTo(portrait()?(['peek','half','full'].includes(UI.snap)?UI.snap:'half'):'full',false); else sheet.style.transform=''; THIN.t=0; }
 [PHQ,LNQ].forEach(q=>q.addEventListener?q.addEventListener('change',uiLayout):q.addListener(uiLayout));
 /* layers: office > menu > card > status row. Phone: one history entry while any layer is open (browser back), JOS_M.back for the Android app, Esc on desktop */
@@ -1605,7 +1654,7 @@ let hPushed=false, hIgnore=false;
 function layers(){ if(!PHONE||hIgnore) return; const open=anyLayer();   /* a back() is still travelling: popstate re-runs this */
   if(open&&!hPushed){ try{ history.pushState({acl:1},''); hPushed=true; }catch(_){} }
   else if(!open&&hPushed){ hPushed=false; hIgnore=true; history.back(); } }
-function closeTop(){ if(inOffice){ document.getElementById('oback').click(); return 1; } if(UI.menu){ setMenu(false); return 1; } if(sheetOn()){ closeSheet(); return 1; }
+function closeTop(){ if(!PHONE&&closePops()) return 1; if(inOffice){ document.getElementById('oback').click(); return 1; } if(UI.menu){ setMenu(false); return 1; } if(sheetOn()){ closeSheet(); return 1; }
   if(document.body.classList.contains('hud-open')){ toggleHud(false); return 1; } return 0; }
 addEventListener('popstate',()=>{ if(hIgnore){ hIgnore=false; layers(); return; } if(hPushed){ hPushed=false; closeTop(); setTimeout(layers,0); } });
 if(!window.JOS_M) window.JOS_M={ back:()=>closeTop() };
@@ -1622,12 +1671,14 @@ function viewOffset(dt){ let tx=0, ty=0;
   else if(v&&v.enabled) cam.clearViewOffset(); }
 /* 3D labels on the phone: selected first, then districts, government, agents, landmarks, bubbles; caps + no overlaps + never under the bars.
    With a card open only the selected place / agent (and speech in a running scene) stays. Runs ~4×/s, not per frame. */
-const THIN={t:0, on:false}, TCAP=[99,6,6,6,3,5];
-function thinLabels(now){ if(!PHONE){ if(THIN.on){ L2.domElement.querySelectorAll('.lbl').forEach(e=>{ e.classList.remove('thin','sel'); e.style.marginLeft=''; }); THIN.on=false; } return; }
+const THIN={t:0, on:false}, TCAP=[99,6,6,6,3,5], TCAPD=[99,14,10,18,8,12];   /* v7: desktop is thinned too (bigger caps) — nothing under the status card, the filter row, the buttons or an open card */
+function thinLabels(now){
   if(now-THIN.t<240) return; THIN.t=now; THIN.on=true;
-  const open=sheetOn()||UI.menu, ag=panel.dataset.agent, cx=innerWidth/2, cy=(UI.tb+innerHeight-UI.bb)/2, block=[hud.getBoundingClientRect(), topbar.getBoundingClientRect()], cand=[];
+  const open=PHONE&&(sheetOn()||UI.menu), ag=panel.dataset.agent, cx=innerWidth/2, cy=(UI.tb+innerHeight-UI.bb)/2, cand=[], TC=PHONE?TCAP:TCAPD, fil=!!DEPT;
+  const block = PHONE ? [hud.getBoundingClientRect(), topbar.getBoundingClientRect()] : [...document.querySelectorAll('.hcard,.dfil,#topbar,.pop.on,.legend.on,.toast.on')].map(e=>e.getBoundingClientRect());
   if(sheetOn()) block.push(sheet.getBoundingClientRect());
   for(const el of L2.domElement.children){ if(el.style.display==='none') continue; const c=el.classList, k=el.dataset.k, sel=!!((k&&k===focused)||(ag&&el.dataset.ag===ag));
+    if(c.contains('fo') || (fil && (c.contains('pl')||c.contains('gvb')||c.contains('hand')||c.contains('fd')))) continue;
     if(c.contains('sel')!==sel) c.toggle('sel',sel);
     if(!sel && (c.contains('a')||c.contains('lm')||c.contains('bub')) && !c.contains('show')){ if(c.contains('thin')) c.remove('thin'); continue; }
     const r = sel?0 : c.contains('d')?(c.contains('pl')?2:1) : c.contains('say')||c.contains('hand')||c.contains('gvb')?2 : c.contains('a')?3 : c.contains('lm')?4 : 5;
@@ -1638,16 +1689,25 @@ function thinLabels(now){ if(!PHONE){ if(THIN.on){ L2.domElement.querySelectorAl
     o.b={left:L+sh, right:Rr+sh, top:r.top, bottom:r.bottom}; o.dc=Math.hypot((L+Rr)/2+sh-cx, (r.top+r.bottom)/2-cy); });
   cand.sort((a,b)=>a.r-b.r||a.dc-b.dc);
   const ok=[], n=[0,0,0,0,0,0], hit=(a,b,p)=>a.left<b.right+p&&a.right>b.left-p&&a.top<b.bottom+p&&a.bottom>b.top-p;
-  for(const o of cand){ let hide = open ? !(o.r===0||o.say) : n[o.r]>=TCAP[o.r];
-    if(!hide) hide = o.b.left<0 || o.b.right>innerWidth || o.b.top<0 || block.some(b=>hit(o.b,b,0)) || ok.some(b=>hit(o.b,b,-3));
+  for(const o of cand){ let hide = open ? !(o.r===0||o.say) : n[o.r]>=TC[o.r];
+    if(!hide) hide = o.b.left<0 || o.b.right>innerWidth || o.b.top<0 || block.some(b=>hit(o.b,b,PHONE?0:4)) || ok.some(b=>hit(o.b,b,-3));
     if(!hide){ ok.push(o.b); n[o.r]++; }
     if(o.el.classList.contains('thin')!==hide) o.el.classList.toggle('thin',hide); } }
+const plBtn=document.getElementById('plBtn'), lgBtn=document.getElementById('lgBtn'), plPop=document.getElementById('plPop');
+plBtn.onclick=()=>{ legendEl.classList.remove('on'); lgBtn.classList.remove('on'); plBtn.classList.toggle('on',plPop.classList.toggle('on')); THIN.t=0; };
+lgBtn.onclick=()=>{ plPop.classList.remove('on'); plBtn.classList.remove('on'); lgBtn.classList.toggle('on',legendEl.classList.toggle('on')); THIN.t=0; };
+function closePops(){ const was=plPop.classList.contains('on')||(!PHONE&&legendEl.classList.contains('on')); plPop.classList.remove('on'); plBtn.classList.remove('on'); lgBtn.classList.remove('on'); if(!PHONE) legendEl.classList.remove('on'); return was; }
+plPop.addEventListener('click',e=>{ if(e.target.closest('.chip')) closePops(); });
+addEventListener('pointerdown',e=>{ if(!e.target.closest('.pop,.legend,#plBtn,#lgBtn')) closePops(); },true);
+setTimeout(()=>{ const h=document.querySelector('.hint'); if(h) h.classList.add('gone'); },9000);
 window.__ui={ menu:on=>setMenu(on), snap:n=>sheetOn()&&snapTo(n), state:()=>({phone:PHONE, land:LAND, snap:UI.snap, menu:UI.menu, hist:hPushed, tb:UI.tb, bb:UI.bb, vo:[VO.x,VO.y]}), back:()=>closeTop(), hud:on=>toggleHud(on) };
 uiLayout();
 const pill=s=>`<span class="pl" style="background:${ST[s][1]}22;color:${ST[s][1]};border:1px solid ${ST[s][1]}66">${ST[s][0]}</span>`;
 function showDistrict(d){ const list=D.agents.filter(a=>a.district===d.id); panel.dataset.agent='';
-  panel.innerHTML=`<div class="em">🏙</div><h3>${esc(d.name)}</h3><div class="small" style="color:#c7b58a;font-size:12px;margin-bottom:8px">${esc(d.place)}</div>
-  <div style="display:grid;gap:6px;max-height:44vh;overflow:auto">${list.map(a=>`<div data-id="${esc(a.id)}" style="display:flex;gap:8px;align-items:center;padding:7px 9px;border-radius:10px;background:#ffffff0d;cursor:pointer"><span style="font-size:18px">${a.emoji}</span><span style="flex:1;font-size:13px;font-weight:700">${esc(a.name)}</span><i style="width:9px;height:9px;border-radius:50%;background:${ST[a.state][1]}"></i></div>`).join('')}</div>`;
+  const n=s=>list.filter(a=>a.state===s).length;
+  panel.innerHTML=`<h3 style="padding-right:44px"><i style="display:inline-block;width:11px;height:11px;border-radius:50%;background:${d.color};margin-right:8px"></i>${esc(d.name)}</h3><div class="mut" style="font-size:12px;margin-bottom:8px">${esc(d.place)}</div>
+  <div class="vts">${['running','ready','done','off'].filter(s=>n(s)).map(s=>`<span class="vt" style="--c:${ST[s][1]}">${n(s)} · ${ST[s][0]}</span>`).join('')}</div>
+  <div style="display:grid;gap:6px">${list.map(a=>`<div data-id="${esc(a.id)}" class="li"><span style="font-size:18px">${a.emoji}</span><span style="flex:1;font-size:13px;font-weight:700;min-width:0">${esc(a.name)}</span>${a._mode&&MODE[a._mode]?`<span style="font-size:11.5px;color:${MODE[a._mode][2]};white-space:nowrap">${MODE[a._mode][0]} ${esc(MODE[a._mode][1])}</span>`:''}<i style="flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:${ST[a.state][1]}" title="${ST[a.state][0]}"></i></div>`).join('')}</div>`;
   panel.classList.add('on'); panel.querySelectorAll('[data-id]').forEach(el=>el.onclick=()=>openAgent(D.agents.find(a=>a.id===el.dataset.id))); }
 function openAgent(a, from){ if(!a) return; panel.dataset.last=a.id; panel.dataset.agent=a.id; panel.dataset.gov=''; const d=D.districts.find(x=>x.id===a.district);
   const scroll = from==='refresh' ? panel.scrollTop : 0, openSecs = from==='refresh' ? [...panel.querySelectorAll('details.sec')].map(x=>x.open) : null;
@@ -1664,7 +1724,7 @@ window.__openFirst = () => openAgent(D.agents.find(a=>a.state==='running')||D.ag
 
 /* ---------- v5 panels (§6.2): Saroy · Tuzatish markazi · Sud · Kengash · Saylov · Gazeta · Xronika · the agent's obro' block ---------- */
 const GVIEW={saroy:[30,36,-24,0,7,-66], tuzatish:[-72,23,-55,-95,1.5,-84], sud:[-3,14,-68,-19,3,-87], kengash:[10,15,-69,19,1.2,-86], saylov:[19.8,3.4,-75.6,19,3.3,-89.6], gazeta:[33,7.5,131,27.4,2.6,121], xronika:[30,46,-8,0,6,-66]};
-function focusGov(id){ if(!GOV) return; const v=GVIEW[id]||GVIEW.saroy, t=v.slice(3), p=MOBILE?v.slice(0,3).map((x,i)=>t[i]+(x-t[i])*2.1):v.slice(0,3); focused=id;
+function focusGov(id){ if(!GOV) return; deptFx(null); const v=GVIEW[id]||GVIEW.saroy, t=v.slice(3), p=MOBILE?v.slice(0,3).map((x,i)=>t[i]+(x-t[i])*2.1):v.slice(0,3); focused=id;
   document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.dataset.id===id)); view(p,t); showGov(id); }
 const chRow = (c,name) => { const i=G.chronicle.indexOf(c); return `<div class="cr5"><span class="ic">${CHI[c.type]||'·'}</span><span>${name&&AG[c.agent]?`<b data-ag="${esc(c.agent)}" style="cursor:pointer">${esc(pName(c.agent))}</b> · `:''}${esc(c.uz)}<div class="ru">${esc(c.ru)}</div></span><span class="tm">${dt5(c.at)}${SCENE_T.has(c.type)&&i>=0?`<button class="pb" data-play="${i}" title="повтор сцены">▶</button>`:''}</span></div>`; };
 const vTag = v => `<span class="tg" style="--c:${(VERD[v]||VERD["noma'lum"])[1]}">${esc((VERD[v]||[v])[0])}</span>`;
@@ -1808,14 +1868,14 @@ function loop(){ requestAnimationFrame(loop); const t=clock.getElapsedTime(), no
   if(inOffice){ oCtl.update(); robot.position.y=Math.sin(t*2)*.05; robot.rotation.y=Math.PI*.78+Math.sin(t*.7)*.25; robotEyes.forEach(e=>e.scale.y=(Math.sin(t*3)>.96)?.1:1); R.render(oScene,oCam); return; }
   if(fly){ const k=Math.min(1,(performance.now()-fly.s)/fly.dur), e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2; cam.position.lerpVectors(fly.p0,fly.p,e); ctl.target.lerpVectors(fly.t0,fly.t,e); if(k>=1) fly=null; }
   ctl.update();
-  beams.forEach(b=>{ b.bm.material.opacity=b.run? .28+.18*Math.sin(t*3+b.ph) : .13; });
+  beams.forEach(b=>{ b.bm.material.opacity=(b.run? .28+.18*Math.sin(t*3+b.ph) : .13)*(DEPT&&b.d!==DEPT?.15:1); });
   arcs.forEach(a=>{ a.t=(a.t+a.v*0.016)%1; a.s.position.copy(a.cv.getPoint(a.t)); });
   spinners.forEach(o=>{ o.rotation.z+=0.01; o.rotation.y+=0.006; }); const bl=Math.sin(t*4)>0; blinkers.forEach(o=>o.visible=bl); jets.forEach(j=>j.scale.y=.85+.2*Math.sin(t*5+j.position.x));
   facers.forEach(f=>f.rotation.y=Math.atan2(cam.position.x-f.position.x,cam.position.z-f.position.z));
   water.material.emissiveIntensity=(.5+.1*Math.sin(t*1.3))*(curTod==='night'?.55:curTod==='evening'?.8:1);
   robotsTick(dt,t); if(GOV) govTick(dt,t);
   const dist=cam.position.distanceTo(ctl.target);
-  agentLabels.forEach(x=>{ x.o.getWorldPosition(wp); const near=cam.position.distanceTo(wp)<72 || (focused===x.d && dist<80); x.al.element.classList.toggle('show',near); });
+  agentLabels.forEach(x=>{ x.o.getWorldPosition(wp); const near=DEPT ? DEPT===x.d : (cam.position.distanceTo(wp)<72 || (focused===x.d && dist<80)); x.al.element.classList.toggle('show',near); });
   lmLabels.forEach(x=>{ x.l.getWorldPosition(wp); x.l.element.classList.toggle('show', cam.position.distanceTo(wp)<110 && dist<140); });
   viewOffset(dt); R.render(scene,cam); L2.render(scene,cam); thinLabels(nowP);
   if(!window.__cityOK){ window.__cityOK=true; const f=document.getElementById('fail'); if(f) f.classList.remove('on'); } }
