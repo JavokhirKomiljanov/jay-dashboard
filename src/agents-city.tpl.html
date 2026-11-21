@@ -192,6 +192,42 @@ body.game .vig{background:radial-gradient(ellipse at 50% 50%,transparent 42%,#05
   .gm-zone{bottom:calc(var(--bb,64px) + 16px);right:calc(12px + var(--sar))}.gm-zone b{font-size:24px}.gm-zone span{font-size:12px}
   .gm-keys{display:none!important}
 }
+/* 🚶 walk mode (2026-11-21): third-person stroll on top of the game HUD — own figure, camera behind, E near an agent / an office door */
+.wk{display:none}
+body.walk .wk{display:block}
+body.walk .gm-keys,body.in-office .gm{display:none!important}
+/* clean view (2026-11-21, Jay: «слишком много текста на визуале — интерфейс только по кнопке»): the scene opens with no text on it.
+   ℹ️ (#uiBtn) turns on the status card, the department filter and the 3D captions; a selected place / agent keeps its own caption. */
+body:not(.ui-on) .hud,body:not(.ui-on) .hint{display:none!important}
+body:not(.ui-on) .lbl:not(.sel):not(.say){visibility:hidden!important}
+#uiBtn.on{background:#19d3c5;border-color:#19d3c5;color:#06201d}
+body.game #uiBtn{display:none!important}
+@media (min-width:701px) and (min-height:481px){ .top .btn.ghost .ic+.tx{display:none} }
+/* walk: only the radar and the E prompt stay; the key hint fades out by itself */
+body.walk .gm-obj,body.walk .gm-stat,body.walk .gm-zone,body.walk .gm-barl{display:none!important}
+body.walk .wk-keys{animation:wkfade .8s 7s forwards}
+@keyframes wkfade{to{opacity:0}}
+body.game:has(#panel.on) .gm-stat{display:none}
+body.walk.touch .wk-joy{display:block}body.walk.touch .wk-keys{display:none!important}
+#wkBtn.on{background:#19d3c5;border-color:#19d3c5;color:#06201d}
+.wk>*{position:fixed;z-index:12;font-family:Manrope,system-ui,sans-serif}
+.wk-tip{display:none;left:50%;bottom:max(62px,calc(env(safe-area-inset-bottom,0px) + 62px));transform:translateX(-50%);font-size:15px;font-weight:800;color:#fff;background:#0b0a10e0;border:2px solid #19d3c5;border-radius:14px;padding:10px 16px;cursor:pointer;white-space:nowrap;max-width:calc(100vw - 24px);overflow:hidden;text-overflow:ellipsis;box-shadow:0 10px 34px #000a}
+.wk-tip.on{display:block}
+.wk-tip kbd{font:800 12px Manrope;background:#19d3c5;color:#06201d;border-radius:5px;padding:2px 8px;margin-right:8px}
+.wk-tip small{font-size:12px;font-weight:700;color:#ffffffb0;margin-left:6px}
+.wk-keys{left:50%;bottom:max(18px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);pointer-events:none;font-size:11.5px;font-weight:700;color:#ffffffc9;background:#0b0a10a8;padding:6px 12px;border-radius:999px;white-space:nowrap}
+.wk-keys kbd{font:800 10.5px Manrope;background:#ffffff24;border-radius:4px;padding:1px 6px;margin:0 2px;color:#fff}
+.wk-joy{display:none;right:max(22px,env(safe-area-inset-right,0px));bottom:max(26px,env(safe-area-inset-bottom,0px));width:124px;height:124px;border-radius:50%;background:#0b0a1073;border:2px solid #ffffff4d;touch-action:none}
+.wk-joy i{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:#ffffffd9;box-shadow:0 4px 14px #0008;pointer-events:none}
+@media (pointer:coarse){ body.walk .wk-joy{display:block} .wk-keys{display:none!important} body.walk .gm-zone{bottom:170px} .wk-tip{bottom:170px} }
+@media (max-width:700px),(max-height:480px){
+  .wk-keys{display:none!important}
+  body.walk .wk-joy{display:block}
+  .wk-joy{bottom:calc(var(--bb,64px) + 14px);right:calc(12px + var(--sar))}
+  .wk-tip{bottom:calc(var(--bb,64px) + 152px);font-size:14px}
+  body.walk .gm-zone{bottom:calc(var(--bb,64px) + 200px)}
+  body.walk.in-office .wk-joy{bottom:calc(18px + var(--sab))}body.walk.in-office .wk-tip{bottom:calc(160px + var(--sab))}
+}
 .hint{transition:opacity .6s}.hint.gone{opacity:0;pointer-events:none}
 @media (min-width:701px) and (min-height:481px){
   .legend{display:none;left:max(16px,env(safe-area-inset-left,0px));bottom:16px;flex-direction:column;gap:7px;max-width:min(380px,calc(100vw - 32px));background:#1b1612f5;border:1px solid #d9a44155;border-radius:16px;padding:12px 14px;backdrop-filter:blur(10px);box-shadow:0 18px 60px #000a;text-shadow:none;z-index:7;font-size:12px}
@@ -306,7 +342,7 @@ body.game .vig{background:radial-gradient(ellipse at 50% 50%,transparent 42%,#05
   <div class="dfil" id="dfil" role="toolbar" aria-label="Фильтр по департаментам"></div>
 </div>
 <div class="pop" id="plPop" role="dialog" aria-label="Места города"><div class="chips" id="chips"></div></div>
-<div class="top" id="topbar"><button class="btn ghost mb" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu"><span class="ic">☰</span><span class="tx">Меню</span></button><button class="btn ghost" id="plBtn" type="button" title="Места города: Saroy, Token Street, махалля, семьи…"><span class="ic">📍</span><span class="tx">Места</span></button><button class="btn ghost" id="lgBtn" type="button" title="Легенда: что значат цвета и значки"><span class="ic">?</span></button><button class="btn ghost" id="gmBtn" type="button" title="Игровой режим: радар, счётчики, управление WASD. Выключается этой же кнопкой или клавишей G"><span class="ic">🎮</span><span class="tx">Игра</span></button><button class="btn ghost" id="prdemo" type="button" title="Демо намаза, сжато: проход 15 с, стояние 20 с, возвращение 15 с"><span class="ic">🕌</span><span class="tx">демо</span></button><button class="btn ghost" id="tod" type="button" title="Время суток: авто по Ташкенту или демо">авто</button><button class="btn ghost" id="tour" type="button"><span class="ic">▶</span><span class="tx">Облёт</span></button><button class="btn ghost" id="home" type="button"><span class="ic">⌂</span><span class="tx"><span class="tl-l">Весь город</span><span class="tl-s">Город</span></span></button><a class="btn" href="index.html#agents" target="_top" style="text-decoration:none"><span class="ic">←</span><span class="tx">JOS</span></a></div>
+<div class="top" id="topbar"><button class="btn ghost mb" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu"><span class="ic">☰</span><span class="tx">Меню</span></button><button class="btn ghost" id="uiBtn" type="button" title="Инфо: статус города, фильтр по департаментам и подписи на карте. Выключается этой же кнопкой"><span class="ic">ℹ️</span><span class="tx">Инфо</span></button><button class="btn ghost" id="plBtn" type="button" title="Места города: Saroy, Token Street, махалля, семьи…"><span class="ic">📍</span><span class="tx">Места</span></button><button class="btn ghost" id="lgBtn" type="button" title="Легенда: что значат цвета и значки"><span class="ic">?</span></button><button class="btn ghost" id="gmBtn" type="button" title="Игровой режим: радар, счётчики, управление WASD. Выключается этой же кнопкой или клавишей G"><span class="ic">🎮</span><span class="tx">Игра</span></button><button class="btn ghost" id="wkBtn" type="button" title="Прогулка от третьего лица: ходи по городу, подходи к агентам, заходи в офисы. Выключается этой же кнопкой или клавишей P"><span class="ic">🚶</span><span class="tx">Прогулка</span></button><button class="btn ghost" id="prdemo" type="button" title="Демо намаза, сжато: проход 15 с, стояние 20 с, возвращение 15 с"><span class="ic">🕌</span><span class="tx">демо</span></button><button class="btn ghost" id="tod" type="button" title="Время суток: авто по Ташкенту или демо">авто</button><button class="btn ghost" id="tour" type="button"><span class="ic">▶</span><span class="tx">Облёт</span></button><button class="btn ghost" id="home" type="button"><span class="ic">⌂</span><span class="tx"><span class="tl-l">Весь город</span><span class="tl-s">Город</span></span></button><a class="btn" href="index.html#agents" target="_top" style="text-decoration:none"><span class="ic">←</span><span class="tx">JOS</span></a></div>
 <div class="panel" id="sheet" role="dialog" aria-label="Карточка"><div class="grab" aria-hidden="true"><i></i></div><button class="sx" type="button" aria-label="Закрыть">✕</button><div class="pbody" id="panel"></div></div>
 <div class="msheet" id="menu" role="dialog" aria-label="Меню города"><div class="grab" aria-hidden="true"><i></i></div><button class="sx" type="button" aria-label="Закрыть меню">✕</button><div class="mbody" id="mbody"><div class="mh"><b>Город агентов · Ташкент</b><span id="msum"></span></div><div class="mt">Места</div><div id="mchips"></div><div class="mt">Сейчас</div><div id="mnow"></div><div class="mt">Легенда</div><div id="mleg"></div></div></div>
 <div class="legend"><span><i style="background:#22e07a"></i>работает сейчас</span><span><i style="background:#19d3c5"></i>по расписанию</span><span><i style="background:#f5a623"></i>разовая, сделано</span><span><i style="background:#8b8f99"></i>выключен</span><span class="md">🏢 в офисе · 🚶 идёт · 🍽 ест токены · 🏠 дома · 😴 спит · 🫖 сделано · 🕌 Xo'ja aka на намазе</span><span class="md" id="lgf">цвет калитки и бейджа = семья</span><span id="chk"></span><span class="md" id="lg5" style="display:none">🏛 Президент · 🏫 в исправительном центре · 🎓 вышел (24 ч) · P — бейдж действующего президента</span><span id="lgn" style="width:100%;font-size:10.5px;color:#c7b58a">Имена агентов вымышленные · это 🤖 агенты, не люди</span><span id="lg6" style="width:100%;font-size:10.5px;color:#c7b58a;display:none">Выговоры, приговоры и выборы — из журнала CEO-агента, ничего не выдумано</span></div>
@@ -317,6 +353,7 @@ body.game .vig{background:radial-gradient(ellipse at 50% 50%,transparent 42%,#05
   <div class="gm-zone" id="gmZone"><b></b><span></span></div>
   <div class="gm-keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> движение · <kbd>Shift</kbd> быстрее · <kbd>1</kbd>–<kbd>6</kbd> департамент · <kbd>G</kbd> выйти</div>
 </div>
+<div class="wk" id="wk"><button class="wk-tip" id="wkTip" type="button"></button><div class="wk-keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> идти · <kbd>Shift</kbd> бегом · мышь — камера · <kbd>E</kbd> подойти / войти · <kbd>1</kbd>–<kbd>6</kbd> департамент · <kbd>P</kbd> выйти</div><div class="wk-joy" id="wkJoy"><i></i></div></div>
 <div class="toast" id="toast"></div>
 <div class="hint">Клик по зданию — офис · по роботу — что он делает</div>
 <div class="office" id="office"><div class="bar"><div><h2 id="oname"></h2><p id="odesc"></p></div><button class="btn" id="oback">← В город</button></div></div>
@@ -1333,7 +1370,7 @@ function robotsTick(dt, t){ const now=Date.now(); let coinI=SEATN*3, inRow=0;
     if(!walking && L.at && L.at.circ && L.mode==='prison'){ const c=L.at.circ; if(L.circA==null) L.circA=Math.atan2(L.pos.y-c.z,L.pos.x-c.x); L.circA+=dt*.3;   /* v5: slow laps of the yard ring */
       L.pos.set(c.x+Math.cos(L.circA)*c.r, c.z+Math.sin(L.circA)*c.r); L.yaw=Math.atan2(-Math.sin(L.circA),Math.cos(L.circA)); walking=true; spd=1.2; } else L.circA=null;
     if(walking){ pose='walk'; L.phase+=dt*Math.max(5.5,Math.min(spd,BRISK*1.4)*2.3); } else if(L.at){ pose=L.at.pose; L.yaw=L.at.yaw; }
-    const vis = pose!=='hide', standRow = !walking && L.mode==='namoz' && isMosque(L.at); if(standRow) inRow++;
+    const vis = L.vis = pose!=='hide', standRow = !walking && L.mode==='namoz' && isMosque(L.at); if(standRow) inRow++;
     if(!vis) _R.copy(_Z);
     else if(pose==='lie'){ _q.setFromEuler(_e.set(0,L.yaw,0)); _R.compose(_p.set(L.pos.x,.86,L.pos.y),_q,_s.set(ROBOT_S,ROBOT_S,ROBOT_S)); _R.multiply(_L4.makeTranslation(0,0,.95)).multiply(_P4.makeRotationX(-Math.PI/2)); }
     else { const y = (pose==='walk' ? Math.abs(Math.sin(L.phase))*.07 : pose==='sit' ? (L.at.h||.5)-.5*ROBOT_S+.04 : pose==='stand' ? .006*Math.sin(t*1.3+i) : 0) + ((!walking&&L.at&&L.at.y)||0), sway = pose==='sit'&&L.mode!=='eat'&&!L.leis ? Math.sin(t*.5+i)*.15 : 0;   /* stand: quiet breathing only, no other motion */
@@ -1694,8 +1731,8 @@ function toggleHud(on){ document.body.classList.toggle('hud-open',on); sump.setA
 sump.onclick=()=>toggleHud(!document.body.classList.contains('hud-open'));
 /* phone <-> desktop: move the chips, the legend and the prayer demo between the HUD and the menu */
 function uiLayout(){ PHONE=PHQ.matches; LAND=PHONE&&LNQ.matches; document.body.classList.toggle('ph',PHONE);
-  if(PHONE){ legendEl.classList.remove('on'); document.getElementById('mchips').appendChild(chipsEl); document.getElementById('mleg').appendChild(legendEl); document.getElementById('mnow').prepend(prdemoEl); document.getElementById('mnow').prepend(document.getElementById('gmBtn')); }
-  else { document.getElementById('plPop').appendChild(chipsEl); document.body.insertBefore(legendEl,document.getElementById('toast')); topbar.insertBefore(prdemoEl,document.getElementById('tod')); topbar.insertBefore(document.getElementById('gmBtn'),prdemoEl); setMenu(false); document.body.classList.remove('hud-open'); }
+  if(PHONE){ legendEl.classList.remove('on'); document.getElementById('mchips').appendChild(chipsEl); document.getElementById('mleg').appendChild(legendEl); document.getElementById('mnow').prepend(prdemoEl); document.getElementById('mnow').prepend(document.getElementById('wkBtn')); document.getElementById('mnow').prepend(document.getElementById('gmBtn')); }
+  else { document.getElementById('plPop').appendChild(chipsEl); document.body.insertBefore(legendEl,document.getElementById('toast')); topbar.insertBefore(prdemoEl,document.getElementById('tod')); topbar.insertBefore(document.getElementById('gmBtn'),prdemoEl); topbar.insertBefore(document.getElementById('wkBtn'),prdemoEl); setMenu(false); document.body.classList.remove('hud-open'); }
   measure(); if(sheetOn()) snapTo(portrait()?(['peek','half','full'].includes(UI.snap)?UI.snap:'half'):'full',false); else sheet.style.transform=''; THIN.t=0; }
 [PHQ,LNQ].forEach(q=>q.addEventListener?q.addEventListener('change',uiLayout):q.addListener(uiLayout));
 /* layers: office > menu > card > status row. Phone: one history entry while any layer is open (browser back), JOS_M.back for the Android app, Esc on desktop */
@@ -1909,13 +1946,13 @@ function drawOffice(a){ const g=screenCanvas.getContext('2d'), c=ST[a.state][1];
   robotEyes.forEach(e=>e.material.color.set(c)); }
 function enterOffice(a){ inOffice=a; drawOffice(a); document.getElementById('oname').textContent=a.emoji+' '+a.name; document.getElementById('odesc').textContent=a.does+' · '+ST[a.state][0];
   office.classList.add('on'); document.body.classList.add('in-office'); panel.classList.remove('on'); L2.domElement.style.display='none'; if(innerWidth<innerHeight&&innerWidth<=700){ oCtl.maxDistance=19; oCam.position.set(8.5,8,13.5); oCtl.target.set(-.5,1.6,.4); } else { oCtl.maxDistance=16; oCam.position.set(7,6,9); oCtl.target.set(0,1.8,0); } layers(); }
-document.getElementById('oback').onclick=()=>{ inOffice=null; office.classList.remove('on'); document.body.classList.remove('in-office'); L2.domElement.style.display=''; openAgent(D.agents.find(x=>x.id===(panel.dataset.last||''))||D.agents[0]); panel.classList.add('on'); };
+document.getElementById('oback').onclick=()=>{ inOffice=null; office.classList.remove('on'); document.body.classList.remove('in-office'); L2.domElement.style.display=''; openAgent(D.agents.find(x=>x.id===(panel.dataset.last||''))||D.agents[0]); panel.classList.add('on'); if(WK.on) wkOut(); };
 
 /* ---------- loop ---------- */
 const clock=new THREE.Clock(), wp=new THREE.Vector3(); let lastT=performance.now(); const spinners=[], blinkers=[], jets=[], facers=[];
 scene.traverse(o=>{ if(o.userData.spin) spinners.push(o); if(o.userData.blink) blinkers.push(o); if(o.userData.jet) jets.push(o); if(o.userData.face) facers.push(o); });
 function loop(){ requestAnimationFrame(loop); const t=clock.getElapsedTime(), nowP=performance.now(), dt=Math.min(.1,(nowP-lastT)/1000); lastT=nowP;
-  if(inOffice){ oCtl.update(); robot.position.y=Math.sin(t*2)*.05; robot.rotation.y=Math.PI*.78+Math.sin(t*.7)*.25; robotEyes.forEach(e=>e.scale.y=(Math.sin(t*3)>.96)?.1:1); R.render(oScene,oCam); return; }
+  if(inOffice){ if(WK.on) wkOffice(dt,nowP); oCtl.update(); robot.position.y=Math.sin(t*2)*.05; robot.rotation.y=Math.PI*.78+Math.sin(t*.7)*.25; robotEyes.forEach(e=>e.scale.y=(Math.sin(t*3)>.96)?.1:1); R.render(oScene,oCam); return; }
   if(fly){ const k=Math.min(1,(performance.now()-fly.s)/fly.dur), e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2; cam.position.lerpVectors(fly.p0,fly.p,e); ctl.target.lerpVectors(fly.t0,fly.t,e); if(k>=1) fly=null; }
   ctl.update();
   beams.forEach(b=>{ b.bm.material.opacity=(b.run? .28+.18*Math.sin(t*3+b.ph) : .13)*(DEPT&&b.d!==DEPT?.15:1); });
@@ -1927,7 +1964,7 @@ function loop(){ requestAnimationFrame(loop); const t=clock.getElapsedTime(), no
   const dist=cam.position.distanceTo(ctl.target);
   agentLabels.forEach(x=>{ x.o.getWorldPosition(wp); const near=DEPT ? DEPT===x.d : (cam.position.distanceTo(wp)<72 || (focused===x.d && dist<80)); x.al.element.classList.toggle('show',near); });
   lmLabels.forEach(x=>{ x.l.getWorldPosition(wp); x.l.element.classList.toggle('show', cam.position.distanceTo(wp)<110 && dist<140); });
-  if(GM.on) gmTick(dt,nowP);
+  if(WK.on) wkTick(dt,nowP); if(GM.on) gmTick(dt,nowP);
   viewOffset(dt); R.render(scene,cam); L2.render(scene,cam); thinLabels(nowP);
   if(!window.__cityOK){ window.__cityOK=true; const f=document.getElementById('fail'); if(f) f.classList.remove('on'); } }
 /* ---------- v5 init: place labels, chips after «Семьи», award stars, election urns, rain, boards, legend ---------- */
@@ -1955,7 +1992,7 @@ if(GOV){
    red pips = agents in Tuzatish markazi, task = the next scheduled run. WASD / arrows move the camera, 1–6 jump to a department, G or the button leaves. */
 const GM={on:false, keys:new Set(), t:0, zone:null, zt:null, cv:document.getElementById('gmRadar')};
 GM.g=GM.cv.getContext('2d');
-function gmSet(on){ on=!!on; if(on===GM.on) return; GM.on=on; document.body.classList.toggle('game',on); document.getElementById('gmBtn').classList.toggle('on',on); GM.keys.clear(); GM.zone=null;
+function gmSet(on){ on=!!on; if(on===GM.on) return; GM.on=on; document.body.classList.toggle('game',on); document.getElementById('gmBtn').classList.toggle('on',on); GM.keys.clear(); GM.zone=null; if(!on&&WK.on) wkSet(false);
   if(typeof closePops==='function') closePops(); if(window.__ui) __ui.menu(false);
   if(on){ if(tourOn) document.getElementById('tour').click(); if(SC) scStop(); panel.classList.remove('on'); focused=null; deptFx(null); document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
     const tg=ctl.target.clone(); tg.y=4; flyTo(new THREE.Vector3(tg.x+16,MOBILE?52:30,tg.z+(MOBILE?92:58)), tg, 1.4); gmHud(); }
@@ -1963,7 +2000,7 @@ function gmSet(on){ on=!!on; if(on===GM.on) return; GM.on=on; document.body.clas
   THIN.t=0; }
 document.getElementById('gmBtn').onclick=()=>gmSet(!GM.on);
 addEventListener('keydown',e=>{ if(e.ctrlKey||e.metaKey||e.altKey||/^(input|textarea|select)$/i.test((e.target||{}).tagName||'')) return; const k=e.code;
-  if(k==='KeyG' && !inOffice){ gmSet(!GM.on); return; } if(!GM.on||inOffice) return;
+  if(k==='KeyG' && !inOffice){ gmSet(!GM.on); return; } if(!GM.on||inOffice||WK.on) return;
   if(/^(Key[WASD]|Arrow(Up|Down|Left|Right)|Shift(Left|Right))$/.test(k)){ GM.keys.add(k); e.preventDefault(); }
   else if(/^Digit[1-9]$/.test(k)){ const d=D.districts[+k.slice(5)-1]; if(d){ fly=null; const tg=new THREE.Vector3(d.x,4,d.z); flyTo(new THREE.Vector3(d.x+16,30,d.z+58), tg, 1.1); } } });
 addEventListener('keyup',e=>GM.keys.delete(e.code)); addEventListener('blur',()=>GM.keys.clear());
@@ -1978,7 +2015,7 @@ function gmHud(){ const c=COUNTS, n=D.agents.length||1, d=new Date(Date.now()+TZ
   document.getElementById('gmObj2').textContent = run.length ? `сейчас работают: ${run.length}` : ''; }
 function gmTick(dt,now){ const f=new THREE.Vector3(ctl.target.x-cam.position.x,0,ctl.target.z-cam.position.z); if(f.lengthSq()<1e-6) f.set(0,0,-1); f.normalize(); const rx=-f.z, rz=f.x, K=GM.keys;
   const mf=(K.has('KeyW')||K.has('ArrowUp')?1:0)-(K.has('KeyS')||K.has('ArrowDown')?1:0), mr=(K.has('KeyD')||K.has('ArrowRight')?1:0)-(K.has('KeyA')||K.has('ArrowLeft')?1:0);
-  if(mf||mr){ fly=null; const sp=(K.has('ShiftLeft')||K.has('ShiftRight')?95:44)*dt; let dx=(f.x*mf+rx*mr)*sp, dz=(f.z*mf+rz*mr)*sp;
+  if(!WK.on&&(mf||mr)){ fly=null; const sp=(K.has('ShiftLeft')||K.has('ShiftRight')?95:44)*dt; let dx=(f.x*mf+rx*mr)*sp, dz=(f.z*mf+rz*mr)*sp;
     const nxp=Math.max(-175,Math.min(175,ctl.target.x+dx)), nzp=Math.max(-175,Math.min(175,ctl.target.z+dz)); dx=nxp-ctl.target.x; dz=nzp-ctl.target.z;
     ctl.target.x+=dx; ctl.target.z+=dz; cam.position.x+=dx; cam.position.z+=dz; }
   if(now-GM.t<90) return; const slow=!GM.th||now-GM.th>2000; GM.t=now; if(slow){ GM.th=now; gmHud(); }
@@ -1999,11 +2036,81 @@ function gmTick(dt,now){ const f=new THREE.Vector3(ctl.target.x-cam.position.x,0
   g.restore();
   g.beginPath(); g.moveTo(C,C-15); g.lineTo(C+11,C+12); g.lineTo(C,C+6); g.lineTo(C-11,C+12); g.closePath(); g.fillStyle='#fff'; g.fill(); g.lineWidth=3; g.strokeStyle='#0b0a10'; g.stroke();
   { const nx2=C+(-rz)*(R-4), ny2=C-(-f.z)*(R-4); g.beginPath(); g.arc(nx2,ny2,15,0,7); g.fillStyle='#0b0a10'; g.fill(); g.fillStyle='#fff'; g.font='800 19px Manrope,sans-serif'; g.textAlign='center'; g.textBaseline='middle'; g.fillText('N',nx2,ny2+1); } }
+/* ---------- 🚶 walk mode (2026-11-21) ----------
+   Jay: «режим от третьего лица, чтобы я как человек прогуливался по городу, смотрел за агентами, заходил в офис». Sits on top of the game HUD (radar = where I stand).
+   A small human figure (not a robot: the robots are the agents), the orbit camera is tied to his head: drag = look around, WASD / joystick = walk, Shift = run,
+   E (or a tap on the prompt) = open the agent next to me / walk into the office in front of me. Inside the office the same figure walks the room; E or the open side = back to the street.
+   Only offices are solid — landmarks and houses can be walked through. */
+function mkHuman(){ const g=new THREE.Group(), b=new THREE.Group(), skin=mat('#e2b48c',{roughness:.8}), suit=mat('#2f6fd6',{roughness:.6,emissive:'#2f6fd6',emissiveIntensity:.18}), tr=mat('#39425a',{roughness:.8,emissive:'#39425a',emissiveIntensity:.12}), wh=mat('#f4f6f8'); g.add(b);
+  const box=(par,w,h,d,m,x,y,z)=>add(par,new THREE.BoxGeometry(w,h,d),m,x,y,z);
+  const legs=[.15,-.15].map(x=>{ const p=new THREE.Group(); p.position.set(x,1.04,0); b.add(p); box(p,.21,.92,.23,tr,0,-.46,0); box(p,.23,.12,.36,wh,0,-.98,.06); return p; });
+  box(b,.64,.84,.36,suit,0,1.46,0); box(b,.16,.56,.02,wh,0,1.56,.185); box(b,.07,.4,.02,mat('#19d3c5'),0,1.58,.2);
+  const arms=[.41,-.41].map(x=>{ const p=new THREE.Group(); p.position.set(x,1.82,0); b.add(p); box(p,.17,.74,.19,suit,0,-.37,0); add(p,new THREE.SphereGeometry(.095,8,6),skin,0,-.81,0); return p; });
+  add(b,new THREE.CylinderGeometry(.09,.1,.12,8),skin,0,1.93,0); add(b,new THREE.SphereGeometry(.25,16,12),skin,0,2.18,0);
+  add(b,new THREE.SphereGeometry(.268,16,10,0,Math.PI*2,0,Math.PI/2),mat('#2a1c14',{roughness:.9}),0,2.2,-.03);
+  const ring=new THREE.Mesh(new THREE.RingGeometry(.62,.8,36),new THREE.MeshBasicMaterial({color:'#19d3c5',transparent:true,opacity:.85,depthWrite:false})); ring.rotation.x=-Math.PI/2; ring.position.y=.27; g.add(ring);
+  g.visible=false; return {g,b,legs,arms}; }
+function wkPose(H,ph,mv,run,now){ const s=mv?Math.sin(ph)*(run?.95:.7):0; H.legs[0].rotation.x=s; H.legs[1].rotation.x=-s; H.arms[0].rotation.x=-s*.8; H.arms[1].rotation.x=s*.8; H.b.position.y=mv?Math.abs(Math.sin(ph))*.05:Math.sin(now/700)*.012; }
+const WK={on:false, keys:new Set(), x:0, z:0, yaw:Math.PI, ph:0, jx:0, jy:0, near:null, tk:'', tt:0, intro:0, in:null, ox:0, oz:0, oyaw:Math.PI, H:mkHuman(), HO:mkHuman(), tip:document.getElementById('wkTip'), btn:document.getElementById('wkBtn'),
+  BOX:[[-1.8,1.8,-2.05,-.4],[-.5,.5,0,1.06],[-5.4,-3,2.4,4],[-1.95,-.45,1.45,2.95]]};   /* office furniture: desk, chair, bench, the agent's robot */
+scene.add(WK.H.g); WK.HO.g.scale.setScalar(1.5); oScene.add(WK.HO.g);
+WK.offs=D.agents.filter(a=>OFFICE[a.id]).map(a=>{ const p=new THREE.Vector3(); OFFICE[a.id].o.getWorldPosition(p); return {a,x:p.x,z:p.z}; });
+const wkClamp=(x,z)=>{ x=Math.max(-175,Math.min(175,x)); z=Math.max(-175,Math.min(175,z)); for(const o of WK.offs){ const qx=x-o.x, qz=z-o.z, q=Math.hypot(qx,qz); if(q<2.9){ const k=2.9/(q||1); x=o.x+(q?qx*k:2.9); z=o.z+qz*k; } } return [x,z]; };
+function wkInput(){ const K=WK.keys; let f=(K.has('KeyW')||K.has('ArrowUp')?1:0)-(K.has('KeyS')||K.has('ArrowDown')?1:0)-WK.jy, r=(K.has('KeyD')||K.has('ArrowRight')?1:0)-(K.has('KeyA')||K.has('ArrowLeft')?1:0)+WK.jx;
+  const m=Math.hypot(f,r), joy=Math.hypot(WK.jx,WK.jy); if(m>1){ f/=m; r/=m; } return {f, r, m:Math.min(1,m), mv:m>.06, run:K.has('ShiftLeft')||K.has('ShiftRight')||joy>.92}; }
+/* camera rig: the orbit target is glued to the head, the camera moves by the same step — the orbit angle and zoom stay the user's */
+function wkFollow(c,cm,x,y,z,dt,snap){ const k=snap?1:Math.min(1,dt*10), ex=(x-c.target.x)*k, ey=(y-c.target.y)*k, ez=(z-c.target.z)*k; c.target.x+=ex; c.target.y+=ey; c.target.z+=ez; cm.position.x+=ex; cm.position.y+=ey; cm.position.z+=ez; }
+function wkStep(c,cm,I,dt,walk,run){ const fx=c.target.x-cm.position.x, fz=c.target.z-cm.position.z, fl=Math.hypot(fx,fz)||1, ux=fx/fl, uz=fz/fl, sp=(I.run?run:walk)*I.m*dt; return [(ux*I.f-uz*I.r)*sp, (uz*I.f+ux*I.r)*sp]; }
+const wkTurn=(yaw,dx,dz,dt)=>{ let d=Math.atan2(dx,dz)-yaw; d=Math.atan2(Math.sin(d),Math.cos(d)); return yaw+d*Math.min(1,dt*12); };
+function wkTip(n){ const key=n?n.k+':'+n.a.id+':'+(n.a._mode||''):''; WK.near=n; if(key===WK.tk) return; WK.tk=key; const el=WK.tip; if(!n){ el.classList.remove('on'); THIN.t=0; return; }
+  const a=n.a, nm=HASP&&PER[a.id]?callName(PER[a.id]):a.name, md=a._mode&&MODE[a._mode]?MODE[a._mode][1]:(ST[a.state]||ST.off)[0];
+  el.innerHTML = n.k==='x' ? '<kbd>E</kbd>Выйти в город' : n.k==='o' ? `<kbd>E</kbd>Зайти в офис · ${a.emoji} ${esc(a.name)}<small>${esc(md)}</small>` : `<kbd>E</kbd>${a.emoji} ${esc(nm)}<small>${esc(md)}</small>`; el.classList.add('on'); }
+function wkAct(){ const n=WK.near; if(!WK.on||!n) return; if(inOffice){ document.getElementById('oback').click(); return; }
+  if(n.k==='o') enterOffice(n.a); else if(n.a.v) focusGov('saroy'); else openAgent(n.a,'robot'); }
+function wkGo(x,z){ [WK.x,WK.z]=wkClamp(x,z); fly=null; wkFollow(ctl,cam,WK.x,2,WK.z,0,true); }
+function wkSet(on){ on=!!on; if(on===WK.on||(on&&inOffice)) return; if(on&&!GM.on) gmSet(true); if(window.__ui) __ui.menu(false);
+  WK.on=on; document.body.classList.toggle('walk',on); WK.btn.classList.toggle('on',on); WK.btn.blur(); WK.keys.clear(); WK.jx=WK.jy=0; wkTip(null); WK.H.g.visible=on; ctl.enablePan=!on;
+  if(on){ panel.classList.remove('on'); [WK.x,WK.z]=wkClamp(ctl.target.x,ctl.target.z); WK.yaw=Math.PI; fly=null; flyTo(new THREE.Vector3(WK.x+2.5,5.4,WK.z+10.5), new THREE.Vector3(WK.x,2,WK.z), 1.2); WK.intro=performance.now()+1350; }
+  else { ctl.minDistance=14; ctl.maxDistance=460; if(GM.on) gmSet(false); }
+  THIN.t=0; }
+function wkTick(dt,now){ const I=wkInput(); if(fly && (I.mv||now>WK.intro)) fly=null;
+  if(!fly && ctl.maxDistance!==24){ ctl.minDistance=3.5; ctl.maxDistance=24; }
+  if(I.mv){ const [dx,dz]=wkStep(ctl,cam,I,dt,7.5,17); [WK.x,WK.z]=wkClamp(WK.x+dx,WK.z+dz); WK.yaw=wkTurn(WK.yaw,dx,dz,dt); WK.ph+=dt*(I.run?14:9.5); }
+  if(!fly) wkFollow(ctl,cam,WK.x,2,WK.z,dt);
+  WK.H.g.position.set(WK.x,0,WK.z); WK.H.b.rotation.y=WK.yaw; wkPose(WK.H,WK.ph,I.mv,I.run,now);
+  if(now-WK.tt<150) return; WK.tt=now;
+  let best=null, bd=4.2; LIFE.forEach(L=>{ if(!L.vis||!L.pos) return; const q=Math.hypot(L.pos.x-WK.x,L.pos.y-WK.z); if(q<bd){ bd=q; best={k:'a',a:L.a}; } });
+  if(!best){ bd=6.4; WK.offs.forEach(o=>{ const q=Math.hypot(o.x-WK.x,o.z-WK.z); if(q<bd){ bd=q; best={k:'o',a:o.a}; } }); }
+  wkTip(best); }
+/* inside the office: the room is 12×12 with walls on the west and the north, open to the east and the south (walk off the floor = out) */
+function wkOffice(dt,now){ const H=WK.HO;
+  if(WK.in!==inOffice){ WK.in=inOffice; WK.ox=1.4; WK.oz=4.5; WK.oyaw=Math.PI; H.g.visible=true; oCtl.enablePan=false; oCtl.minDistance=3.5; oCtl.maxDistance=13; oCtl.target.set(WK.ox,2.9,WK.oz); oCam.position.set(WK.ox+2.2,6,WK.oz+7.6); WK.keys.clear(); wkTip({k:'x',a:inOffice}); }
+  const I=wkInput(); if(I.mv){ const [dx,dz]=wkStep(oCtl,oCam,I,dt,5,9), nx=WK.ox+dx, nz=WK.oz+dz, hit=(x,z)=>x<-5.3||z<-5.3||WK.BOX.some(b=>x>b[0]-.45&&x<b[1]+.45&&z>b[2]-.45&&z<b[3]+.45);
+    if(!hit(nx,nz)){ WK.ox=nx; WK.oz=nz; } else if(!hit(nx,WK.oz)) WK.ox=nx; else if(!hit(WK.ox,nz)) WK.oz=nz;
+    WK.oyaw=wkTurn(WK.oyaw,dx,dz,dt); WK.ph+=dt*(I.run?13:9);
+    if(WK.ox>6.4||WK.oz>6.4){ document.getElementById('oback').click(); return; } }
+  wkFollow(oCtl,oCam,WK.ox,2.9,WK.oz,dt); H.g.position.set(WK.ox,0,WK.oz); H.b.rotation.y=WK.oyaw; wkPose(H,WK.ph,I.mv,I.run,now); }
+function wkOut(){ WK.in=null; WK.HO.g.visible=false; oCtl.enablePan=true; oCtl.minDistance=5; WK.keys.clear(); WK.tk='?'; wkTip(null); closeSheet(); layers(); }
+addEventListener('pointerdown',e=>{ if(e.pointerType==='touch') document.body.classList.add('touch'); },true);
+{ const b=document.getElementById('uiBtn'); b.onclick=()=>{ b.classList.toggle('on',document.body.classList.toggle('ui-on')); b.blur(); THIN.t=0; uiLayout(); }; }
+WK.btn.onclick=()=>wkSet(!WK.on); WK.tip.onclick=()=>{ WK.tip.blur(); wkAct(); };
+addEventListener('keydown',e=>{ if(e.ctrlKey||e.metaKey||e.altKey||/^(input|textarea|select)$/i.test((e.target||{}).tagName||'')) return; const k=e.code;
+  if(k==='KeyP' && !inOffice){ wkSet(!WK.on); return; } if(!WK.on) return;
+  if(/^(Key[WASD]|Arrow(Up|Down|Left|Right)|Shift(Left|Right))$/.test(k)){ WK.keys.add(k); e.preventDefault(); }
+  else if(k==='KeyE'){ if(!e.repeat) wkAct(); }
+  else if(/^Digit[1-9]$/.test(k) && !inOffice){ const d=D.districts[+k.slice(5)-1], ex=d&&EXITNODE[d.id]; if(ex) wkGo(ex.rim.x,ex.rim.y); } });
+addEventListener('keyup',e=>WK.keys.delete(e.code)); addEventListener('blur',()=>WK.keys.clear());
+{ const j=document.getElementById('wkJoy'), kn=j.firstElementChild; let id=null;
+  const mv=e=>{ const r=j.getBoundingClientRect(); let x=(e.clientX-r.left-r.width/2)/(r.width/2), y=(e.clientY-r.top-r.height/2)/(r.height/2); const m=Math.hypot(x,y); if(m>1){ x/=m; y/=m; } WK.jx=x; WK.jy=y; kn.style.transform=`translate(${x*36}px,${y*36}px)`; };
+  const up=()=>{ id=null; WK.jx=WK.jy=0; kn.style.transform=''; };
+  j.addEventListener('pointerdown',e=>{ id=e.pointerId; try{ j.setPointerCapture(id); }catch(_){} mv(e); e.preventDefault(); });
+  j.addEventListener('pointermove',e=>{ if(e.pointerId===id) mv(e); }); ['pointerup','pointercancel','lostpointercapture'].forEach(n=>j.addEventListener(n,up)); }
+window.__walk={set:on=>wkSet(on), on:()=>WK.on, go:(x,z)=>wkGo(x,z), act:()=>wkAct(), state:()=>({x:WK.x,z:WK.z,near:WK.near&&WK.near.k+':'+WK.near.a.id,office:inOffice&&inOffice.id,ox:WK.ox,oz:WK.oz})};
 window.__game={set:on=>gmSet(on), on:()=>GM.on};
 applyTOD(todOf(effHour())); recompute(true);
 /* §2.4: a record younger than 2 h plays live; else the last 24 h replay as «Kun xronikasi» (desktop only — on the phone by the button) */
 if(GOV && !MOBILE && !/[?&]noscene/.test(location.search)){ const now=Date.now(), live=G.chronicle.filter(c=>SCENE_T.has(c.type) && c.type!=='hisobot' && now-tIso(c.at)>=0 && now-tIso(c.at)<72e5).slice(-1)[0];
-  setTimeout(()=>{ if(!SC) live ? playRecord(live,false) : kunXronika(false); }, 3500); }
+  setTimeout(()=>{ if(!SC && document.body.classList.contains('ui-on')) live ? playRecord(live,false) : kunXronika(false); }, 3500); }   /* clean view: nothing plays by itself, scenes start from 📜 Xronika */
 setInterval(()=>{ if(todMode==='auto' && todOf(effHour())!==curTod) applyTOD(todOf(effHour())); recompute(); }, 60000);   /* modes once a minute (spec §8) */
 loop();
 addEventListener('resize',()=>{ cam.fov=camFov(); [cam,oCam].forEach(c=>{ c.aspect=innerWidth/innerHeight; c.updateProjectionMatrix(); }); R.setSize(innerWidth,innerHeight); L2.setSize(innerWidth,innerHeight); uiLayout(); });
