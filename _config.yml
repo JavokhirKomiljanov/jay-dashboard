@@ -1,6 +1,6 @@
-# GitHub Pages: private prompts and sources are not served (audit 2026-10-21)
+# GitHub Pages: private prompts and sources are not served (audit 2026-10-21).
+# assets/ IS served since 2026-11-24: it holds only the shared stylesheet + Onest fonts (brand logos stay gitignored).
 exclude:
   - agents
   - src
-  - assets
   - README.md
