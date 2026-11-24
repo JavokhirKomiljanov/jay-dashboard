@@ -6,15 +6,15 @@
    Shown: «🏠 Главная» top block (pending, with buttons) + view #ask (pending + history). Cache: localStorage jos7-ask. */
 document.head.insertAdjacentHTML('beforeend', `<style>
 .ask-list{display:grid;gap:10px;margin:0 0 16px}
-.ask-c{background:#fff;border:1px solid #ffc4b0;border-left:4px solid var(--coral-dark);border-radius:var(--r);padding:12px 16px}
+.ask-c{background:var(--bg-elev);border:1px solid rgba(229,72,77,.35);border-left:4px solid var(--coral-dark);border-radius:var(--r);padding:12px 16px}
 .ask-c.done{border-color:var(--line);border-left-color:var(--mint-dark);opacity:.85}
 .ask-c .hd{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:11.5px;color:var(--muted)}
 .ask-c .hd .k{font-weight:600;color:var(--ink);background:var(--card);border:1px solid var(--line-2);border-radius:999px;padding:1px 8px}
 .ask-c .t{font-size:15px;font-weight:700;margin:6px 0 4px;line-height:1.35}
 .ask-c .d{font-size:13px;white-space:pre-wrap;color:var(--ink);margin:0 0 8px;max-height:7.5em;overflow:hidden}
 .ask-c .d.open{max-height:none}.ask-c .more{font-size:12px;color:var(--muted);cursor:pointer;margin:-4px 0 8px;display:inline-block}
-.ask-c .bt{display:flex;gap:8px;flex-wrap:wrap}.ask-c .bt button{font:600 13.5px var(--sans,inherit);padding:8px 14px;border-radius:10px;border:1px solid var(--line-2);background:#fff;cursor:pointer}
-.ask-c .bt button.y{background:var(--mint,#07e7b7);border-color:var(--mint-dark);color:#053}.ask-c .bt button.n{background:#fff0eb;border-color:#ffc4b0;color:var(--coral-dark)}
+.ask-c .bt{display:flex;gap:8px;flex-wrap:wrap}.ask-c .bt button{font:600 13.5px var(--sans,inherit);padding:8px 14px;border-radius:10px;border:1px solid var(--line-2);background:var(--bg-elev);cursor:pointer}
+.ask-c .bt button.y{background:var(--mint,#07e7b7);border-color:var(--mint-dark);color:var(--on-brand)}.ask-c .bt button.n{background:rgba(229,72,77,.1);border-color:rgba(229,72,77,.35);color:var(--coral-dark)}
 .ask-c .bt button:disabled{opacity:.5;cursor:wait}.ask-c .rep{display:none;margin-top:8px}.ask-c .rep.on{display:flex;gap:8px}
 .ask-c .rep textarea{flex:1;min-height:56px;font:13px inherit;padding:8px;border:1px solid var(--line-2);border-radius:8px}
 .ask-c .res{font-size:13px;margin-top:4px}.ask-err{color:var(--coral-dark);font-size:12px;margin:4px 0 0}
@@ -87,7 +87,7 @@ function askBlock(){
     ${askErr ? `<p class="ask-err">${esc(askErr)}</p>` : ''}<div class="ask-list">${P.map(askCard).join('')}</div></div>`;
 }
 function askBadge(){ const el = document.getElementById('cnt-ask'); if(!el) return; const n = askPending().length;
-  el.textContent = n || ''; el.style.cssText = n ? 'background:#fff0eb;border-color:#ffc4b0;color:var(--coral-dark)' : ''; }
+  el.textContent = n || ''; el.style.cssText = n ? 'background:rgba(229,72,77,.1);border-color:rgba(229,72,77,.35);color:var(--coral-dark)' : ''; }
 function renderAsk(){
   const v = document.getElementById('v-ask'); if(!v) return;
   const P = askPending(), H = (AQ.items || []).filter(x => x.st !== 'pending');

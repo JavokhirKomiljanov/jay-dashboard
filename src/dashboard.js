@@ -7,16 +7,16 @@
 document.head.insertAdjacentHTML('beforeend', `<style>
 .dash-top{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;margin:0 0 14px}
 .dash-top .h2{margin:0}.dash-top .src{font-size:11.5px;color:var(--muted);margin-left:auto;text-align:right;line-height:1.5}
-.dash-act{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:6px 16px;margin:0 0 16px}
+.dash-act{background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--r);padding:6px 16px;margin:0 0 16px}
 .dash-act a{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);color:var(--ink);text-decoration:none}
 .dash-act a:last-child{border-bottom:0}.dash-act a:hover .t{text-decoration:underline}
 .dash-act .ic{width:24px;text-align:center;font-size:16px;flex:none}.dash-act .t{flex:1;min-width:0;font-size:13.5px}
 .dash-act .t small{display:block;color:var(--muted);font-size:11.5px}.dash-act .n{font:600 12px var(--mono);padding:2px 9px;border-radius:999px;border:1px solid var(--line-2);background:var(--card);white-space:nowrap}
-.dash-act .hot .n{background:#fff0eb;border-color:#ffc4b0;color:var(--coral-dark)}.dash-act .warn .n{background:#fff6e6;border-color:#ffd58a;color:#b36b00}.dash-act .go{color:var(--faint)}
+.dash-act .hot .n{background:rgba(229,72,77,.1);border-color:rgba(229,72,77,.35);color:var(--coral-dark)}.dash-act .warn .n{background:rgba(255,176,32,.14);border-color:rgba(255,176,32,.4);color:var(--warn-ink)}.dash-act .go{color:var(--faint)}
 .dash-act .ok{padding:10px 0;color:var(--mint-dark);font-weight:600}
 .dash-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 20px}
 @media(max-width:1100px){.dash-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:560px){.dash-grid{grid-template-columns:1fr}}
-.tile{display:block;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:13px 15px 12px;min-width:0;color:inherit;text-decoration:none!important;transition:border-color .15s;position:relative}
+.tile{display:block;background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--r);padding:13px 15px 12px;min-width:0;color:inherit;text-decoration:none!important;transition:border-color .15s;position:relative}
 .tile:hover{border-color:var(--ink)}
 .tile .hd{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--body);margin:0 0 6px}
 .tile .hd .dot{width:7px;height:7px;border-radius:50%;background:var(--mint);margin-left:auto;flex:none}
@@ -26,7 +26,7 @@ document.head.insertAdjacentHTML('beforeend', `<style>
 .tile .v.neg{color:var(--coral-dark)}.tile .v.pos{color:var(--mint-dark)}
 .tile .s{font-size:11.5px;color:var(--body);margin-top:5px;line-height:1.45}.tile .s b{font-weight:600}
 .tile .at{font-size:10.5px;color:var(--faint);margin-top:6px;font-family:var(--mono)}
-.tile.alert{border-color:#ffc4b0;background:#fffaf8}
+.tile.alert{border-color:rgba(229,72,77,.35);background:rgba(229,72,77,.06)}
 .dash-cols{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:12px;margin:0 0 20px}
 @media(max-width:900px){.dash-cols{grid-template-columns:1fr}}
 .dash-cols .card h3{font-size:15px;font-weight:800;margin:0}
@@ -96,7 +96,7 @@ function dashActions(){
   return A.sort((a, b) => b.sev - a.sev);
 }
 function dashBadge(){ const el = document.getElementById('cnt-today'); if(!el) return; const A = dashActions(), asks = typeof askPending === 'function' ? askPending().length : 0, hot = A.filter(a => a.sev === 2).length + asks, n = A.filter(a => a.sev > 0).length + asks;
-  el.textContent = n || ''; el.style.cssText = hot ? 'background:#fff0eb;border-color:#ffc4b0;color:var(--coral-dark)' : n ? 'background:#fff6e6;border-color:#ffd58a;color:#b36b00' : ''; }
+  el.textContent = n || ''; el.style.cssText = hot ? 'background:rgba(229,72,77,.1);border-color:rgba(229,72,77,.35);color:var(--coral-dark)' : n ? 'background:rgba(255,176,32,.14);border-color:rgba(255,176,32,.4);color:var(--warn-ink)' : ''; }
 
 /* tiles */
 function tile(tab, ic, name, at, lim, v, vcls, lines, alert){
@@ -117,7 +117,7 @@ function dashTiles(){
   return `<div class="dash-grid">
     ${tile('sales', '📇', 'Продажи · CRM', s.at, DASH_FRESH.sales, `${fN(s.active)}<small>лидов</small>`, '', [`ждут ответа <b>${fN(s.waiting)}</b>${nz(s.waiting_24h) ? ` · >24 ч <b style="color:var(--coral-dark)">${fN(s.waiting_24h)}</b>` : ''}`, `медиана ответа <b>${fN(s.median_resp_h)} ч</b> · новых за 7 дн <b>${fN(s.new_7d)}</b> · 🔥 ${fN(s.hot)}`], nz(s.waiting_24h) > 0 || (s.agent && s.agent !== 'running'))}
     ${tile('instagram', '📷', 'Instagram', i.at, DASH_FRESH.instagram, `${fN(i.followers)}<small>подписчиков</small>`, '', [`<b style="color:var(--mint-dark)">${nz(i.delta) >= 0 ? '+' : ''}${fN(i.delta)}</b> с ${i.since ? dateRu(i.since) : '—'} · постов за 7 дн <b>${fN(i.posts_7d)}</b>`, `reels ср. <b>${fN(i.reel_avg)}</b> просм. (${fN(i.reels_30d)} за 30 дн) · карусели ср. ${fN(i.car_avg)}`])}
-    ${tile('marketing', '📣', 'Маркетинг', mk.at, DASH_FRESH.marketing, `${fN(mk.tg_members)}<small>в TG-канале</small>`, '', [`LinkedIn <b>${fN(mk.li_posts_30d)}</b> постов/30 дн · токен <b>${fN(mk.li_token_days)} дн</b>`, (mk.broken || []).length ? `не подключено: <b style="color:#b36b00">${mk.broken.map(esc).join(', ')}</b>` : 'все каналы подключены', (mk.todo || []).length ? `задач: <b>${mk.todo.length}</b>` : ''], nz(mk.li_token_days) != null && mk.li_token_days <= 7)}
+    ${tile('marketing', '📣', 'Маркетинг', mk.at, DASH_FRESH.marketing, `${fN(mk.tg_members)}<small>в TG-канале</small>`, '', [`LinkedIn <b>${fN(mk.li_posts_30d)}</b> постов/30 дн · токен <b>${fN(mk.li_token_days)} дн</b>`, (mk.broken || []).length ? `не подключено: <b style="color:var(--warn-ink)">${mk.broken.map(esc).join(', ')}</b>` : 'все каналы подключены', (mk.todo || []).length ? `задач: <b>${mk.todo.length}</b>` : ''], nz(mk.li_token_days) != null && mk.li_token_days <= 7)}
     ${tile('learn', '🎓', 'Обучение', typeof LD !== 'undefined' ? LD.synced : null, DASH_FRESH.cloud, `${stu.length}<small>${stu.length === 1 ? 'ученик' : stu.length < 5 ? 'ученика' : 'учеников'}</small>`, '', [W.length ? `<b style="color:var(--coral-dark)">на проверке ${W.length}</b> · самая старая ${leAge(W[0].at)}` : 'очередь проверки пустая', nxt.slice(0, 2).join('<br>')], W.length > 0)}
     ${tile('cal', '📅', 'Календарь', CD && CD.at, DASH_FRESH.cloud, ev ? `${evLeft.length}<small>встреч${ev.length !== evLeft.length ? ' осталось' : ' сегодня'}</small>` : '—', '', [ev ? `задач на сегодня <b>${tdy}</b>${late ? ` · <b style="color:var(--coral-dark)">просрочено ${late}</b>` : ''}` : 'календарь ещё не загружен', evLeft[0] ? `дальше: <b>${evLeft[0].allDay ? 'весь день' : tzHM(evLeft[0].start)}</b> ${esc(evLeft[0].title).slice(0, 40)}` : ev ? 'встреч больше нет' : ''], late > 0)}
     ${tile('me', '👛', 'Мои финансы', typeof M !== 'undefined' ? M.synced : null, DASH_FRESH.cloud, m ? (MU.hide ? '•••' : `${meFmt(m.exp)}`) : '—', '', [m ? `${ymRu(ME_YM)}: ⚡ неожиданные <b>${MU.hide ? '•••' : meFmt(m.unexp)}</b> · доход ${MU.hide ? '•••' : meFmt(m.income)}` : '', cards.length ? `на картах <b>${MU.hide ? '•••' : meFmt(meSum(cards, c => meV(c.bal, c.c || 'UZS')))}</b>` : '', typeof meInbox === 'function' && meInbox().length ? `📥 с телефона: <b>${meInbox().length}</b>` : ''])}
@@ -147,7 +147,7 @@ function renderDashboard(){
     <div class="src">${srcAt}<br>облако: календарь ${CD && CD.at ? hmTxt(CD.at) : '—'} · обучение ${typeof LD !== 'undefined' && LD.synced ? hmTxt(LD.synced) : '—'} · финансы ${typeof M !== 'undefined' && M.synced ? hmTxt(M.synced) : '—'}</div></div>
 
   ${typeof askBlock === 'function' ? askBlock() : ''}
-  ${(L.meeting_files || []).length ? `<div class="sect-h"><h3>📎 Файлы к встрече</h3><span class="tag">открываются тут, внутри JOS</span></div><div class="chip-row" style="margin:0 0 10px">${L.meeting_files.map(f => `<button class="btn" onclick="mfOpen('${esc(f.u)}')">${f.ic} ${esc(f.t)}</button>`).join('')}</div><div id="mf-view" style="display:none;margin:0 0 16px"><div style="display:flex;gap:10px;margin:0 0 6px"><a id="mf-ext" class="btn" target="_blank">↗ в новой вкладке</a><button class="btn" onclick="mfOpen('')">✕ закрыть</button></div><iframe id="mf-frame" style="width:100%;height:80vh;border:1px solid var(--line);border-radius:var(--r);background:#fff"></iframe></div>` : ''}
+  ${(L.meeting_files || []).length ? `<div class="sect-h"><h3>📎 Файлы к встрече</h3><span class="tag">открываются тут, внутри JOS</span></div><div class="chip-row" style="margin:0 0 10px">${L.meeting_files.map(f => `<button class="btn" onclick="mfOpen('${esc(f.u)}')">${f.ic} ${esc(f.t)}</button>`).join('')}</div><div id="mf-view" style="display:none;margin:0 0 16px"><div style="display:flex;gap:10px;margin:0 0 6px"><a id="mf-ext" class="btn" target="_blank">↗ в новой вкладке</a><button class="btn" onclick="mfOpen('')">✕ закрыть</button></div><iframe id="mf-frame" style="width:100%;height:80vh;border:1px solid var(--line);border-radius:var(--r);background:var(--bg-elev)"></iframe></div>` : ''}
   ${(L.insights || []).length ? `<div class="card mint" style="margin:0 0 16px"><h4>💡 Инсайты</h4>${L.insights.map(x => `<p style="margin:4px 0"><b>${E_('insight.' + esc(x.t).slice(0,30), esc(x.t))}</b> <span class="small muted">${esc(x.d || '')}</span></p>`).join('')}</div>` : ''}
   <div class="sect-h"><h3>Нужно от тебя</h3><span class="tag">${A.filter(a => a.sev > 0).length ? A.filter(a => a.sev === 2).length + ' срочных · ' + A.filter(a => a.sev === 1).length + ' в работу' : 'ничего не горит'}</span></div>
   <div class="dash-act">${A.length ? A.map(a => `<a class="${a.sev === 2 ? 'hot' : a.sev === 1 ? 'warn' : ''}" ${go(a.tab)}><span class="ic">${a.ic}</span><span class="t">${a.text}${a.sub ? `<small>${a.sub}</small>` : ''}</span>${a.n !== '' && a.n != null ? `<span class="n">${a.n}</span>` : ''}<span class="go">→</span></a>`).join('') : '<div class="ok">✓ Всё чисто — очередей нет, просрочек нет.</div>'}</div>

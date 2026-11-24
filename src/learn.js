@@ -10,27 +10,27 @@ const LPORTAL = (D.links && D.links.learn_page) || 'https://javokhirkomiljanov.g
 document.head.insertAdjacentHTML('beforeend', `<style>
 .le-card{display:block;color:inherit;text-decoration:none!important;transition:border-color .15s}.le-card:hover{border-color:var(--ink)}
 .le-card h4{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.le-add{font:inherit;font-weight:600;color:var(--mint-dark);cursor:pointer;min-height:150px;background:#fff}
+.le-add{font:inherit;font-weight:600;color:var(--mint-dark);cursor:pointer;min-height:150px;background:var(--bg-elev)}
 .le-form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .le-form label{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;display:flex;flex-direction:column;gap:3px;min-width:0}
 .le-form .wide{grid-column:1/-1}.le-form .fi{border-color:var(--line);text-transform:none;letter-spacing:0;font-weight:400}
 @media(max-width:900px){.le-form{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .le-ta{resize:vertical;font-family:var(--text);line-height:1.45}
 .le-link{margin-top:12px;padding:10px 12px;background:var(--mint-tint);border:1px solid var(--mint-light);border-radius:10px;font-size:12.5px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.le-lesson,.le-task{background:#fff}
+.le-lesson,.le-task{background:var(--bg-elev)}
 .le-lesson summary,.le-task summary{flex-wrap:wrap;font-weight:500}
 .le-sub{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:10px 0;background:var(--card)}
-.le-sub.wait{border-color:#ffd58a;background:#fffaf0}
+.le-sub.wait{border-color:rgba(255,176,32,.4);background:rgba(255,176,32,.1)}
 .le-sub-h{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12.5px}
 .le-rev{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px;margin-top:10px}
 @media(max-width:1000px){.le-rev{grid-template-columns:1fr}}
-.le-doc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px;max-height:620px;overflow:auto}
+.le-doc{background:var(--bg-elev);border:1px solid var(--line);border-radius:10px;padding:12px;max-height:620px;overflow:auto}
 .le-text{white-space:pre-wrap;font-size:13px;color:var(--ink);line-height:1.55}
 .le-rub td{padding:6px 6px;vertical-align:middle}.le-rub td.num{white-space:nowrap}
-.le-sc{min-width:30px;justify-content:center;margin-left:2px}.le-sc.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.le-sc{min-width:30px;justify-content:center;margin-left:2px}.le-sc.on{background:var(--ink-fill);color:var(--on-ink);border-color:var(--ink-fill)}
 .le-total{margin:8px 0;font-size:13px}
 .le-new{margin-top:10px;padding:10px;border:1px dashed var(--line-2);border-radius:10px;display:flex;flex-direction:column;gap:6px}
-.le-new .fi,.le-sform .fi{border-color:var(--line-2);background:#fff}
+.le-new .fi,.le-sform .fi{border-color:var(--line-2);background:var(--bg-elev)}
 .le-sform{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
 </style>`);
 const LE_RUBRIC = [
@@ -385,6 +385,6 @@ function renderLearn(){
 function leRender(){ const y = window.scrollY; renderLearn(); window.scrollTo(0, y); learnBadge(); }
 function leExport(){ const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(leOut(), null, 2)], {type: 'application/json'})); a.download = 'jos-learn-' + leToday() + '.json'; a.click(); }
 function learnBadge(){ const el = document.getElementById('cnt-learn'); if(!el) return; const w = leWaiting().length, n = LD.students.filter(s => s.status === 'active').length;
-  el.textContent = w ? '📥 ' + w : n + ' уч.'; el.style.cssText = w ? 'background:#fff6e6;border-color:#ffd58a;color:#b36b00' : ''; }
+  el.textContent = w ? '📥 ' + w : n + ' уч.'; el.style.cssText = w ? 'background:rgba(255,176,32,.14);border-color:rgba(255,176,32,.4);color:var(--warn-ink)' : ''; }
 function learnTodayTxt(){ const W = leWaiting(), n = LD.students.filter(s => s.status === 'active').length;
   return `Учеников: <b>${n}</b>. ${W.length ? `На проверке: <b>${W.length}</b> (самая старая ждёт ${leAge(W[0].at)}).` : 'Очередь проверки пустая.'} Программы, задания, ТЗ по рубрике.`; }

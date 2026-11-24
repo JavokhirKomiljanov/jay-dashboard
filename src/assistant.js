@@ -14,7 +14,7 @@ document.head.insertAdjacentHTML('beforeend', `<style>
 #v-assist .as-models{display:inline-flex;border:1px solid var(--line-2);border-radius:10px;overflow:hidden}
 #v-assist .as-models button{border:0;background:var(--surface,#fff);color:var(--body);padding:5px 10px;font:600 12px var(--text);cursor:pointer}
 #v-assist .as-models button+button{border-left:1px solid var(--line-2)}
-#v-assist .as-models button.on{background:var(--ink);color:var(--bg)}
+#v-assist .as-models button.on{background:var(--ink-fill);color:var(--on-ink)}
 #v-assist .as-log{display:flex;flex-direction:column;gap:10px;min-height:40vh;padding:0 0 12px}
 #v-assist .as-m{max-width:min(760px,92%);min-width:min(220px,70%);border-radius:16px;padding:10px 14px;font-size:14px;line-height:1.5;overflow-wrap:break-word;word-break:break-word;position:relative;scroll-margin-bottom:110px}
 #v-assist .as-m.as-r-jay{align-self:flex-end;background:var(--mint-tint);border:1px solid var(--mint-light);color:var(--ink);white-space:pre-wrap}
@@ -37,7 +37,7 @@ document.head.insertAdjacentHTML('beforeend', `<style>
 #v-assist .as-in{position:sticky;bottom:0;display:flex;gap:8px;align-items:flex-end;padding:10px 0 12px;background:linear-gradient(180deg,transparent,var(--bg) 30%)}
 #v-assist .as-in textarea{flex:1;min-height:46px;max-height:40vh;resize:vertical;border:1px solid var(--line-2);border-radius:14px;padding:11px 14px;font:14.5px/1.4 var(--text);color:var(--ink);background:var(--surface,#fff);outline:none}
 #v-assist .as-in textarea:focus{border-color:var(--mint-dark)}
-#v-assist .as-in button{height:46px;min-width:54px;border:0;border-radius:14px;background:var(--mint);color:#131313;font:700 15px var(--text);cursor:pointer}
+#v-assist .as-in button{height:46px;min-width:54px;border:0;border-radius:14px;background:var(--brand);color:var(--on-brand);font:700 15px var(--text);cursor:pointer}
 #v-assist .as-in button:disabled{opacity:.5;cursor:default}
 #v-assist .as-err{font-size:12.5px;color:var(--coral-dark);margin:0 0 8px}
 #v-assist .as-empty{color:var(--muted);font-size:13.5px;padding:24px 0;text-align:center}
