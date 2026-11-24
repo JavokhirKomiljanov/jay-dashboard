@@ -4,18 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Jay OS — панель</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/w2w-v3.css">
+<script>/* W2W v3: follow the JOS theme (same origin → same localStorage); the shell also sets it directly */try{document.documentElement.dataset.theme=localStorage.getItem('jos-theme')||'dark';addEventListener('storage',e=>{if(e.key==='jos-theme')document.documentElement.dataset.theme=e.newValue||'dark'})}catch(e){}</script>
 <style>
 /*__CSS__*/
 /* ---- panel-only ---- */
 body{background:var(--bg)}
-.ptop{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 28px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);z-index:10}
+.ptop{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 28px;border-bottom:1px solid var(--sep);position:sticky;top:0;background:var(--g-fill-thick);-webkit-backdrop-filter:blur(22px) saturate(190%);backdrop-filter:blur(22px) saturate(190%);z-index:10}
 .ptop h1{font-size:18px;font-weight:800}
 .ptop .sp{flex:1}
 body.embedded .ptop{display:none}
 body.embedded .wrap{padding:0}
-.stale{display:none;margin:0 0 14px;padding:10px 14px;border-radius:12px;background:#fff6e6;border:1px solid #ffd58a;color:#b36b00;font-size:12.5px}
+.stale{display:none;margin:0 0 14px;padding:10px 14px;border-radius:12px;background:rgba(255,176,32,.14);border:1px solid rgba(255,176,32,.4);color:var(--warn-ink);font-size:12.5px}
 .stale.on{display:block}
 .funnel .row{display:grid;grid-template-columns:150px minmax(0,1fr) 54px;gap:10px;align-items:center;padding:5px 0}
 .funnel .bar{height:22px;border-radius:7px;background:var(--mint);min-width:2px}
@@ -26,22 +26,29 @@ body.embedded .wrap{padding:0}
 .flt{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 10px}
 .flt input{border:1px solid var(--line-2);border-radius:10px;padding:7px 11px;font:inherit;min-width:220px;outline:none}
 .flt input:focus{border-color:var(--mint-dark)}
-.flt button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:4px 11px;font-size:11.5px;font-weight:600;color:var(--body);cursor:pointer}
-.flt button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.flt button{border:1px solid var(--sep);background:var(--bg-elev);border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:600;color:var(--body);cursor:pointer;min-height:36px}
+.flt button.on{background:var(--ink-fill);color:var(--on-ink);border-color:var(--ink-fill)}
+.flt select{-webkit-appearance:none;appearance:none;border:1px solid var(--sep);border-radius:12px;padding:8px 32px 8px 12px;background:var(--bg-elev) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%236c6c70' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 12px center;font:500 13.5px var(--text);color:var(--ink);cursor:pointer;min-height:38px;max-width:100%}
+.flt select.set{border-color:var(--ink);font-weight:600}
+.flt select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 4px rgba(var(--brand-rgb),.16)}
+@media(max-width:640px){.flt select{flex:1 1 150px}.flt input{flex:1 1 100%;min-width:0}}
 td .snip{color:var(--body);font-size:12px;line-height:1.35;max-width:440px}
 .wt{font:600 12px var(--mono);white-space:nowrap}
-.wt.bad{color:var(--coral-dark)}.wt.warn{color:#b36b00}
+.wt.bad{color:var(--coral-dark)}.wt.warn{color:var(--warn-ink)}
 .topics{columns:2;column-gap:24px}
 @media(max-width:700px){.topics{columns:1}}
 .topics li{break-inside:avoid;padding:4px 0;font-size:12.5px;list-style:none}
 .topics li.done{color:var(--muted);text-decoration:line-through}
 .gap li{margin:4px 0}
-.subtabs{display:flex;gap:6px;margin:0 0 18px;border-bottom:1px solid var(--line);padding-bottom:10px;flex-wrap:wrap}
-.subtabs button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font:600 13px var(--text);color:var(--body);cursor:pointer}
-.subtabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.subtabs{display:flex;gap:22px;margin:0 0 16px;padding:0;border-bottom:1px solid var(--sep);overflow-x:auto;scrollbar-width:none;flex-wrap:nowrap}
+.subtabs::-webkit-scrollbar{display:none}
+.subtabs button{border:0;border-radius:0;background:transparent;padding:10px 0;margin-bottom:-1px;font:600 13.5px var(--text);color:var(--label-3);border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}
+.subtabs button:hover{color:var(--ink)}
+.subtabs button.on{background:transparent;color:var(--ink);border-bottom-color:var(--ink)}
+.subtabs button i{font-style:normal;font-weight:500;color:var(--label-3);margin-left:6px;font-size:12px}
 .cl-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 @media(max-width:820px){.cl-list{grid-template-columns:1fr}}
-.cl{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;min-width:0;cursor:pointer;transition:border-color .15s}
+.cl{background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;min-width:0;cursor:pointer;transition:border-color .15s}
 .cl:hover{border-color:var(--mint-light)}
 .cl.open{grid-column:1/-1;cursor:default;border-color:var(--mint-dark);box-shadow:0 4px 18px rgba(5,168,132,.08)}
 .cl .t{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -56,32 +63,39 @@ td .snip{color:var(--body);font-size:12px;line-height:1.35;max-width:440px}
 .cl .next{background:var(--mint-tint);border:1px solid var(--mint-light);border-radius:12px;padding:10px 12px;font-size:13px}
 .tl{list-style:none;margin:0 0 0 6px;padding:0;border-left:2px solid var(--line)}
 .tl li{position:relative;padding:0 0 10px 16px;font-size:12.5px;line-height:1.45}
-.tl li:before{content:'';position:absolute;left:-6px;top:4px;width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid var(--mint-dark);box-sizing:border-box}
+.tl li:before{content:'';position:absolute;left:-6px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--bg-elev);border:2px solid var(--mint-dark);box-sizing:border-box}
 .tl .d{font:600 11.5px var(--mono);color:var(--ink);margin-right:6px}
 .tl .w{color:var(--muted)}
 .src{font-size:10.5px;color:var(--faint);word-break:break-all}
 .msgs{font-size:12px;border:1px solid var(--line);border-radius:12px;padding:8px 10px;background:var(--card)}
 .msgs div{padding:3px 0}.msgs .in b{color:#6b45d6}.msgs .out b{color:var(--mint-dark)}
-.mynotes{white-space:pre-wrap;font-size:12.5px;background:#fffdf3;border:1px solid #f2e3a6;border-radius:12px;padding:10px 12px}
+.mynotes{white-space:pre-wrap;font-size:12.5px;background:rgba(255,176,32,.08);border:1px solid rgba(255,176,32,.35);border-radius:12px;padding:10px 12px}
 .ed{width:100%;min-height:60px;border:1px solid var(--line-2);border-radius:10px;padding:8px 10px;font:inherit;font-size:12.5px;resize:vertical;box-sizing:border-box}
 .ed:focus,.edrow input:focus,.edrow select:focus{outline:none;border-color:var(--mint-dark)}
 .edrow{display:grid;grid-template-columns:130px minmax(0,1fr);gap:8px;align-items:start;margin:6px 0}
 @media(max-width:600px){.edrow{grid-template-columns:1fr}}
 .edrow label{font-size:11.5px;color:var(--muted);padding-top:8px}
-.edrow input,.edrow select{border:1px solid var(--line-2);border-radius:10px;padding:7px 10px;font:inherit;font-size:12.5px;width:100%;box-sizing:border-box;background:#fff}
-.edited{font-size:10.5px;color:#b36b00;font-weight:600}
+.edrow input,.edrow select{border:1px solid var(--line-2);border-radius:10px;padding:7px 10px;font:inherit;font-size:12.5px;width:100%;box-sizing:border-box;background:var(--bg-elev)}
+.edited{font-size:10.5px;color:var(--warn-ink);font-weight:600}
 .fday{font:700 11.5px var(--text);text-transform:uppercase;letter-spacing:.08em;color:var(--mint-dark);margin:18px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--line)}
-.frow{display:grid;grid-template-columns:34px minmax(0,1fr) 190px;gap:10px;align-items:start;padding:8px 10px;border:1px solid var(--line);border-radius:12px;background:#fff;margin:6px 0}
+.frow{display:grid;grid-template-columns:30px minmax(0,1fr) 34px;gap:10px;align-items:start;padding:10px 12px;border:1px solid var(--sep);border-radius:14px;background:var(--bg-elev);margin:6px 0;cursor:pointer;box-shadow:var(--shadow-1)}
+.frow .fmeta1{font-size:12px;color:var(--label-3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.frow .fx{display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--sep)}
+.frow.open .fx{display:block}
+.frow.open .fmeta1{white-space:normal}
+.frow .fpin{border:0;background:transparent;font-size:16px;color:var(--label-3);cursor:pointer;padding:0;width:34px;height:34px;border-radius:50%;margin:-4px -6px 0 0}
+.frow .fpin.on{color:var(--warn)}
+.frow .fpin:hover{background:var(--fill)}
 .frow.pin{border-color:var(--mint-light);background:var(--mint-tint)}
-.frow .fic{font-size:20px;line-height:1.2;text-align:center}
+.frow .fic{font-size:18px;line-height:1.3;text-align:center}
 .frow .fname{font-weight:600;font-size:13px;word-break:break-word}
 .frow .fpath{font-size:10.5px;color:var(--muted);word-break:break-all;margin-top:2px}
-.frow .fnote{font-size:12px;color:#7a5a00;margin-top:4px}
+.frow .fnote{font-size:12px;color:var(--warn-ink);margin-top:4px}
 .frow .fmeta{text-align:right;font-size:11.5px}
 .frow .fbtn{display:flex;gap:4px;justify-content:flex-end;flex-wrap:wrap;margin-top:4px}
-.frow .fbtn button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:2px 7px;font-size:11px;cursor:pointer;color:var(--body)}
+.frow .fbtn button{border:1px solid var(--sep);background:var(--bg-elev);border-radius:999px;padding:5px 11px;font-size:12px;cursor:pointer;color:var(--ink);min-height:30px}
 .frow .fbtn button:hover{border-color:var(--mint-dark);color:var(--mint-dark)}
-@media(max-width:640px){.frow{grid-template-columns:28px minmax(0,1fr)}.frow .fmeta{grid-column:2;text-align:left}.frow .fbtn{justify-content:flex-start}}
+@media(max-width:640px){.frow{grid-template-columns:26px minmax(0,1fr) 34px}.frow .fbtn{justify-content:flex-start}}
 </style>
 </head>
 <body>
@@ -99,20 +113,20 @@ const sinceH = iso => { const t = Date.parse(iso||''); return isNaN(t) ? null : 
 function bars(items, {w=640, h=170, color='var(--mint)'}={}){
   const max = Math.max(...items.map(i=>i.v||0), 1), pad = 22, bw = (w-2*pad)/items.length, zero = h-30, sc = (zero-16)/max;
   return `<svg viewBox="0 0 ${w} ${h}">${items.map((it,i)=>{ const x = pad+i*bw+bw*.15, bh = (it.v||0)*sc, y = zero-bh;
-    return `<rect x="${x}" y="${y}" width="${bw*.7}" height="${Math.max(bh,1)}" rx="4" fill="${it.c||color}"/><text x="${x+bw*.35}" y="${y-4}" font-size="10" text-anchor="middle" fill="#131313" font-weight="600">${it.v?fmt(it.v):''}</text><text x="${x+bw*.35}" y="${h-10}" font-size="9.5" text-anchor="middle" fill="#8a8a8a">${esc(it.l)}</text>`; }).join('')}<line x1="${pad}" x2="${w-pad}" y1="${zero}" y2="${zero}" stroke="#d9dcdf"/></svg>`;
+    return `<rect x="${x}" y="${y}" width="${bw*.7}" height="${Math.max(bh,1)}" rx="4" fill="${it.c||color}"/><text x="${x+bw*.35}" y="${y-4}" font-size="10" text-anchor="middle" fill="var(--ink)" font-weight="600">${it.v?fmt(it.v):''}</text><text x="${x+bw*.35}" y="${h-10}" font-size="9.5" text-anchor="middle" fill="var(--label-3)">${esc(it.l)}</text>`; }).join('')}<line x1="${pad}" x2="${w-pad}" y1="${zero}" y2="${zero}" stroke="var(--line-2)"/></svg>`;
 }
 function pairBars(items, {w=640, h=170}={}){
   const max = Math.max(...items.flatMap(i=>[i.a||0,i.b||0]), 1), pad = 22, bw = (w-2*pad)/items.length, zero = h-30, sc = (zero-16)/max;
   return `<svg viewBox="0 0 ${w} ${h}">${items.map((it,i)=>{ const x = pad+i*bw+bw*.12, bwi = bw*.36;
     const r = (v,dx,c) => { const bh=(v||0)*sc; return `<rect x="${x+dx}" y="${zero-bh}" width="${bwi}" height="${Math.max(bh,1)}" rx="3" fill="${c}"/>`; };
-    return r(it.a,0,'#c3aaff') + r(it.b,bwi+2,'var(--mint)') + `<text x="${x+bwi}" y="${h-10}" font-size="9.5" text-anchor="middle" fill="#8a8a8a">${esc(it.l)}</text>`; }).join('')}<line x1="${pad}" x2="${w-pad}" y1="${zero}" y2="${zero}" stroke="#d9dcdf"/></svg>`;
+    return r(it.a,0,'#c3aaff') + r(it.b,bwi+2,'var(--mint)') + `<text x="${x+bwi}" y="${h-10}" font-size="9.5" text-anchor="middle" fill="var(--label-3)">${esc(it.l)}</text>`; }).join('')}<line x1="${pad}" x2="${w-pad}" y1="${zero}" y2="${zero}" stroke="var(--line-2)"/></svg>`;
 }
 function line(points, {w=640, h=170}={}){
   if(points.length < 2) return '<p class="small muted">Мало точек для графика.</p>';
   const vs = points.map(p=>p.v), mn = Math.min(...vs), mx = Math.max(...vs), pad = 30, span = Math.max(mx-mn, 1);
   const X = i => pad + i*(w-2*pad)/(points.length-1), Y = v => h-28 - (v-mn)/span*(h-56);
   const d = points.map((p,i)=>`${i?'L':'M'}${X(i).toFixed(1)},${Y(p.v).toFixed(1)}`).join(' ');
-  return `<svg viewBox="0 0 ${w} ${h}"><path d="${d}" fill="none" stroke="var(--mint-dark)" stroke-width="2.5" stroke-linejoin="round"/>${points.map((p,i)=>`<circle cx="${X(i)}" cy="${Y(p.v)}" r="3" fill="#fff" stroke="var(--mint-dark)" stroke-width="2"/>${(i===0||i===points.length-1||i%3===0)?`<text x="${X(i)}" y="${Y(p.v)-8}" font-size="10" text-anchor="middle" fill="#131313" font-weight="600">${fmt(p.v)}</text><text x="${X(i)}" y="${h-8}" font-size="9.5" text-anchor="middle" fill="#8a8a8a">${esc(p.l)}</text>`:''}`).join('')}</svg>`;
+  return `<svg viewBox="0 0 ${w} ${h}"><path d="${d}" fill="none" stroke="var(--mint-dark)" stroke-width="2.5" stroke-linejoin="round"/>${points.map((p,i)=>`<circle cx="${X(i)}" cy="${Y(p.v)}" r="3" fill="var(--bg-elev)" stroke="var(--mint-dark)" stroke-width="2"/>${(i===0||i===points.length-1||i%3===0)?`<text x="${X(i)}" y="${Y(p.v)-8}" font-size="10" text-anchor="middle" fill="var(--ink)" font-weight="600">${fmt(p.v)}</text><text x="${X(i)}" y="${h-8}" font-size="9.5" text-anchor="middle" fill="var(--label-3)">${esc(p.l)}</text>`:''}`).join('')}</svg>`;
 }
 const pillTemp = t => t==='hot'?'<span class="pill bad">горячий</span>':t==='warm'?'<span class="pill warn">тёплый</span>':t==='cold'?'<span class="pill blue">холодный</span>':'';
 const taskPill = s => s==='Running'?'<span class="pill mint">работает</span>':s==='Ready'?'<span class="pill blue">по расписанию</span>':s==='Disabled'?'<span class="pill grey">выключен</span>':`<span class="pill warn">${esc(s||'нет')}</span>`;
@@ -128,17 +142,17 @@ function renderSales(){
   const tg = l => l.username ? `<a href="https://t.me/${esc(l.username)}" target="_blank">@${esc(l.username)}</a>` : '';
   const waitCls = h => h>=72?'bad':h>=24?'warn':'';
   document.getElementById('root').innerHTML = `
-  <div class="subtabs" id="subtabs"><button data-t="crm">🗂 Канбан CRM</button><button data-t="clients">🏢 Клиенты${D.clients?' · '+D.clients.kpi.total:''}</button><button data-t="leads">📇 Лиды Telegram · ${fmt(k.active)}</button></div>
-  <div id="t-crm"><iframe id="crmf" title="Jay CRM" style="width:100%;height:calc(100vh - 118px);min-height:640px;border:1px solid var(--line);border-radius:var(--r);background:#fff"></iframe>
+  <div class="subtabs" id="subtabs"><button data-t="crm">Канбан</button><button data-t="clients">Клиенты${D.clients?'<i>'+D.clients.kpi.total+'</i>':''}</button><button data-t="leads">Лиды Telegram<i>${fmt(k.active)}</i></button></div>
+  <div id="t-crm"><iframe id="crmf" title="Jay CRM" style="width:100%;height:calc(100vh - 118px);min-height:640px;border:1px solid var(--sep);border-radius:var(--r);background:transparent"></iframe>
     <p class="small muted" style="margin:6px 0 0">Канбан Jay CRM: ISAEV Dastur 24/25 + Telegram/Instagram. Ты уже внутри как Jay; у команды — свои логины. <a href="crm.html" target="_blank">Открыть отдельной страницей ↗</a></p></div>
   <div id="t-clients"></div>
   <div id="t-leads">
   <div class="eyebrow">Jay CRM · Telegram @ceo_w2w · обновлено ${dmy(C.generated)}</div>
   <h2 class="h2">${fmt(k.active)} активных лидов, <span class="hl">${fmt(k.waiting)} ждут ответа</span></h2>
-  <p class="lead">Все личные чаты sales-аккаунта, кроме команды и ботов. Отвечать можно прямо в Telegram или через CRM-бота — ответ уйдёт от @ceo_w2w.</p>
+  <p class="lead">Личные чаты sales-аккаунта. Ответ — в Telegram или через CRM-бота от имени @ceo_w2w.</p>
   <div class="chip-row" style="margin:-6px 0 18px">
-    <a class="btn" href="${esc(A.bot)}" target="_blank">📇 CRM-бот ↗</a>
-    ${A.web_url?`<a class="btn" href="${esc(A.web_url)}" target="_blank" title="Адрес туннеля меняется при перезапуске агента. Актуальный — команда /link в боте.">🌐 CRM в браузере ↗</a>`:''}
+    <a class="btn sm" href="${esc(A.bot)}" target="_blank">CRM-бот ↗</a>
+    ${A.web_url?`<a class="btn sm" href="${esc(A.web_url)}" target="_blank" title="Адрес туннеля меняется при перезапуске агента. Актуальный — команда /link в боте.">CRM в браузере ↗</a>`:''}
     <span class="pill ${A.state==='running'?'mint':'bad'}">агент: ${A.state==='running'?'работает':esc(A.state||'нет данных')}</span>
     <span class="pill ${A.tg_sales.state==='connected'?'mint':'bad'}">Telegram: ${A.tg_sales.state==='connected'?'подключён, синк '+dmy(A.tg_sales.last_sync):esc(A.tg_sales.state||'?')}</span>
     <span class="pill grey" title="${esc(A.instagram.detail||'')}">Instagram-лиды: ${A.instagram.state==='not_configured'?'не подключены':esc(A.instagram.state||'?')}</span>
@@ -189,13 +203,13 @@ function renderSales(){
   let stage = 'all';
   const stages = [['all','все'], ...C.funnel.filter(f=>f.n).map(f=>[f.key, f.name+' · '+f.n]), ['waiting','ждут ответа']];
   const stg = document.getElementById('stg');
-  stg.innerHTML = stages.map(([k,n])=>`<button data-s="${k}" class="${k==='all'?'on':''}">${esc(n)}</button>`).join(' ');
+  stg.innerHTML = `<select id="stg-sel" title="Стадия">${stages.map(([k,n])=>`<option value="${k}">${esc(n)}</option>`).join('')}</select>`;
   const draw = () => { const q = (document.getElementById('q').value||'').toLowerCase().trim();
     const rows = C.leads.filter(l => (stage==='all' || (stage==='waiting'?l.waiting:l.stage===stage)) && (!q || [l.name,l.username,l.snippet,l.intent,l.company].join(' ').toLowerCase().includes(q)));
     document.getElementById('cnt-all').textContent = rows.length + ' из ' + C.leads.length;
     document.getElementById('all').innerHTML = rows.map(l=>`<tr><td><b>${esc(l.name)}</b>${l.waiting?' <span class="pill bad">ждёт</span>':''}<div class="small">${tg(l)}${l.company?' · '+esc(l.company):''}</div></td><td class="small">${esc(l.stage_name)} ${pillTemp(l.temp)}</td><td class="small">${esc(l.intent)||'<span class="muted">—</span>'}</td><td class="num">${l.msg_in}/${l.msg_out}</td><td class="mono">${dmy(l.last_activity)}</td><td class="mono">${dmy(l.created)}</td><td class="num">${l.score??'—'}</td></tr>`).join(''); post(); };
   document.getElementById('q').oninput = draw;
-  stg.onclick = e => { const b = e.target.closest('button'); if(!b) return; stage = b.dataset.s; stg.querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===b)); draw(); };
+  stg.onchange = e => { stage = e.target.value; e.target.classList.toggle('set', stage !== 'all'); draw(); };
   draw();
   document.getElementById('foot').innerHTML = `<span>Источник: CRM на сервере (jay-crm/data/crm.sqlite), снимок ${dmy(C.generated)}</span><span>Копия в Obsidian: W2W/CRM/ (сводка, Лиды/ с перепиской, Клиенты/ с досье)</span>`;
   if (D.clients) renderClients(D.clients);
@@ -291,8 +305,8 @@ function renderIG(){
   document.getElementById('root').innerHTML = `
   <div class="eyebrow">AI-блог · узбекский · статистика Meta от ${dmy(G.fetched_at)}</div>
   <h2 class="h2">${fmt(k.followers)} подписчиков${k.followers_delta!=null?` <span class="hl">${k.followers_delta>=0?'+':''}${fmt(k.followers_delta)}</span> <small class="muted" style="font-size:13px">с ${dmy(k.followers_since).slice(0,5)}</small>`:''}</h2>
-  <p class="lead">Карусели публикуются сами каждый день в 19:00, статистика собирается в 06:40. Рилсы публикуются только после кнопки 📤 в Telegram.</p>
-  <div class="chip-row" style="margin:-6px 0 18px"><a class="btn" href="${esc(G.url)}" target="_blank">📷 Открыть профиль ↗</a></div>
+  <p class="lead">Карусели выходят сами в 19:00, статистика в 06:40. Рилсы — после кнопки в Telegram.</p>
+  <div class="chip-row" style="margin:-6px 0 18px"><a class="btn sm" href="${esc(G.url)}" target="_blank">Открыть профиль ↗</a></div>
 
   <div class="grid g5 sect">
     <div class="stat hl"><div class="v">${fmt(k.followers)}</div><div class="l">подписчиков</div><div class="n">подписок ${fmt(k.follows)}</div></div>
@@ -351,9 +365,9 @@ function renderMarketing(){
   document.getElementById('root').innerHTML = `
   <div class="eyebrow">Отдел маркетинга · проверено ${dmy(M.checked_at)}</div>
   <h2 class="h2">Все каналы <span class="hl">в одном месте</span></h2>
-  <p class="lead">Instagram публикует AI-карусель каждый день в 19:00; в 19:30 она же уходит в Telegram-канал (узбекский пост + слайды), в Threads и в YouTube Shorts (слайд-шоу). LinkedIn идёт своим расписанием: черновики RU/EN в 06:00, публикация вт/ср/чт 17:30, у каждого поста есть картинка или PDF-карусель.</p>
+  <p class="lead">Карусель в 19:00 → Telegram, Threads и Shorts в 19:30. LinkedIn: черновики 06:00, публикация вт/ср/чт 17:30.</p>
 
-  ${M.todo.length ? `<div class="card" style="background:#fff6e6;border-color:#ffd58a;margin:0 0 18px"><h4>Что нужно от Jay (${M.todo.length})</h4><ul class="small" style="margin:6px 0 0 16px">${M.todo.map(t=>`<li style="margin:4px 0">${esc(t.text)}${t.detail?` <span class="muted mono" style="font-size:11px">· ${esc(t.detail)}</span>`:''}</li>`).join('')}</ul></div>` : ''}
+  ${M.todo.length ? `<div class="card" style="background:rgba(255,176,32,.14);border-color:rgba(255,176,32,.4);margin:0 0 18px"><h4>Что нужно от Jay (${M.todo.length})</h4><ul class="small" style="margin:6px 0 0 16px">${M.todo.map(t=>`<li style="margin:4px 0">${esc(t.text)}${t.detail?` <span class="muted mono" style="font-size:11px">· ${esc(t.detail)}</span>`:''}</li>`).join('')}</ul></div>` : ''}
 
   <div class="grid g5 sect">
     <div class="stat hl"><div class="v">${fmt(C.instagram.followers)}</div><div class="l">Instagram подписчиков</div><div class="n">${C.instagram.followers_delta!=null?(C.instagram.followers_delta>=0?'+':'')+fmt(C.instagram.followers_delta)+' с начала учёта':''}</div></div>
@@ -364,30 +378,30 @@ function renderMarketing(){
   </div>
 
   <div class="grid g3 sect">
-    <div class="card white"><div class="sect-h"><h4>💼 LinkedIn</h4>${li.token_days_left!=null&&li.token_days_left<10?'<span class="pill bad">токен истекает</span>':st(true)}</div>
+    <div class="card white"><div class="sect-h"><h4>LinkedIn</h4>${li.token_days_left!=null&&li.token_days_left<10?'<span class="pill bad">токен истекает</span>':st(true)}</div>
       <p class="small">RU и EN по очереди: вт карусель · ср текст + картинка · чт карусель-кейс, 17:30. Следующий: <b>${nextLi?dmy(nextLi):'—'}</b>${li.visuals_missing.length?` · <span class="pill bad">без визуала: ${li.visuals_missing.length}</span>`:''}</p>
       <p class="small muted">Токен LinkedIn: ещё ${li.token_days_left!=null?li.token_days_left+' дн':'—'} (создан ${esc(li.token_created||'—')})</p>
       ${posts(li.published.map(p=>({at:p.slot,title:(p.lang?p.lang.toUpperCase()+' · ':'')+(p.topic||p.preview),url:p.url})))}
       <div class="chip-row" style="margin-top:10px">${open(li.url,'Профиль ↗')}</div></div>
-    <div class="card white"><div class="sect-h"><h4>✈️ Telegram-канал</h4>${st(tg.ok, tg.error)}</div>
+    <div class="card white"><div class="sect-h"><h4>Telegram-канал</h4>${st(tg.ok, tg.error)}</div>
       <p class="small">${esc(tg.title||'@Jay_It_ai')} · <b>${fmt(tg.members)}</b> подписчиков. Каждый день 19:30 — пост на узбекском из сегодняшней карусели (все слайды альбомом). ${tg.can_post===false?'<span class="pill bad">бот не может постить</span>':''}</p>
       <p class="small muted">Следующий кросспост: ${next('marketing-crosspost')}</p>
       ${posts(tg.posts)}
       <div class="chip-row" style="margin-top:10px">${open(tg.url,'Канал ↗')}</div></div>
-    <div class="card white"><div class="sect-h"><h4>🧵 Threads</h4>${st(th.ok, th.error)}</div>
+    <div class="card white"><div class="sect-h"><h4>Threads</h4>${st(th.ok, th.error)}</div>
       <p class="small">${th.ok?`@${esc(th.username)} · ${th.followers!=null?fmt(th.followers)+' подписчиков':'подписчики — Meta не отдаёт без threads_manage_insights'}. Карусель уходит целиком + текст первого слайда и вопрос.`:'Карусели будут уходить сюда автоматически, как только появится токен Threads (шаг в списке выше).'}</p>
       ${th.token_age_days!=null?`<p class="small muted">Токен: ${th.token_age_days} дн, обновляется сам</p>`:''}
       ${posts(th.posts)}
       <div class="chip-row" style="margin-top:10px">${open(th.url,'Профиль ↗')}</div></div>
-    <div class="card white"><div class="sect-h"><h4>▶️ YouTube Shorts</h4>${st(yt.ok, yt.error)}</div>
+    <div class="card white"><div class="sect-h"><h4>YouTube Shorts</h4>${st(yt.ok, yt.error)}</div>
       <p class="small">${yt.ok?`${esc(yt.channel)} · ${fmt(yt.subscribers)} подписчиков · ${fmt(yt.videos)} видео · ${fmt(yt.views)} просмотров.`:'Нужна одноразовая авторизация Google (шаг в списке выше).'} Рилсы Instagram уходят в Shorts по одному в 11:00 и 19:45 (yt_reels.py), название пишет Claude.${yt.reels_failed?` <span class="pill bad">ошибок: ${yt.reels_failed}</span>`:''}</p>
       ${posts(yt.posts)}
       <div class="chip-row" style="margin-top:10px">${open(yt.url,'Канал ↗')}</div></div>
-    <div class="card white"><div class="sect-h"><h4>🔍 Google</h4>${st(C.google.ok, C.google.error)}</div>
+    <div class="card white"><div class="sect-h"><h4>Google</h4>${st(C.google.ok, C.google.error)}</div>
       ${C.google.ok ? (C.google.sites.length ? C.google.sites.map(s=>`<p class="small" style="margin:0 0 6px"><b>${esc(s.url)}</b>${s.error?` <span class="pill bad" title="${esc(s.error)}">ошибка</span>`:` · <b>${fmt(s.clicks)}</b> кликов · ${fmt(s.impressions)} показов · CTR ${s.ctr!=null?s.ctr+'%':'—'} · позиция ${s.position!=null?s.position:'—'}`}</p>${s.queries.length?`<p class="small muted" style="margin:0 0 8px">Запросы: ${s.queries.map(q=>esc(q.k)+' ('+fmt(q.clicks)+')').join(' · ')}</p>`:''}`).join('') : `<p class="small">${esc(C.google.note||'в Search Console нет сайтов')}</p>`) : `<p class="small">Search Console подключается тем же шагом, что YouTube (один Google-доступ). Тогда здесь будут клики, показы и запросы по каждому подтверждённому сайту за 28 дней.</p>`}
       <p class="small muted">Business Profile: ${esc(C.google.business_profile.note)}.<br>Ads: ${esc(C.google.ads.note)}.</p>
       <div class="chip-row" style="margin-top:10px">${open(C.google.search_url,'Поиск по имени ↗')}<a class="btn sm" href="https://search.google.com/search-console" target="_blank">Search Console ↗</a></div></div>
-    <div class="card white"><div class="sect-h"><h4>🌐 Личный сайт</h4>${C.website.url?st(true):'<span class="pill warn">адрес не указан</span>'}</div>
+    <div class="card white"><div class="sect-h"><h4>Личный сайт</h4>${C.website.url?st(true):'<span class="pill warn">адрес не указан</span>'}</div>
       <p class="small">${C.website.url?`<a href="${esc(C.website.url)}" target="_blank">${esc(C.website.url)}</a>`:'Укажи адрес личного сайта — он появится здесь, и к нему подключим Search Console.'}</p>
       <p class="small muted">Связанные страницы: <a href="https://javokhirkomiljanov.github.io/meet/" target="_blank">запись на встречу /meet</a> · <a href="https://w2w.uz" target="_blank">w2w.uz</a></p>
       <div class="chip-row" style="margin-top:10px">${open(C.website.url)}</div></div>
@@ -429,17 +443,21 @@ function copyTxt(t, btn){ const done = () => { const o = btn.textContent; btn.te
   else prompt('Скопируй путь:', t); }
 function fileRow(e, i){
   const pin = !!FE.pins[e.path], note = FE.notes[e.path] || '';
-  return `<div class="frow ${pin?'pin':''}" data-i="${i}">
+  const meta = [e.machine==='server'?'сервер':'ноутбук', e.root + (e.project&&e.project!==e.root?' / '+e.project:''), dmy(e.mtime), (D.files.kind_label[e.kind]||e.kind) + (e.kind==='folder'?'':' · '+human(e.size))];
+  return `<div class="frow ${pin?'pin':''}" data-i="${i}" onclick="if(!event.target.closest('button,a')) feOpen(this)">
     <div class="fic">${FICON[e.kind]||'📎'}</div>
-    <div class="fmain"><div class="fname">${esc(e.name)} <span class="pill ${e.machine==='server'?'lav':'mint'}">${e.machine==='server'?'🖥 сервер':'💻 ноутбук'}</span> <span class="pill">${esc(e.root)}</span>${e.project&&e.project!==e.root?` <span class="pill grey">${esc(e.project)}</span>`:''}</div>
-      <div class="fpath mono">${esc(e.path)}</div>${note?`<div class="fnote">📝 ${esc(note)}</div>`:''}</div>
-    <div class="fmeta"><div class="mono">${dmy(e.mtime)}</div><div class="small muted">${D.files.kind_label[e.kind]||e.kind} · ${e.kind==='folder'?'':human(e.size)}</div>
-      <div class="fbtn"><button onclick="copyTxt(${JSON.stringify(e.path).replace(/"/g,'&quot;')}, this)">📋 путь</button><button onclick="copyTxt(${JSON.stringify(e.dir).replace(/"/g,'&quot;')}, this)">📂 папка</button><button onclick="fePin(${i})" title="закрепить">${pin?'★':'☆'}</button><button onclick="feNote(${i})" title="заметка">📝</button></div></div>
+    <div class="fmain"><div class="fname">${esc(e.name)}${note?` <span class="pill warn" title="${esc(note)}">заметка</span>`:''}</div>
+      <div class="fmeta1">${meta.map(esc).join(' · ')}</div>
+      <div class="fx"><div class="fpath mono">${esc(e.path)}</div>${note?`<div class="fnote">${esc(note)}</div>`:''}
+        <div class="fbtn"><button onclick="copyTxt(${JSON.stringify(e.path).replace(/"/g,'&quot;')}, this)">Путь</button><button onclick="copyTxt(${JSON.stringify(e.dir).replace(/"/g,'&quot;')}, this)">Папка</button><button onclick="feNote(${i})">Заметка</button></div></div></div>
+    <button class="fpin ${pin?'on':''}" onclick="fePin(${i})" title="${pin?'Открепить':'Закрепить'}">${pin?'★':'☆'}</button>
   </div>`;
 }
 function fePin(i){ const e = D.files.items[i]; if (FE.pins[e.path]) delete FE.pins[e.path]; else FE.pins[e.path] = 1; feSave(); renderFileList(); }
 function feNote(i){ const e = D.files.items[i]; const v = prompt('Заметка к файлу (хранится в этом браузере):', FE.notes[e.path]||''); if (v === null) return; if (v.trim()) FE.notes[e.path] = v.trim(); else delete FE.notes[e.path]; feSave(); renderFileList(); }
 function feSet(k, v){ FQ[k] = FQ[k] === v ? '' : v; FQ.n = 150; renderFileList(); }
+function feSel(k, el){ FQ[k] = el.value; el.classList.toggle('set', !!el.value); FQ.n = 150; renderFileList(); }
+function feOpen(el){ el.classList.toggle('open'); post(); }
 function renderFileList(){
   const F = D.files, q = FQ.q.toLowerCase().trim();
   const hit = e => (!q || (e.name+' '+e.path+' '+(FE.notes[e.path]||'')).toLowerCase().includes(q)) && (!FQ.kind || e.kind===FQ.kind) && (!FQ.machine || e.machine===FQ.machine) && (!FQ.root || e.root===FQ.root) && (!FQ.project || (e.root+' / '+e.project)===FQ.project);
@@ -453,7 +471,7 @@ function renderFileList(){
   if (idx.length > FQ.n) html += `<p style="text-align:center;margin:14px 0"><button class="btn" onclick="FQ.n+=200;renderFileList()">Показать ещё (${idx.length-FQ.n})</button></p>`;
   document.getElementById('flist').innerHTML = html;
   document.getElementById('fcount').textContent = `${idx.length} из ${F.count}`;
-  document.querySelectorAll('.flt button[data-k]').forEach(b => b.classList.toggle('on', FQ[b.dataset.k] === b.dataset.v));
+  document.querySelectorAll('.flt select[data-k]').forEach(s => { s.value = FQ[s.dataset.k] || ''; s.classList.toggle('set', !!FQ[s.dataset.k]); });
   post();
 }
 function renderFiles(){
@@ -464,11 +482,11 @@ function renderFiles(){
   document.getElementById('root').innerHTML = `
   <div class="eyebrow">История файлов · ${F.days} дней · ${fmt(F.count)} файлов</div>
   <h2 class="h2">Что создано и <span class="hl">где лежит</span></h2>
-  <p class="lead">Всё, что ты или агенты сделали за последние ${F.days} дней: 💻 ноутбук — ${F.roots.filter(r=>r.exists).map(r=>r.label).join(', ')}; 🖥 сервер — ${F.server_roots.join(', ')||'пока ничего'}. «📋 путь» копирует полный путь, чтобы переслать или открыть. ★ и заметки живут в этом браузере.</p>
+  <p class="lead">Ноутбук и сервер за ${F.days} дней. Клик по файлу — путь и действия; ★ и заметки живут в этом браузере.</p>
   <div class="flt" style="margin-bottom:8px"><input id="fq" placeholder="Поиск по имени, папке, заметке…" oninput="FQ.q=this.value;FQ.n=150;renderFileList()"><span class="small muted" id="fcount"></span></div>
-  <div class="flt"><button data-k="machine" data-v="laptop" onclick="feSet('machine','laptop')">💻 ноутбук</button><button data-k="machine" data-v="server" onclick="feSet('machine','server')">🖥 сервер</button>
-    <span class="muted">·</span>${kinds.map(([k,n])=>`<button data-k="kind" data-v="${k}" onclick="feSet('kind','${k}')">${FICON[k]||''} ${F.kind_label[k]||k} <span class="muted">${n}</span></button>`).join('')}</div>
-  <div class="flt"><span class="small muted">Проекты:</span>${F.projects.slice(0,24).map(p=>`<button data-k="project" data-v="${esc(p.root+' / '+p.project)}" onclick="feSet('project',${JSON.stringify(p.root+' / '+p.project).replace(/"/g,'&quot;')})">${esc(p.project)} <span class="muted">${p.n}</span></button>`).join('')}</div>
+  <div class="flt"><select data-k="machine" onchange="feSel('machine',this)"><option value="">Ноутбук и сервер</option><option value="laptop">Ноутбук</option><option value="server">Сервер</option></select>
+    <select data-k="kind" onchange="feSel('kind',this)"><option value="">Все типы</option>${kinds.map(([k,n])=>`<option value="${k}">${F.kind_label[k]||k} · ${n}</option>`).join('')}</select>
+    <select data-k="project" onchange="feSel('project',this)"><option value="">Все проекты</option>${F.projects.slice(0,40).map(p=>`<option value="${esc(p.root+' / '+p.project)}">${esc(p.project)} · ${p.n}</option>`).join('')}</select></div>
   <div id="flist" style="margin-top:14px"></div>`;
   renderFileList();
   document.getElementById('foot').innerHTML = `<span>Сканируется ноутбуком 3 раза в день (задача \\JOS\\jos-sales-ig-refresh) + выходы сервера через remote_snapshot</span><span>Копия последних 7 дней: Obsidian Library/Файлы — история.md</span>`;

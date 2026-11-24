@@ -26,3 +26,8 @@ agents/**/*.md
 
 # Agents City brand logos: build input only, embedded into agent-city.html at build time (never served on their own)
 assets/agent-city/
+
+# UI audit screenshots (2026-11-24) show decrypted pages: local only
+docs/ui-2026-11-24/
+docs/__pycache__/
+*.bak-v3*

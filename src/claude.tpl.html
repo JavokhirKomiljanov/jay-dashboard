@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
 <title>Jay OS — Claude Pro</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/w2w-v3.css">
+<script>/* W2W v3: follow the JOS theme (same origin → same localStorage); the shell also sets it directly */try{document.documentElement.dataset.theme=localStorage.getItem('jos-theme')||'dark';addEventListener('storage',e=>{if(e.key==='jos-theme')document.documentElement.dataset.theme=e.newValue||'dark'})}catch(e){}</script>
 <style>
 /*__CSS__*/
 /* ---- panel-only ---- */
@@ -19,21 +19,24 @@ body.embedded .ptop h1{display:none}
 .kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:0 0 16px}
 @media(max-width:1100px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:640px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.subtabs{display:flex;gap:6px;margin:0 0 18px;border-bottom:1px solid var(--line);padding-bottom:10px;flex-wrap:wrap}
-.subtabs button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font:600 13px var(--text);color:var(--body);cursor:pointer}
-.subtabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.subtabs{display:flex;gap:22px;margin:0 0 16px;padding:0;border-bottom:1px solid var(--sep);overflow-x:auto;scrollbar-width:none;flex-wrap:nowrap}
+.subtabs::-webkit-scrollbar{display:none}
+.subtabs button{border:0;border-radius:0;background:transparent;padding:10px 0;margin-bottom:-1px;font:600 13.5px var(--text);color:var(--label-3);border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}
+.subtabs button:hover{color:var(--ink)}
+.subtabs button.on{background:transparent;color:var(--ink);border-bottom-color:var(--ink)}
 .prog{height:8px;border-radius:999px;background:var(--line);overflow:hidden}
 .prog i{display:block;height:100%;background:var(--mint);border-radius:999px;transition:width .3s}
 .prog.lav i{background:var(--lavender)}
 /* method */
 .method{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 @media(max-width:900px){.method{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.method .m{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+@media(max-width:640px){.method{grid-template-columns:1fr}.g2.grid{grid-template-columns:1fr!important}.v3-menu .dd label{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;font:500 13.5px var(--text);color:var(--ink);cursor:pointer}.lvl-h{grid-template-columns:44px minmax(0,1fr) 24px}.lvl-h .meta{grid-column:2;text-align:left}.les{grid-template-columns:24px minmax(0,1fr)}.les .ops{grid-column:2;flex-direction:row;align-items:center;flex-wrap:wrap}}
+.method .m{background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
 .method .m .n{font:800 22px var(--head);color:var(--mint-dark);line-height:1}
 .method .m h4{margin:8px 0 4px;font-size:14px}
 .method .m p{font-size:12.5px;margin:0;color:var(--body)}
 /* levels */
-.lvl{background:#fff;border:1px solid var(--line);border-radius:var(--r);margin:0 0 12px;overflow:hidden}
+.lvl{background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--r);margin:0 0 12px;overflow:hidden}
 .lvl.cur{border-color:var(--mint-dark);box-shadow:0 0 0 3px var(--mint-tint)}
 .lvl.done{border-color:var(--mint-light)}
 .lvl-h{display:grid;grid-template-columns:52px minmax(0,1fr) 170px 24px;gap:14px;align-items:center;padding:14px 18px;cursor:pointer;user-select:none}
@@ -53,9 +56,9 @@ body.embedded .ptop h1{display:none}
 .les{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:12px;padding:12px 0;border-top:1px solid var(--line);align-items:start}
 .les:first-of-type{border-top:0}
 .les.done .lt{color:var(--muted);text-decoration:line-through}
-.les .cb{width:20px;height:20px;border:2px solid var(--line-2);border-radius:6px;cursor:pointer;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;background:#fff;flex:none}
-.les.done .cb{background:var(--mint);border-color:var(--mint)}
-.les.doing .cb{border-color:var(--gold);background:#fff6e6}
+.les .cb{width:20px;height:20px;border:2px solid var(--line-2);border-radius:6px;cursor:pointer;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#0b0d0f;background:var(--bg-elev);flex:none}
+.les.done .cb{background:var(--ok);border-color:var(--ok)}
+.les.doing .cb{border-color:var(--gold);background:rgba(255,176,32,.14)}
 .les .lt{font-weight:700;color:var(--ink);font-size:13.5px}
 .les .lt .id{font:600 11px var(--mono);color:var(--muted);margin-right:6px}
 .les .ld{font-size:12.5px;color:var(--body);margin:3px 0 6px;line-height:1.5}
@@ -64,12 +67,12 @@ body.embedded .ptop h1{display:none}
 .les .row .v code,.les .ld code,.map td code,.gl code,.why code{font:500 11.5px var(--mono);background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 5px;color:var(--ink);word-break:break-all}
 .les .ops{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
 .les .ops .btn.sm{font-size:11px}
-.les .note{margin-top:6px;width:100%;border:1px dashed var(--line-2);border-radius:8px;padding:6px 9px;font:12.5px var(--text);color:var(--ink);background:#fff;min-height:28px;outline:none}
+.les .note{margin-top:6px;width:100%;border:1px dashed var(--line-2);border-radius:8px;padding:6px 9px;font:12.5px var(--text);color:var(--ink);background:var(--bg-elev);min-height:28px;outline:none}
 .les .note:focus{border-color:var(--mint-dark);border-style:solid}
 .les .note:empty:before{content:'заметка · что понял / где застрял';color:var(--faint)}
 .les .min{font:600 11px var(--mono);color:var(--muted);white-space:nowrap}
 .exam{margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;align-items:start}
-.exam .cb{width:20px;height:20px;border:2px solid var(--line-2);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;background:#fff;margin-top:2px}
+.exam .cb{width:20px;height:20px;border:2px solid var(--line-2);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;background:var(--bg-elev);margin-top:2px}
 .exam.done .cb{background:var(--lavender);border-color:var(--lavender)}
 .exam h5{margin:0 0 3px;font-size:13px;color:var(--ink)}
 .exam p{margin:0;font-size:12.5px;line-height:1.5}
@@ -79,10 +82,10 @@ body.embedded .ptop h1{display:none}
 .map td:first-child{white-space:nowrap;font-weight:600;color:var(--ink)}
 .layers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 14px}
 @media(max-width:900px){.layers{grid-template-columns:1fr}}
-.layer{border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;background:#fff;position:relative}
+.layer{border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;background:var(--bg-elev);position:relative}
 .layer .t{font:800 14px var(--head);color:var(--ink);margin:0 0 6px}
 .layer ul{margin:0;padding-left:16px;font-size:12.5px;line-height:1.55}
-.layer.l1{background:#f3eeff;border-color:#dccfff}.layer.l2{background:#eaf4ff;border-color:#b9dbff}.layer.l3{background:var(--mint-tint);border-color:var(--mint-light)}
+.layer.l1{background:rgba(185,161,255,.16);border-color:rgba(185,161,255,.4)}.layer.l2{background:rgba(10,188,243,.1);border-color:rgba(10,188,243,.35)}.layer.l3{background:var(--mint-tint);border-color:var(--mint-light)}
 .ars{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 @media(max-width:900px){.ars{grid-template-columns:1fr}}
 .ars .card h4{display:flex;justify-content:space-between;align-items:center}
@@ -92,7 +95,7 @@ body.embedded .ptop h1{display:none}
 .ars li{break-inside:avoid}
 .ice{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 @media(max-width:900px){.ice{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.ice .tier{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff}
+.ice .tier{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--bg-elev)}
 .ice .tier h5{margin:0 0 6px;font-size:12px;color:var(--ink)}
 .ice .tier div{font-size:12px;padding:3px 0;display:flex;gap:6px;align-items:center}
 .ice .has{color:var(--mint-dark);font-weight:700}.ice .miss{color:var(--coral-dark);font-weight:700}
@@ -105,18 +108,19 @@ body.embedded .ptop h1{display:none}
 .rh{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:14px;align-items:start}
 @media(max-width:900px){.rh{grid-template-columns:1fr}}
 .rh label{display:block;font-size:11.5px;color:var(--muted);margin:8px 0 3px}
-.rh input,.rh select{border:1px solid var(--line-2);border-radius:10px;padding:7px 11px;font:inherit;outline:none;background:#fff;width:100%}
+.rh input,.rh select{border:1px solid var(--line-2);border-radius:10px;padding:7px 11px;font:inherit;outline:none;background:var(--bg-elev);width:100%}
 .rh input:focus{border-color:var(--mint-dark)}
-.next{background:var(--ink);color:#fff;border-radius:var(--r);padding:16px 18px}
-.next .e{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mint);font-weight:700}
+.next{background:var(--night);color:#fff;border-radius:var(--r);padding:16px 18px}
+.next .e{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);font-weight:700}
 .next h4{color:#fff;font-size:16px;margin:4px 0 6px}
 .next p{color:#c9cbce;font-size:12.5px;margin:0 0 10px;line-height:1.5}
-.next .btn{border-color:var(--mint);background:var(--mint);color:var(--ink)}
+.next .btn{border-color:var(--mint);background:var(--brand);color:var(--on-brand)}
 .log{font-size:12.5px}
 .log div{padding:5px 0;border-bottom:1px solid var(--line);display:flex;gap:10px}
 .log .d{font:500 11.5px var(--mono);color:var(--muted);white-space:nowrap}
-.toast{position:fixed;right:18px;bottom:18px;background:var(--ink);color:#fff;padding:9px 14px;border-radius:10px;font-size:12.5px;opacity:0;transition:.2s;pointer-events:none;z-index:50}
+.toast{position:fixed;right:18px;bottom:18px;background:var(--ink-fill);color:var(--on-ink);padding:9px 14px;border-radius:10px;font-size:12.5px;opacity:0;transition:.2s;pointer-events:none;z-index:50}
 .toast.on{opacity:1}
+.v3-menu .dd label{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;font:500 13.5px var(--text);color:var(--ink);cursor:pointer}.v3-menu .dd label:hover{background:var(--fill)}
 footer.cl-foot{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between;font-size:11px;color:var(--muted);padding:18px 0 0;border-top:1px solid var(--line);margin-top:26px}
 </style>
 </head>
@@ -450,8 +454,8 @@ function render(){
   const pct = Math.round(100 * Object.keys(S.done).length / ALL.length);
   const root = document.getElementById('root');
   root.innerHTML = `
-  <div class="ptop"><h1>🧠 Claude Pro — моя программа</h1><span class="pill mint">только для Jay</span><span class="pill grey">${esc(D.built || '')}</span><span class="sp"></span>
-    <button class="btn sm" id="b-edit">✏️ Править текст</button><button class="btn sm" onclick="exportJson()">⬇ Экспорт прогресса</button><label class="btn sm">⬆ Импорт<input type="file" accept="application/json" style="display:none" onchange="importJson(this)"></label><button class="btn sm" onclick="resetAll()">↺ Сброс</button></div>
+  <div class="ptop"><h1>Claude Pro — моя программа</h1><span class="pill grey">${esc(D.built || '')}</span><span class="sp"></span>
+    <button class="btn sm" id="b-edit">Править</button><div class="v3-menu"><button class="v3-menu-btn" type="button" onclick="this.parentElement.classList.toggle('open')" title="Ещё">⋯</button><div class="dd"><button type="button" onclick="exportJson()">Экспорт прогресса</button><label><input type="file" accept="application/json" style="display:none" onchange="importJson(this)">Импорт прогресса</label><button type="button" onclick="resetAll()">Сбросить прогресс</button></div></div></div>
   <div class="kpis">
     <div class="stat hl"><div class="v">${cur.id}<small>${esc(cur.name.split(':')[0])}</small></div><div class="l">текущий уровень</div><div class="n">${lv(cur).d}/${lv(cur).n} уроков</div></div>
     <div class="stat"><div class="v">${pct}%</div><div class="l">программа пройдена</div><div class="n">${Object.keys(S.done).length} из ${ALL.length} уроков</div></div>
@@ -459,7 +463,7 @@ function render(){
     <div class="stat"><div class="v">${PROG.levels.filter(lvlDone).length}<small>/ 6</small></div><div class="l">зачётов сдано</div><div class="n">уровень = все уроки + зачёт</div></div>
     <div class="stat"><div class="v">${e ? e.weeks + '<small>нед</small>' : '—'}</div><div class="l">до конца при ритме</div><div class="n">${S.rhythm.slots}×${S.rhythm.min} мин/нед${e ? ' → ' + e.date : ''}</div></div>
   </div>
-  <div class="subtabs">${[['prog', '📚 Программа'], ['map', '🗺 Как это работает'], ['gl', '📖 Словарь'], ['rh', '⏱ Ритм и журнал']].map(([k, n]) => `<button class="${TAB === k ? 'on' : ''}" onclick="TAB='${k}';render()">${n}</button>`).join('')}</div>
+  <div class="subtabs">${[['prog', 'Программа'], ['map', 'Как это работает'], ['gl', 'Словарь'], ['rh', 'Ритм и журнал']].map(([k, n]) => `<button class="${TAB === k ? 'on' : ''}" onclick="TAB='${k}';render()">${n}</button>`).join('')}</div>
   <div id="tab"></div>
   <footer class="cl-foot"><span>Программа составлена 20.10.2026 по живому арсеналу: ${D.inv ? `${D.inv.skills.length} скилов · ${D.inv.commands.length} команд · ${D.inv.routines.length} рутин · ${D.inv.hooks.length} hook · ${D.inv.mcp.length} MCP` : ''}</span><span>прогресс: этот браузер (localStorage) → ⬇ Экспорт в <code>data/jos/claude-progress.json</code> → Obsidian при сборке</span></footer>`;
   document.getElementById('b-edit').onclick = toggleEdit;
@@ -471,7 +475,7 @@ function render(){
   bind(); applyEdit(); post();
 }
 function renderProg(cur, nx){
-  const next = nx ? `<div class="next"><div class="e">следующий шаг</div><h4>${esc(nx.id)} · ${esc(T(nx.id, 't', nx.t))}</h4><p>${esc(T(nx.id, 'd', nx.d)).slice(0, 220)}…</p><div class="chip-row"><button class="btn sm" onclick="copyPrompt('${nx.id}')">📋 Промпт урока → в Claude Code</button><button class="btn sm" style="background:#fff" onclick="setDoing('${nx.id}')">▶ Начал</button></div></div>`
+  const next = nx ? `<div class="next"><div class="e">следующий шаг</div><h4>${esc(nx.id)} · ${esc(T(nx.id, 't', nx.t))}</h4><p>${esc(T(nx.id, 'd', nx.d)).slice(0, 220)}…</p><div class="chip-row"><button class="btn sm" onclick="copyPrompt('${nx.id}')">📋 Промпт урока → в Claude Code</button><button class="btn sm" style="background:var(--bg-elev)" onclick="setDoing('${nx.id}')">▶ Начал</button></div></div>`
     : `<div class="next"><div class="e">программа</div><h4>Все уроки закрыты</h4><p>Остались зачёты уровней — отметь их в карточках.</p></div>`;
   return `<div class="g2 grid" style="display:grid;gap:14px;margin:0 0 18px;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)">
     <div class="card white"><h4>Модель обучения: Карта → Руками → Зачёт → Память</h4><div class="method">${PROG.method.map(m => `<div class="m"><div class="n">${m.n}</div><h4>${esc(m.t)}</h4><p>${md(m.p)}</p></div>`).join('')}</div>
@@ -551,6 +555,7 @@ function bind(){ document.querySelectorAll('[data-note]').forEach(el => el.addEv
 function post(){ try { parent.postMessage({jos: 'h', page: D.page || 'claude', h: document.documentElement.scrollHeight}, '*'); } catch (e) {} }
 window.addEventListener('load', post); window.addEventListener('resize', post); setInterval(post, 1500);
 save(); render();
+document.addEventListener('click', e => { /* v3-menu close */ const m = e.target.closest('.v3-menu'); document.querySelectorAll('.v3-menu.open').forEach(x => { if (x !== m || e.target.closest('.dd')) x.classList.remove('open'); }); });
 </script>
 </body>
 </html>

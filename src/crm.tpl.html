@@ -5,20 +5,19 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Jay CRM</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/w2w-v3.css">
 <style>
 :root{
   --ink:#131313;--body:#5c5d5f;--muted:#8a8a8a;--faint:#b5b7ba;
-  --mint:#07e7b7;--mint-dark:#05a884;--mint-light:#74dfc8;--mint-tint:#eefcf8;
+  --mint:#0abcf3;--mint-dark:#0a6f93;--mint-light:rgba(10,188,243,.45);--mint-tint:rgba(10,188,243,.1);
   --bg:#f3f4f6;--panel:#ffffff;--card:#ffffff;--card-2:#f6f7f8;--line:#e6e8ea;--line-2:#d9dcdf;
   --coral:#ff6b6b;--coral-dark:#d64545;--amber:#f0a500;--blue:#4f7cff;--violet:#8a6ad8;
   --r:14px;--r-sm:9px;
-  --head:'Manrope','Inter',system-ui,sans-serif;--text:'Inter',system-ui,-apple-system,"Segoe UI",sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  --head:'Onest',system-ui,sans-serif;--text:'Onest',system-ui,-apple-system,"Segoe UI",sans-serif;--mono:'Onest',system-ui,sans-serif;
   --sb:60px;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#f2f3f4;--body:#b9bcc0;--muted:#8d9095;--faint:#5c6066;--bg:#0f1011;--panel:#161718;--card:#1c1e20;--card-2:#222427;--line:#2a2d30;--line-2:#34373b;--mint-tint:#0f2a24}}
-:root[data-theme="dark"]{--ink:#f2f3f4;--body:#b9bcc0;--muted:#8d9095;--faint:#5c6066;--bg:#0f1011;--panel:#161718;--card:#1c1e20;--card-2:#222427;--line:#2a2d30;--line-2:#34373b;--mint-tint:#0f2a24}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#f2f3f4;--body:#b9bcc0;--muted:#8d9095;--faint:#5c6066;--bg:#0f1011;--panel:#161718;--card:#1c1e20;--card-2:#222427;--line:#2a2d30;--line-2:#34373b;--mint-tint:rgba(10,188,243,.14);--mint-dark:#5fd2f7}}
+:root[data-theme="dark"]{--ink:#f2f3f4;--body:#b9bcc0;--muted:#8d9095;--faint:#5c6066;--bg:#0f1011;--panel:#161718;--card:#1c1e20;--card-2:#222427;--line:#2a2d30;--line-2:#34373b;--mint-tint:rgba(10,188,243,.14);--mint-dark:#5fd2f7}
 *{box-sizing:border-box}
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--body);font:13.5px/1.45 var(--text);display:grid;grid-template-columns:var(--sb) 1fr;overflow:hidden}
@@ -43,7 +42,7 @@ b{color:var(--ink)}
 .top h1{font:800 17px var(--head);color:var(--ink);margin:0 14px 0 0;white-space:nowrap}
 .pipes{display:flex;gap:4px;flex-wrap:wrap}
 .pipes button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:600;color:var(--body)}
-.pipes button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.pipes button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .pipes button i{font-style:normal;color:var(--muted);font-weight:500;margin-left:4px}
 .pipes button.on i{color:#cfd1d4}
 .top .sp{flex:1}
@@ -399,7 +398,7 @@ function csv(){const V=visible();const cols=['name','st','source','company','rol
  const esc=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const rows=[cols.join(';')].concat(V.map(l=>cols.map(k=>esc(k==='st'?SN[l.st]:k==='source'?SOURCES[l.source]||l.source:k==='tags'?(l.tags||[]).join(', '):l[k])).join(';')));
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+rows.join('\n')],{type:'text/csv;charset=utf-8'}));a.download='jay-crm-'+today()+'.csv';a.click();}
 /* ---------- boot ---------- */
-try{const t=localStorage.getItem('jaycrm-theme');if(t)document.documentElement.dataset.theme=t}catch(_){}
+try{const t=localStorage.getItem('jaycrm-theme')||localStorage.getItem('jos-theme');if(t)document.documentElement.dataset.theme=t}catch(_){}
 $('#me').textContent=ini(ME);$('#me').title=ME+' · выйти';
 renderAll();
 window.addEventListener('message',ev=>{if(ev.data&&ev.data.jaycrm==='refresh')renderAll()});
