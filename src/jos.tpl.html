@@ -2427,11 +2427,17 @@ window.addEventListener('message', e => { const m = e.data; if(!m || m.jos !== '
   const fit = fr => { try { const d = fr.contentDocument; if(!d || !d.body || !fr.offsetParent) return;
       const h = Math.ceil(Math.max(d.body.scrollHeight, d.body.getBoundingClientRect().height + 16));
       if(h > 40 && Math.abs(h + 8 - fr.offsetHeight) > 2) fr.style.height = (h + 8) + 'px'; } catch(e) {} };
-  const hook = fr => { try { const d = fr.contentDocument; if(!d || !d.body || fr._fitRO) return;
-      d.documentElement.style.overflowY = 'hidden';
+  // live panels are staticrypt pages: decryption rewrites the document AFTER «load» (new <html>/<body>), so the observer
+  // and overflow rule from the first hook were lost -> the inner scrollbar came back (Jay 11-25, 2nd screenshot).
+  // Re-hook whenever the panel's body element changes; a 1 s sweep catches the rewrite.
+  const hook = fr => { try { const d = fr.contentDocument; if(!d || !d.body || fr._fitBody === d.body) return;
+      if(fr._fitRO) fr._fitRO.disconnect();
+      d.documentElement.style.overflowY = 'hidden'; d.body.style.overflowY = 'hidden';
+      fr._fitBody = d.body;
       fr._fitRO = new ResizeObserver(() => requestAnimationFrame(() => fit(fr))); fr._fitRO.observe(d.body); fit(fr); } catch(e) {} };
+  setInterval(() => document.querySelectorAll('iframe.panel').forEach(fr => { if(fr.offsetParent) { hook(fr); fit(fr); } }), 1000);
   document.querySelectorAll('iframe.panel').forEach(fr => { fr.setAttribute('scrolling', 'no');
-    fr.addEventListener('load', () => { fr._fitRO = null; hook(fr); setTimeout(() => fit(fr), 600); }); if(fr.contentDocument && fr.contentDocument.readyState === 'complete') hook(fr); });
+    fr.addEventListener('load', () => { hook(fr); setTimeout(() => { hook(fr); fit(fr); }, 600); }); if(fr.contentDocument && fr.contentDocument.readyState === 'complete') hook(fr); });
   window.addEventListener('resize', () => document.querySelectorAll('iframe.panel').forEach(fit));
   document.addEventListener('click', e => { if(e.target.closest('.nav[data-v],[data-v]')) setTimeout(() => document.querySelectorAll('iframe.panel').forEach(fit), 400); });
 })();
