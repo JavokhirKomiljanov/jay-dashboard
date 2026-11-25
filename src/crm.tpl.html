@@ -197,7 +197,7 @@ tr.rowlink{cursor:pointer}
     <select id="f-tag"><option value="">Тег: все</option></select>
     <button class="chip" data-f="mine">Мои</button>
     <button class="chip" data-f="phone">Есть телефон</button>
-    <button class="chip" data-f="anketa" title="ISAEV: показывать только тех, кто прислал анкету или видео-визитку">С анкетой</button>
+    <button class="chip" data-f="anketa" title="ISAEV: оставить только тех, кто прислал анкету или видео-визитку (по умолчанию видны все участники группы)">С анкетой</button>
     <button class="chip" data-f="late">Просрочено</button>
     <button class="chip" data-f="wait">Ждут ответа</button>
     <button class="btn sm ghost" id="csv">⬇ CSV</button>
@@ -230,8 +230,9 @@ const KEY='jaycrm-state',FKEY='jaycrm-feed',UI='jaycrm-ui';
 /* ---------- state: E[id] = overrides {st, own, val, nxt, due, tags[], tasks[], fields{}, at, by}; F[id] = feed ---------- */
 let E={},F={};
 try{E=JSON.parse(localStorage.getItem(KEY)||'{}');F=JSON.parse(localStorage.getItem(FKEY)||'{}')}catch(_){}
-let UIS={view:'board',pipe:'',q:'',own:'',reg:'',tag:'',chips:{anketa:true}};  /* default: ISAEV members without a roster post are hidden */
+let UIS={view:'board',pipe:'',q:'',own:'',reg:'',tag:'',chips:{}};  /* default: every ISAEV group member is a lead; «С анкетой» is an opt-in filter */
 try{Object.assign(UIS,JSON.parse(localStorage.getItem(UI)||'{}'))}catch(_){}
+if(!UIS.v2){UIS.chips=Object.assign({},UIS.chips,{anketa:false});UIS.v2=1}  /* 2026-11-25: the old default hid ~70% of ISAEV members — reset it once per browser */
 const saveUI=()=>{try{localStorage.setItem(UI,JSON.stringify(UIS))}catch(_){}};
 const now=()=>new Date().toISOString();
 const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
@@ -280,7 +281,7 @@ function visible(){const q=UIS.q.trim().toLowerCase();const ch=UIS.chips;
   if(ch.anketa&&String(l.source).startsWith('isaev')&&!(l.anketa||l.video))return false;
   if(ch.late&&!isLate(l))return false;
   if(ch.wait&&!l.waiting)return false;
-  if(q){const s=[l.name,l.company,l.phone,l.tg_username,l.region,l.activity,l.role,l.nxt,l.snippet,l.intent].join(' ').toLowerCase();if(!s.includes(q))return false}
+  if(q){const s=[l.name,l.tg_name,l.company,l.phone,l.tg_username,l.region,l.activity,l.role,l.nxt,l.snippet,l.intent,l.raw].join(' ').toLowerCase();if(!s.includes(q))return false}
   return true})}
 const openTasks=l=>(l.tasks||[]).filter(t=>!t.done);
 const isLate=l=>(l.due&&l.due<today()&&!['won','lost'].includes(l.st))||openTasks(l).some(t=>t.due&&t.due<today());
@@ -301,7 +302,7 @@ function card(l){const d=dueOf(l);const dc=d?(d<today()?'late':d===today()?'toda
  return `<div class="dl" draggable="true" data-id="${h(l.id)}">
   ${l.waiting?'<span class="wait" title="ждёт нашего ответа"></span>':''}
   <div class="nm"><span>${h(l.name||'без имени')}</span><span class="av ${l.own?'':'none'}" title="${h(l.own||'нет ответственного')}">${l.own?ini(l.own):'?'}</span></div>
-  <div class="sub">${h([l.company,l.region_topic||l.region].filter(Boolean).join(' · ')||l.activity||l.snippet||'')}</div>
+  <div class="sub">${h([l.company,l.region_topic||l.region].filter(Boolean).join(' · ')||l.activity||l.snippet||(l.tg_username?'@'+l.tg_username:'')||l.member_status||'')}</div>
   <div class="row"><span class="tag src-${h(l.source)}">${h(SOURCES[l.source]||l.source)}</span>${(l.tags||[]).slice(0,2).map(t=>`<span class="tag">${h(t)}</span>`).join('')}${l.phone?'<span class="tag" title="'+h(l.phone)+'">📞</span>':''}${l.video?'<span class="tag" title="видео-визитка">🎬</span>':''}${l.val?`<span class="val">$${fmt(l.val)}</span>`:''}</div>
   ${d||l.nxt?`<div class="due ${dc}">${d?'⏰ '+dmy(d):''} ${h(l.nxt||'')}</div>`:''}
  </div>`}
@@ -351,7 +352,7 @@ function drawer(id){OPEN=id;const l=lead(id);const b=BASE[id]||{};const feed=(F[
   </div>
   <div class="links">${link('✈️ Telegram',l.tg_username?'https://t.me/'+l.tg_username:'')}${link('📞 Позвонить',tel)}${link('📷 Instagram',l.instagram?'https://instagram.com/'+String(l.instagram).replace(/^@|.*instagram\.com\//,''):'')}${link('💬 Пост в группе',b.link)}${b.tg_id?`<span class="btn sm ghost mono">id ${b.tg_id}</span>`:''}${b.member_status?`<span class="btn sm ghost">${h(b.member_status)}</span>`:''}</div>
   ${b.offer?`<h5>Спецпредложение (из видео)</h5><div class="offer">${h(b.offer)}</div>`:''}
-  ${b.raw?`<h5>Анкета в группе · ${h(b.posted||'')}</h5><div class="raw">${h(b.raw)}</div>`:''}
+  ${b.raw?`<h5>${h(b.raw_title||'Анкета в группе')} · ${h(b.posted||'')}${b.tg_name&&b.tg_name!==l.name?' · в Telegram: '+h(b.tg_name):''}</h5><div class="raw">${h(b.raw)}</div>`:''}
   ${(b.video_clips||[]).length?`<h5>Видео-визитка · ${b.video_clips.length} клип(а)</h5>`+b.video_clips.map(c=>`<details class="clip"><summary>${h(c.meta)}</summary>${c.link?`<a href="${h(c.link)}" target="_blank">открыть видео ↗</a>`:''}<p>${h(c.text)}</p></details>`).join(''):''}
   ${b.snippet||b.intent?`<h5>Из Telegram-CRM</h5><div class="raw">${h(b.intent?'Интерес: '+b.intent+'\n':'')}${h(b.snippet||'')}${b.msg_in!=null?`\n\nвх/исх: ${b.msg_in}/${b.msg_out} · первое сообщение ${dmy(b.created)} · последнее ${dmy(b.last_activity)}${b.temp?' · '+b.temp:''}`:''}</div>`:''}
   <h5>Задачи</h5>
