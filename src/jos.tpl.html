@@ -666,6 +666,11 @@ html[data-theme=dark] .btn.mint{background:var(--brand)!important;color:var(--on
 .fin-tabs .sp~.btn.on,html[data-theme=dark] .fin-tabs .sp~.btn.on{background:var(--ink-fill)!important;color:var(--on-ink)!important;border-color:transparent}
 .fin-tabs .sp~.pill{margin-bottom:6px}
 /* /W2W v3 */
+/* 2026-11-25 perf: a sticky blurred header over scrolling iframe panels re-blurs every frame -> scroll jank on Jay's laptop.
+   Solid header (same tint), no backdrop-filter; smooth wheel; panels never scroll on their own (autoFitPanels). */
+.top{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:var(--bg,#f2f3f5)!important}
+html[data-theme=dark] .top{background:var(--bg,#0b0b0d)!important}
+iframe.panel{overflow:hidden}
 </style>
 <script>/* theme + lang before first paint, so there's no white flash */
 try { const t = localStorage.getItem('jos-theme') || 'dark'; /* Jay: dark by default */ document.documentElement.dataset.theme = t;
@@ -2415,6 +2420,21 @@ function panelUrl(p){ const plain = /plaintext/.test(location.pathname); return 
 document.querySelectorAll('[data-open]').forEach(a => a.href = panelUrl(a.dataset.open));
 window.addEventListener('message', e => { const m = e.data; if(!m || m.jos !== 'h') return;
   const fr = document.querySelector(`iframe.panel[data-page="${m.page}"]`); if(fr && m.h) fr.style.height = (m.h + 8) + 'px'; });
+/* 2026-11-25 Jay: «it lags, scrolling is throttling» (Бэкап): a panel whose page posts its height only once (backup, kpi, claude,
+   youtube, server, crm) got taller afterwards -> a second scrollbar INSIDE the iframe, the wheel fought the outer page.
+   The shell now sizes every same-origin panel itself: ResizeObserver on the panel body, iframe never scrolls on its own. */
+(function autoFitPanels(){
+  const fit = fr => { try { const d = fr.contentDocument; if(!d || !d.body || !fr.offsetParent) return;
+      const h = Math.ceil(Math.max(d.body.scrollHeight, d.body.getBoundingClientRect().height + 16));
+      if(h > 40 && Math.abs(h + 8 - fr.offsetHeight) > 2) fr.style.height = (h + 8) + 'px'; } catch(e) {} };
+  const hook = fr => { try { const d = fr.contentDocument; if(!d || !d.body || fr._fitRO) return;
+      d.documentElement.style.overflowY = 'hidden';
+      fr._fitRO = new ResizeObserver(() => requestAnimationFrame(() => fit(fr))); fr._fitRO.observe(d.body); fit(fr); } catch(e) {} };
+  document.querySelectorAll('iframe.panel').forEach(fr => { fr.setAttribute('scrolling', 'no');
+    fr.addEventListener('load', () => { fr._fitRO = null; hook(fr); setTimeout(() => fit(fr), 600); }); if(fr.contentDocument && fr.contentDocument.readyState === 'complete') hook(fr); });
+  window.addEventListener('resize', () => document.querySelectorAll('iframe.panel').forEach(fit));
+  document.addEventListener('click', e => { if(e.target.closest('.nav[data-v],[data-v]')) setTimeout(() => document.querySelectorAll('iframe.panel').forEach(fit), 400); });
+})();
 document.querySelectorAll('.nav[data-v]').forEach(n => n.onclick = () => JOS.go(n.dataset.v));
 document.getElementById('lnk-strategy').href = L.strategy_page; document.getElementById('lnk-map').href = L.w2w_map; document.getElementById('lnk-crm').href = L.jay_ai_chat; document.getElementById('lnk-archive').href = L.archive_page;
 document.getElementById('foot-built').textContent = 'собрано ' + D.built; document.getElementById('foot-src').textContent = 'стратегия ' + S.meta.generated + ' · мозг ' + BR.snapshot + ' · агенты ' + AG.checked;
